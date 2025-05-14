@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+
+	<!-- Boxicons -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<!-- My CSS -->
+	<link rel="stylesheet" href="style1.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+	<title>HR</title>
+</head>
+<body>
+
+
+	<!-- SIDEBAR -->
+<section id="sidebar">
+    <a href="#" class="brand p-4">
+        <img src="img/1.jpg">
+        <span class="text">John Jerald Abasola</span>
+    </a>
+    <ul class="side-menu top">
+        <li>
+            <a href="../index.html">
+                <i class='bx bxs-dashboard'></i>
+                <span class="text">Dashboard</span>
+            </a>
+        </li>
+
+        <span class="separator">HR 1-2</span>
+        
+        <li>
+            <a href="../NHOES/index.html">
+                <i class='bx bxs-user-plus'></i>
+                <span class="text">New Hire on Board</span>
+            </a>
+        </li>
+        <li class="active">
+            <a href="index.html">
+				<i class='bx bxs-bar-chart-alt-2' ></i>
+                <span class="text">Performance Management</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bxs-user-pin' ></i>
+                <span class="text">Recruitment Management</span>
+            </a>
+        </li>
+        <li>
+            <a href="../SocialRecognition/index.html">
+                <i class='bx bxs-medal' ></i>
+                <span class="text">Social Recognition</span>
+            </a>
+        </li>
+        <li>
+            <a href="../Compentency/index.html">
+                <i class='bx bxs-brain' ></i>
+                <span class="text">Competency Management</span>
+            </a>
+        </li>
+        <li>
+            <a href="../Succession/index.html">
+                <i class='bx bxs-brain' ></i>
+                <span class="text">Succession Planning</span>
+            </a>
+        </li>
+        <li>
+            <a href="../LearningManagement/index.html">
+                <i class='bx bxs-graduation' ></i>
+                <span class="text">Learning Management</span>
+            </a>
+        </li>
+
+        <span class="separator">HR 3-4</span>
+
+        <li>
+            <a href="../Leavemangement/index.html">
+                <i class='bx bxs-calendar-check' ></i>
+                <span class="text">Leave Management</span>
+            </a>
+        </li>
+        <li>
+            <a href="../timeandattendance/index.html">
+                <i class='bx bxs-time' ></i>
+                <span class="text">Time and Attendance</span>
+            </a>
+        </li>
+        <li>
+            <a href="../Claims/index.html">
+                <i class='bx bxs-receipt' ></i>
+                <span class="text">Claims and Reimbursement</span>
+            </a>
+        </li>
+        <li>
+            <a href="../Payroll/index.html">
+                <i class='bx bxs-bank' ></i>
+                <span class="text">Payroll</span>
+            </a>
+        </li>
+        <li>
+            <a href="">
+                <i class='bx bxs-wallet' ></i>
+                <span class="text">Compensation and Administration</span>
+            </a>
+        </li>
+        <li>
+            <a href="../HRanalytics/index.html">
+                <i class='bx bxs-bar-chart-square' ></i>
+                <span class="text">HR Analytics</span>
+            </a>
+        </li>
+        <li>
+			<a href="../Corehuman/index.html">
+				<i class='bx bxs-user-badge' ></i>
+				<span class="text">Core Human Management</span>
+			</a>
+		</li>
+		
+    </ul>
+
+    
+
+    <ul class="side-menu">
+		<span class="separator">SETTINGS</span>
+        <li>
+            <a href="../Settings.html">
+                <i class='bx bxs-cog'></i>
+                <span class="text">Settings</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="logout">
+                <i class='bx bxs-log-out-circle'></i>
+                <span class="text">Logout</span>
+            </a>
+        </li>
+    </ul>
+</section>
+<!-- SIDEBAR -->
+
+<section id="content">
+    <!-- NAVBAR -->
+    <nav>
+        <i class='bx bx-menu'></i>
+        <a href="#" class="nav-link">Categories</a>
+        <form action="#">
+            <div class="form-input">
+                <input type="search" placeholder="Search...">
+                <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+            </div>
+        </form>
+        
+        <input type="checkbox" id="switch-mode" hidden>
+        <label for="switch-mode" class="switch-mode"></label>
+        <a href="#" class="notification">
+            <i class='bx bxs-bell'></i>
+            <span class="num">9+</span>
+        </a>
+        
+        <div class="profile-dropdown">
+            <a href="#" class="profile" id="profile-btn">
+                <img src="img/14.jpg">
+            </a>
+            <div class="dropdown-menu" id="dropdown-menu">
+                <a href="img/1.jpg">Profile</a>
+				<a href="Changepassword.html">Change Passowrd</a>
+            </div>
+        </div>
+    </nav>
+    <main class="col-md-10 ms-sm-auto col-lg-10 px-md-4">
+        <div class="container-fluid mt-5">
+        <h2 class="mb-4">Performance Management Dashboard</h2>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" id="pmTabs" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active" id="charts-tab" data-bs-toggle="tab" data-bs-target="#charts" type="button" role="tab">Analytics</button>
+          </li>
+         
+          <li class="nav-item">
+            <button class="nav-link" id="goals-tab" data-bs-toggle="tab" data-bs-target="#goals" type="button" role="tab">Goal Setting</button>
+          </li>
+           <li class="nav-item">
+            <button class="nav-link" id="evaluations-tab" data-bs-toggle="tab" data-bs-target="#evaluations" type="button" role="tab">Evaluation Reviews</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="feedback-tab" data-bs-toggle="tab" data-bs-target="#feedback" type="button" role="tab">Feedback Sessions</button>
+          </li>
+        </ul>
+
+        <!-- Tab Contents -->
+        <div class="tab-content pt-3" id="pmTabsContent">
+
+          <!-- ANAL -->
+          <div class="tab-pane fade show active" id="charts" role="tabpanel">
+            <div class="container-fluid py-5">
+              <h3 class="mb-4">Performance Analytics</h3>
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <canvas id="evaluationChart"></canvas>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <canvas id="goalChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+          <!-- Evaluation Reviews Tab -->
+          <div class="tab-pane fade" id="evaluations" role="tabpanel">
+            <h4>Evaluation Reviews</h4>
+            <button class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#evaluationModal">Add Evaluation</button>
+            <table class="table table-bordered">
+              <thead class="table-dark">
+                <tr>
+                  <th>Review ID</th>
+                  <th>Employee ID</th>
+                  <th>Reviewer ID</th>
+                  <th>Period</th>
+                  <th>Rating</th>
+                  <th>Score</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="evaluationTable"></tbody>
+            </table>
+          </div>
+
+          <!-- Goal Setting Tab -->
+          <div class="tab-pane fade" id="goals" role="tabpanel">
+            <h4>Goal Setting</h4>
+            <button class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#goalModal">Add Goal</button>
+            <table class="table table-bordered">
+              <thead class="table-dark">
+                <tr>
+                  <th>Goal ID</th>
+                  <th>Employee ID</th>
+                  <th>Title</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Status</th>
+                  <th>Progress</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="goalTable"></tbody>
+            </table>
+          </div>
+
+          <!-- Feedback Sessions Tab -->
+          <div class="tab-pane fade" id="feedback" role="tabpanel">
+            <h4>Feedback Sessions</h4>
+            <button class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#feedbackModal">Add Feedback</button>
+            <table class="table table-bordered">
+              <thead class="table-dark">
+                <tr>
+                  <th>Feedback ID</th>
+                  <th>Employee ID</th>
+                  <th>Provider ID</th>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Mode</th>
+                  <th>Confidential</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="feedbackTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evaluation Modal -->
+      <div class="modal fade" id="evaluationModal" tabindex="-1">
+        <div class="modal-dialog">
+          <form class="modal-content" id="evaluationForm">
+            <div class="modal-header">
+              <h5 class="modal-title">Edit Evaluation</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="evalIndex">
+              <input class="form-control mb-2" placeholder="Employee ID" id="evalEmployee" required>
+              <input class="form-control mb-2" placeholder="Reviewer ID" id="evalReviewer" required>
+              <input class="form-control mb-2" placeholder="Review Period" id="evalPeriod" required>
+              <input class="form-control mb-2" type="number" placeholder="Rating" id="evalRating" required>
+              <input class="form-control mb-2" type="number" placeholder="Score" id="evalScore" required>
+              <select class="form-control mb-2" id="evalStatus" required>
+                <option value="">Select Status</option>
+                <option>Pending</option>
+                <option>Completed</option>
+              </select>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Save</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Goal Modal -->
+      <div class="modal fade" id="goalModal" tabindex="-1">
+        <div class="modal-dialog">
+          <form class="modal-content" id="goalForm">
+            <div class="modal-header">
+              <h5 class="modal-title">Add Goal</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="goalIndex">
+              <input class="form-control mb-2" placeholder="Employee ID" id="goalEmployee" required>
+              <input class="form-control mb-2" placeholder="Title" id="goalTitle" required>
+              <input class="form-control mb-2" type="date" id="goalStart" required>
+              <input class="form-control mb-2" type="date" id="goalEnd" required>
+              <input class="form-control mb-2" placeholder="Status" id="goalStatus" required>
+              <input class="form-control mb-2" placeholder="Progress" id="goalProgress" required>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Save</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Feedback Modal -->
+      <div class="modal fade" id="feedbackModal" tabindex="-1">
+        <div class="modal-dialog">
+          <form class="modal-content" id="feedbackForm">
+            <div class="modal-header">
+              <h5 class="modal-title">Add Feedback</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="fbIndex">
+              <input class="form-control mb-2" placeholder="Employee ID" id="fbEmployee" required>
+              <input class="form-control mb-2" placeholder="Provider ID" id="fbProvider" required>
+              <input class="form-control mb-2" type="date" id="fbDate" required>
+              <input class="form-control mb-2" placeholder="Type" id="fbType" required>
+              <input class="form-control mb-2" placeholder="Mode" id="fbMode" required>
+              <select class="form-control mb-2" id="fbConfidential" required>
+                <option value="">Confidential?</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Save</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+      <script>
+        // Dummy Data
+        let evaluations = [
+          { employee: "EMP001", reviewer: "REV001", period: "Q1 2025", rating: 4.5, score: 90, status: "Completed" },
+          { employee: "EMP002", reviewer: "REV002", period: "Q1 2025", rating: 3.8, score: 76, status: "Completed" },
+          { employee: "EMP003", reviewer: "REV003", period: "Q1 2025", rating: 4.9, score: 98, status: "Pending" }
+        ];
+
+        let goals = [
+          { employee: "EMP001", title: "Improve Sales", start: "2025-01-01", end: "2025-06-30", status: "In Progress", progress: "60%" },
+          { employee: "EMP002", title: "Launch New Campaign", start: "2025-02-15", end: "2025-07-15", status: "Not Started", progress: "0%" },
+          { employee: "EMP003", title: "Reduce Bug Count", start: "2025-01-10", end: "2025-05-10", status: "Completed", progress: "100%" }
+        ];
+
+        let feedbacks = [
+          { employee: "EMP001", provider: "REV001", date: "2025-03-01", type: "Positive", mode: "Email", confidential: false },
+          { employee: "EMP002", provider: "REV002", date: "2025-03-15", type: "Constructive", mode: "In-Person", confidential: true },
+          { employee: "EMP003", provider: "REV003", date: "2025-03-20", type: "Positive", mode: "Video Call", confidential: false }
+        ];
+
+        function renderTables() {
+          document.getElementById("evaluationTable").innerHTML = evaluations.map((e, i) => `
+            <tr>
+              <td>${i + 1}</td><td>${e.employee}</td><td>${e.reviewer}</td><td>${e.period}</td>
+              <td>${e.rating}</td><td>${e.score}</td><td>${e.status}</td>
+              <td><button class="btn btn-sm btn-info" onclick="editEvaluation(${i})">Edit</button></td>
+            </tr>`).join('');
+
+          document.getElementById("goalTable").innerHTML = goals.map((g, i) => `
+            <tr>
+              <td>${i + 1}</td><td>${g.employee}</td><td>${g.title}</td><td>${g.start}</td>
+              <td>${g.end}</td><td>${g.status}</td><td>${g.progress}</td>
+              <td><button class="btn btn-sm btn-info" onclick="editGoal(${i})">Edit</button></td>
+            </tr>`).join('');
+
+          document.getElementById("feedbackTable").innerHTML = feedbacks.map((f, i) => `
+            <tr>
+              <td>${i + 1}</td><td>${f.employee}</td><td>${f.provider}</td><td>${f.date}</td>
+              <td>${f.type}</td><td>${f.mode}</td><td>${f.confidential ? "Yes" : "No"}</td>
+              <td><button class="btn btn-sm btn-info" onclick="editFeedback(${i})">Edit</button></td>
+            </tr>`).join('');
+        }
+
+        function renderCharts() {
+          // Evaluation Ratings Bar Chart
+          const evalCtx = document.getElementById('evaluationChart').getContext('2d');
+          new Chart(evalCtx, {
+            type: 'bar',
+            data: {
+              labels: evaluations.map(e => e.employee),
+              datasets: [{
+                label: 'Rating',
+                data: evaluations.map(e => e.rating),
+                backgroundColor: '#4e73df'
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Average Evaluation Rating per Employee'
+                }
+              }
+            }
+          });
+
+          // Goal Progress Chart
+          const goalCtx = document.getElementById('goalChart').getContext('2d');
+          new Chart(goalCtx, {
+            type: 'bar',
+            data: {
+              labels: goals.map(g => g.employee),
+              datasets: [{
+                label: 'Progress (%)',
+                data: goals.map(g => parseInt(g.progress)),
+                backgroundColor: '#1cc88a'
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Goal Progress'
+                }
+              },
+              scales: {
+                y: {
+                  max: 100
+                }
+              }
+            }
+          });
+
+          // Feedback Types Pie Chart
+          const feedbackCtx = document.getElementById('feedbackChart').getContext('2d');
+          const feedbackTypeCounts = feedbacks.reduce((acc, f) => {
+            acc[f.type] = (acc[f.type] || 0) + 1;
+            return acc;
+          }, {});
+
+          new Chart(feedbackCtx, {
+            type: 'pie',
+            data: {
+              labels: Object.keys(feedbackTypeCounts),
+              datasets: [{
+                data: Object.values(feedbackTypeCounts),
+                backgroundColor: ['#f6c23e', '#e74a3b', '#36b9cc']
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Feedback Type Distribution'
+                }
+              }
+            }
+          });
+        }
+
+        renderTables();
+        renderCharts();
+
+
+        // Rest of the form logic (same as before)
+
+        document.getElementById("evaluationForm").onsubmit = e => {
+          e.preventDefault();
+          const index = document.getElementById("evalIndex").value;
+          const entry = {
+            employee: evalEmployee.value,
+            reviewer: evalReviewer.value,
+            period: evalPeriod.value,
+            rating: evalRating.value,
+            score: evalScore.value,
+            status: evalStatus.value
+          };
+          if (index === '') evaluations.push(entry);
+          else evaluations[index] = entry;
+          bootstrap.Modal.getInstance(document.getElementById("evaluationModal")).hide();
+          e.target.reset();
+          renderTables();
+        };
+
+        document.getElementById("goalForm").onsubmit = e => {
+          e.preventDefault();
+          const index = document.getElementById("goalIndex").value;
+          const entry = {
+            employee: goalEmployee.value,
+            title: goalTitle.value,
+            start: goalStart.value,
+            end: goalEnd.value,
+            status: goalStatus.value,
+            progress: goalProgress.value
+          };
+          if (index === '') goals.push(entry);
+          else goals[index] = entry;
+          bootstrap.Modal.getInstance(document.getElementById("goalModal")).hide();
+          e.target.reset();
+          renderTables();
+        };
+
+        document.getElementById("feedbackForm").onsubmit = e => {
+          e.preventDefault();
+          const index = document.getElementById("fbIndex").value;
+          const entry = {
+            employee: fbEmployee.value,
+            provider: fbProvider.value,
+            date: fbDate.value,
+            type: fbType.value,
+            mode: fbMode.value,
+            confidential: fbConfidential.value === "true"
+          };
+          if (index === '') feedbacks.push(entry);
+          else feedbacks[index] = entry;
+          bootstrap.Modal.getInstance(document.getElementById("feedbackModal")).hide();
+          e.target.reset();
+          renderTables();
+        };
+
+        function editEvaluation(index) {
+          const e = evaluations[index];
+          evalIndex.value = index;
+          evalEmployee.value = e.employee;
+          evalReviewer.value = e.reviewer;
+          evalPeriod.value = e.period;
+          evalRating.value = e.rating;
+          evalScore.value = e.score;
+          evalStatus.value = e.status;
+          new bootstrap.Modal(document.getElementById("evaluationModal")).show();
+        }
+
+        function editGoal(index) {
+          const g = goals[index];
+          goalIndex.value = index;
+          goalEmployee.value = g.employee;
+          goalTitle.value = g.title;
+          goalStart.value = g.start;
+          goalEnd.value = g.end;
+          goalStatus.value = g.status;
+          goalProgress.value = g.progress;
+          new bootstrap.Modal(document.getElementById("goalModal")).show();
+        }
+
+        function editFeedback(index) {
+          const f = feedbacks[index];
+          fbIndex.value = index;
+          fbEmployee.value = f.employee;
+          fbProvider.value = f.provider;
+          fbDate.value = f.date;
+          fbType.value = f.type;
+          fbMode.value = f.mode;
+          fbConfidential.value = f.confidential.toString();
+          new bootstrap.Modal(document.getElementById("feedbackModal")).show();
+        }
+
+        renderTables();
+      </script>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
