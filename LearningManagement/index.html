@@ -1,15 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-	<link rel="stylesheet" href="style1.css">
-	<title>HR Analytics</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Learning and Training</title>
+    <style>
+      /* Filter controls styling */
+.filter-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-controls select, 
+.filter-controls input {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+    height: 38px;
+}
+
+.filter-controls select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2rem;
+}
+
+.filter-controls .btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.filter-controls .btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.filter-controls .btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-controls select,
+    .filter-controls input,
+    .filter-controls .btn {
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
+}
+    </style>
 </head>
 <body>
 
+<!-- View Modal -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewModalLabel">View Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="editModalBody">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this record? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <section id="sidebar">
     <a href="#" class="brand">
@@ -34,7 +156,7 @@
         </li>
         <li>
             <a href="../Performance/index.html">
-				<i class='bx bxs-bar-chart-alt-2' ></i>
+                <i class='bx bxs-bar-chart-alt-2' ></i>
                 <span class="text">Performance Management</span>
             </a>
         </li>
@@ -65,7 +187,7 @@
         <li class="active">
             <a href="index.html">
                 <i class='bx bxs-graduation' ></i>
-                <span class="text">Learning Management</span>
+                <span class="text">Learning and Training</span>
             </a>
         </li>
 
@@ -108,18 +230,15 @@
             </a>
         </li>
         <li>
-			<a href="../Corehuman/index.html">
-				<i class='bx bxs-user-badge' ></i>
-				<span class="text">Core Human Management</span>
-			</a>
-		</li>
-		
+            <a href="../Corehuman/index.html">
+                <i class='bx bxs-user-badge' ></i>
+                <span class="text">Core Human Management</span>
+            </a>
+        </li>
     </ul>
 
-    
-
     <ul class="side-menu">
-		<span class="separator">SETTINGS</span>
+        <span class="separator">SETTINGS</span>
         <li>
             <a href="../Settings.html">
                 <i class='bx bxs-cog'></i>
@@ -135,10 +254,9 @@
     </ul>
 </section>
 
-
 <section id="content">
     <nav>
-        <i class='bx bx-menu'></i>
+      
         <a href="#" class="nav-link">Categories</a>
         <form action="#">
             <div class="form-input">
@@ -148,7 +266,7 @@
         </form>
         
         <input type="checkbox" id="switch-mode" hidden>
-        <label for="switch-mode" class="switch-mode"></label>
+      
         <a href="#" class="notification">
             <i class='bx bxs-bell'></i>
             <span class="num">9+</span>
@@ -160,474 +278,1565 @@
             </a>
             <div class="dropdown-menu" id="dropdown-menu">
                 <a href="Profile.html">Profile</a>
-				<a href="Changepassword.html">Change Passowrd</a>
+                <a href="Changepassword.html">Change Passowrd</a>
             </div>
         </div>
     </nav>
 
-		<main>
-			<div class="head-title">
-				<div class="left">
-					<h1>Learning Management</h1>
-					<ul class="breadcrumb">
-						<li>
-							<a href="#">Dashboard</a>
-						</li>
-						<li><i class='bx bx-chevron-right' ></i></li>
-						<li>
-							<a class="active" href="#">Learning Management</a>
-						</li>
-					</ul>
-				</div>
-			</div>
+    <main>
+        <div class="head-title">
+            <div class="left">
+                <h1>Learning and Training Management</h1>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="#">Dashboard</a>
+                    </li>
+                    <li><i class='bx bx-chevron-right' ></i></li>
+                    <li>
+                        <a class="active" href="#">Learning and Training</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-            <div class="tab-container">
-                <div class="tab-buttons">
-                    <button class="tab-button active" onclick="openTab(event, 'dashboard')">
-                        <i class='bx bxs-dashboard'></i> Dashboard
-                    </button>
-                    <button class="tab-button" onclick="openTab(event, 'modules')">Learning Modules</button>
-                    <button class="tab-button" onclick="openTab(event, 'recommendations')">Module Recommendations</button>
-                    <button class="tab-button" onclick="openTab(event, 'progress')">Learning Progress</button>
-                    <button class="tab-button" onclick="openTab(event, 'assessments')">Learning Assessments</button>
-                </div>
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="openTab(event, 'dashboard')">
+                    <i class='bx bxs-dashboard'></i> Dashboard
+                </button>
+                <button class="tab-button" onclick="openTab(event, 'modules')">Learning Modules</button>
+                <button class="tab-button" onclick="openTab(event, 'training')">Training Programs</button>
+                <button class="tab-button" onclick="openTab(event, 'recommendations')">Module Recommendations</button>
+                <button class="tab-button" onclick="openTab(event, 'progress')">Learning Progress</button>
+                <button class="tab-button" onclick="openTab(event, 'assessments')">Learning Assessments</button>
+            </div>
 
-                <div id="dashboard" class="tab-content active">
-                    <div class="dashboard-container">
-                        <h3 class="dashboard-title">Learning Management Dashboard</h3>
-                        
-                        <div class="metrics-grid">
-                            <div class="metric-card">
-                                <div class="metric-title">Active Learning Modules</div>
-                                <div class="metric-value">24</div>
-                                <div class="metric-change positive">↑ 3 from last quarter</div>
-                            </div>
-                            
-                            <div class="metric-card">
-                                <div class="metric-title">Employees in Training</div>
-                                <div class="metric-value">87</div>
-                                <div class="metric-change positive">↑ 12 from last month</div>
-                            </div>
-                            
-                            <div class="metric-card">
-                                <div class="metric-title">Avg. Completion Rate</div>
-                                <div class="metric-value">78%</div>
-                                <div class="metric-change positive">↑ 5% from last quarter</div>
-                            </div>
-                            
-                            <div class="metric-card">
-                                <div class="metric-title">Avg. Assessment Score</div>
-                                <div class="metric-value">84.5%</div>
-                                <div class="metric-change negative">↓ 2.1% from last quarter</div>
-                            </div>
+            <div id="dashboard" class="tab-content active">
+                <div class="dashboard-container">
+                    <h3 class="dashboard-title">Learning and Training Dashboard</h3>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-title">Active Learning Modules</div>
+                            <div class="metric-value">24</div>
+                            <div class="metric-change positive">↑ 3 from last quarter</div>
                         </div>
                         
-                        <div class="chart-container">
-                            <canvas id="moduleCompletionChart"></canvas>
+                        <div class="metric-card">
+                            <div class="metric-title">Active Training Programs</div>
+                            <div class="metric-value">8</div>
+                            <div class="metric-change positive">↑ 2 from last quarter</div>
                         </div>
                         
-                        <div class="chart-container" style="margin-top: 20px;">
-                            <canvas id="categoryDistribution"></canvas>
+                        <div class="metric-card">
+                            <div class="metric-title">Employees in Training</div>
+                            <div class="metric-value">87</div>
+                            <div class="metric-change positive">↑ 12 from last month</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-title">Avg. Completion Rate</div>
+                            <div class="metric-value">78%</div>
+                            <div class="metric-change positive">↑ 5% from last quarter</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-title">Avg. Assessment Score</div>
+                            <div class="metric-value">84.5%</div>
+                            <div class="metric-change negative">↓ 2.1% from last quarter</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-title">Training Satisfaction</div>
+                            <div class="metric-value">4.7/5</div>
+                            <div class="metric-change positive">↑ 0.3 from last quarter</div>
                         </div>
                     </div>
-                </div>
-   
-                <div id="modules" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Learning Modules</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Module ID</th>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                    <th>Category</th>
-                                    <th>Duration (min)</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>101</td>
-                                    <td>Effective Leadership</td>
-                                    <td>Develop core leadership skills for team management</td>
-                                    <td>Leadership</td>
-                                    <td>120</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>102</td>
-                                    <td>Advanced Communication</td>
-                                    <td>Master professional communication techniques</td>
-                                    <td>Communication</td>
-                                    <td>90</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>103</td>
-                                    <td>Time Management Pro</td>
-                                    <td>Boost productivity with effective time management</td>
-                                    <td>Productivity</td>
-                                    <td>60</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>104</td>
-                                    <td>Emotional Intelligence</td>
-                                    <td>Develop self-awareness and relationship management</td>
-                                    <td>Soft Skills</td>
-                                    <td>75</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>105</td>
-                                    <td>Project Management Fundamentals</td>
-                                    <td>Essential skills for managing projects successfully</td>
-                                    <td>Project Management</td>
-                                    <td>150</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    
+                    <div class="chart-container">
+                        <canvas id="moduleCompletionChart"></canvas>
                     </div>
-                </div>
-                
-     
-                <div id="recommendations" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Module Recommendations</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Recommendation ID</th>
-                                    <th>Review ID</th>
-                                    <th>Area for Improvement</th>
-                                    <th>Module ID</th>
-                                    <th>Module Title</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>201</td>
-                                    <td>501</td>
-                                    <td>Needs improvement in team leadership</td>
-                                    <td>101</td>
-                                    <td>Effective Leadership</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>202</td>
-                                    <td>502</td>
-                                    <td>Should work on presentation skills</td>
-                                    <td>102</td>
-                                    <td>Advanced Communication</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>203</td>
-                                    <td>503</td>
-                                    <td>Struggles with meeting deadlines</td>
-                                    <td>103</td>
-                                    <td>Time Management Pro</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>204</td>
-                                    <td>504</td>
-                                    <td>Needs to develop empathy with colleagues</td>
-                                    <td>104</td>
-                                    <td>Emotional Intelligence</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>205</td>
-                                    <td>505</td>
-                                    <td>Requires better project planning skills</td>
-                                    <td>105</td>
-                                    <td>Project Management Fundamentals</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    
+                    <div class="chart-container" style="margin-top: 20px;">
+                        <canvas id="trainingParticipationChart"></canvas>
                     </div>
-                </div>
-        
-                <div id="progress" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Employee Learning Progress</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Progress ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Employee Name</th>
-                                    <th>Module ID</th>
-                                    <th>Module Title</th>
-                                    <th>Status</th>
-                                    <th>Completion Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>301</td>
-                                    <td>E1001</td>
-                                    <td>John Smith</td>
-                                    <td>101</td>
-                                    <td>Effective Leadership</td>
-                                    <td><span class="badge badge-success">Completed</span></td>
-                                    <td>2023-06-15</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>302</td>
-                                    <td>E1002</td>
-                                    <td>Sarah Johnson</td>
-                                    <td>102</td>
-                                    <td>Advanced Communication</td>
-                                    <td><span class="badge badge-warning">In Progress</span></td>
-                                    <td>-</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>303</td>
-                                    <td>E1003</td>
-                                    <td>Michael Brown</td>
-                                    <td>103</td>
-                                    <td>Time Management Pro</td>
-                                    <td><span class="badge badge-danger">Not Started</span></td>
-                                    <td>-</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>304</td>
-                                    <td>E1004</td>
-                                    <td>Emily Davis</td>
-                                    <td>104</td>
-                                    <td>Emotional Intelligence</td>
-                                    <td><span class="badge badge-success">Completed</span></td>
-                                    <td>2023-07-10</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>305</td>
-                                    <td>E1005</td>
-                                    <td>David Wilson</td>
-                                    <td>105</td>
-                                    <td>Project Management Fundamentals</td>
-                                    <td><span class="badge badge-warning">In Progress</span></td>
-                                    <td>-</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-          
-                <div id="assessments" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Learning Assessments</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Assessment ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Employee Name</th>
-                                    <th>Module ID</th>
-                                    <th>Module Title</th>
-                                    <th>Score</th>
-                                    <th>Result</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>401</td>
-                                    <td>E1001</td>
-                                    <td>John Smith</td>
-                                    <td>101</td>
-                                    <td>Effective Leadership</td>
-                                    <td>92.5%</td>
-                                    <td><span class="badge badge-success">Pass</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>402</td>
-                                    <td>E1002</td>
-                                    <td>Sarah Johnson</td>
-                                    <td>102</td>
-                                    <td>Advanced Communication</td>
-                                    <td>85.0%</td>
-                                    <td><span class="badge badge-success">Pass</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>403</td>
-                                    <td>E1003</td>
-                                    <td>Michael Brown</td>
-                                    <td>103</td>
-                                    <td>Time Management Pro</td>
-                                    <td>72.3%</td>
-                                    <td><span class="badge badge-danger">Fail</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>404</td>
-                                    <td>E1004</td>
-                                    <td>Emily Davis</td>
-                                    <td>104</td>
-                                    <td>Emotional Intelligence</td>
-                                    <td>88.7%</td>
-                                    <td><span class="badge badge-success">Pass</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>405</td>
-                                    <td>E1005</td>
-                                    <td>David Wilson</td>
-                                    <td>105</td>
-                                    <td>Project Management Fundamentals</td>
-                                    <td>95.2%</td>
-                                    <td><span class="badge badge-success">Pass</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    
+                    <div class="chart-container" style="margin-top: 20px;">
+                        <canvas id="categoryDistribution"></canvas>
                     </div>
                 </div>
             </div>
-		</main>
+   
+            <div id="modules" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Learning Modules</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="moduleIdFilter" class="form-control me-2" placeholder="Filter by Module ID" style="width: 150px;">
+                            <input type="text" id="moduleTitleFilter" class="form-control me-2" placeholder="Filter by Title" style="width: 200px;">
+                            <select id="moduleCategoryFilter" class="form-control me-2" style="width: 180px;">
+                                <option value="">All Categories</option>
+                                <option>Leadership</option>
+                                <option>Communication</option>
+                                <option>Productivity</option>
+                                <option>Soft Skills</option>
+                                <option>Project Management</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetModuleFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Module ID</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Duration (min)</th>
+                                <th>Format</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="moduleTableBody">
+                            <tr>
+                                <td>101</td>
+                                <td>Effective Leadership</td>
+                                <td>Develop core leadership skills for team management</td>
+                                <td>Leadership</td>
+                                <td>120</td>
+                                <td>E-learning</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>102</td>
+                                <td>Advanced Communication</td>
+                                <td>Master professional communication techniques</td>
+                                <td>Communication</td>
+                                <td>90</td>
+                                <td>E-learning</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>103</td>
+                                <td>Time Management</td>
+                                <td>Boost productivity with proven time management strategies</td>
+                                <td>Productivity</td>
+                                <td>60</td>
+                                <td>Hybrid</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>104</td>
+                                <td>Conflict Resolution</td>
+                                <td>Learn to resolve workplace conflicts effectively</td>
+                                <td>Soft Skills</td>
+                                <td>75</td>
+                                <td>In-person</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>105</td>
+                                <td>Project Planning Basics</td>
+                                <td>Introduction to project management and planning</td>
+                                <td>Project Management</td>
+                                <td>80</td>
+                                <td>E-learning</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>106</td>
+                                <td>Emotional Intelligence</td>
+                                <td>Enhance your EQ for better workplace relationships</td>
+                                <td>Soft Skills</td>
+                                <td>70</td>
+                                <td>Hybrid</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>107</td>
+                                <td>Strategic Thinking</td>
+                                <td>Develop long-term strategies for business growth</td>
+                                <td>Leadership</td>
+                                <td>110</td>
+                                <td>E-learning</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>108</td>
+                                <td>Effective Meetings</td>
+                                <td>Run productive and engaging meetings</td>
+                                <td>Productivity</td>
+                                <td>45</td>
+                                <td>In-person</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>109</td>
+                                <td>Presentation Skills</td>
+                                <td>Deliver impactful presentations with confidence</td>
+                                <td>Communication</td>
+                                <td>100</td>
+                                <td>E-learning</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>110</td>
+                                <td>Agile Fundamentals</td>
+                                <td>Learn the basics of Agile project management</td>
+                                <td>Project Management</td>
+                                <td>95</td>
+                                <td>Hybrid</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>111</td>
+                                <td>Critical Thinking</td>
+                                <td>Sharpen your analytical and problem-solving skills</td>
+                                <td>Soft Skills</td>
+                                <td>60</td>
+                                <td>E-learning</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>112</td>
+                                <td>Team Collaboration</td>
+                                <td>Improve teamwork and collaboration in projects</td>
+                                <td>Productivity</td>
+                                <td>85</td>
+                                <td>In-person</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="training" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Training Programs</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="programIdFilter" class="form-control me-2" placeholder="Filter by Program ID" style="width: 150px;">
+                            <input type="text" id="programTitleFilter" class="form-control me-2" placeholder="Filter by Title" style="width: 200px;">
+                            <select id="programCategoryFilter" class="form-control me-2" style="width: 180px;">
+                                <option value="">All Categories</option>
+                                <option>Leadership</option>
+                                <option>Technical</option>
+                                <option>Soft Skills</option>
+                                <option>Compliance</option>
+                                <option>Sales</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetProgramFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Program ID</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Participants</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trainingTableBody">
+                            <tr>
+                                <td>TR101</td>
+                                <td>Leadership Development</td>
+                                <td>Comprehensive leadership training for managers</td>
+                                <td>Leadership</td>
+                                <td>2024-05-10</td>
+                                <td>2024-05-12</td>
+                                <td>24</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TR102</td>
+                                <td>Technical Skills Bootcamp</td>
+                                <td>Intensive technical training for IT staff</td>
+                                <td>Technical</td>
+                                <td>2024-06-01</td>
+                                <td>2024-06-03</td>
+                                <td>18</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TR103</td>
+                                <td>Soft Skills Mastery</td>
+                                <td>Enhance interpersonal and communication skills</td>
+                                <td>Soft Skills</td>
+                                <td>2024-04-20</td>
+                                <td>2024-04-21</td>
+                                <td>30</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TR104</td>
+                                <td>Compliance Essentials</td>
+                                <td>Mandatory compliance training for all staff</td>
+                                <td>Compliance</td>
+                                <td>2024-05-15</td>
+                                <td>2024-05-15</td>
+                                <td>50</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TR105</td>
+                                <td>Sales Excellence</td>
+                                <td>Advanced sales techniques for sales teams</td>
+                                <td>Sales</td>
+                                <td>2024-06-10</td>
+                                <td>2024-06-12</td>
+                                <td>22</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TR106</td>
+                                <td>Agile Project Management</td>
+                                <td>Implement Agile methodologies in projects</td>
+                                <td>Technical</td>
+                                <td>2024-05-22</td>
+                                <td>2024-05-24</td>
+                                <td>16</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TR107</td>
+                                <td>Customer Service Training</td>
+                                <td>Improve customer interaction and satisfaction</td>
+                                <td>Soft Skills</td>
+                                <td>2024-04-28</td>
+                                <td>2024-04-29</td>
+                                <td>28</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TR108</td>
+                                <td>Data Security Awareness</td>
+                                <td>Protect company data and privacy</td>
+                                <td>Compliance</td>
+                                <td>2024-06-05</td>
+                                <td>2024-06-05</td>
+                                <td>40</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TR109</td>
+                                <td>Negotiation Skills</td>
+                                <td>Learn effective negotiation strategies</td>
+                                <td>Sales</td>
+                                <td>2024-05-18</td>
+                                <td>2024-05-19</td>
+                                <td>15</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TR110</td>
+                                <td>Team Building Retreat</td>
+                                <td>Strengthen team collaboration and morale</td>
+                                <td>Leadership</td>
+                                <td>2024-06-15</td>
+                                <td>2024-06-16</td>
+                                <td>20</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TR111</td>
+                                <td>Presentation Masterclass</td>
+                                <td>Advanced presentation and public speaking skills</td>
+                                <td>Soft Skills</td>
+                                <td>2024-05-28</td>
+                                <td>2024-05-29</td>
+                                <td>25</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+ 
+            <div id="recommendations" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Module Recommendations</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="recommendationIdFilter" class="form-control me-2" placeholder="Filter by Recommendation ID" style="width: 200px;">
+                            <input type="text" id="reviewIdFilter" class="form-control me-2" placeholder="Filter by Review ID" style="width: 200px;">
+                            <input type="text" id="moduleIdRecFilter" class="form-control me-2" placeholder="Filter by Module ID" style="width: 200px;">
+                            <button class="btn btn-outline-secondary" id="resetRecommendationFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Recommendation ID</th>
+                                <th>Review ID</th>
+                                <th>Area for Improvement</th>
+                                <th>Module ID</th>
+                                <th>Module Title</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recommendationTableBody">
+                            <tr>
+                                <td>201</td>
+                                <td>501</td>
+                                <td>Needs improvement in team leadership</td>
+                                <td>101</td>
+                                <td>Effective Leadership</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>202</td>
+                                <td>502</td>
+                                <td>Should work on presentation skills</td>
+                                <td>102</td>
+                                <td>Advanced Communication</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>203</td>
+                                <td>503</td>
+                                <td>Improve time management</td>
+                                <td>103</td>
+                                <td>Time Management</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>204</td>
+                                <td>504</td>
+                                <td>Needs better conflict resolution</td>
+                                <td>104</td>
+                                <td>Conflict Resolution</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>205</td>
+                                <td>505</td>
+                                <td>Should learn project planning basics</td>
+                                <td>105</td>
+                                <td>Project Planning Basics</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>206</td>
+                                <td>506</td>
+                                <td>Enhance emotional intelligence</td>
+                                <td>106</td>
+                                <td>Emotional Intelligence</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>207</td>
+                                <td>507</td>
+                                <td>Needs strategic thinking skills</td>
+                                <td>107</td>
+                                <td>Strategic Thinking</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>208</td>
+                                <td>508</td>
+                                <td>Improve meeting effectiveness</td>
+                                <td>108</td>
+                                <td>Effective Meetings</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>209</td>
+                                <td>509</td>
+                                <td>Needs better presentation skills</td>
+                                <td>109</td>
+                                <td>Presentation Skills</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>210</td>
+                                <td>510</td>
+                                <td>Should learn Agile fundamentals</td>
+                                <td>110</td>
+                                <td>Agile Fundamentals</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>211</td>
+                                <td>511</td>
+                                <td>Needs critical thinking improvement</td>
+                                <td>111</td>
+                                <td>Critical Thinking</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>212</td>
+                                <td>512</td>
+                                <td>Should improve team collaboration</td>
+                                <td>112</td>
+                                <td>Team Collaboration</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <div id="progress" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Employee Learning Progress</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="progressIdFilter" class="form-control me-2" placeholder="Filter by Progress ID" style="width: 150px;">
+                            <input type="text" id="employeeIdFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                            <select id="progressStatusFilter" class="form-control me-2" style="width: 180px;">
+                                <option value="">All Statuses</option>
+                                <option>Completed</option>
+                                <option>In Progress</option>
+                                <option>Not Started</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetProgressFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Progress ID</th>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Module ID</th>
+                                <th>Module Title</th>
+                                <th>Status</th>
+                                <th>Completion Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="progressTableBody">
+                            <tr>
+                                <td>301</td>
+                                <td>E1001</td>
+                                <td>John Smith</td>
+                                <td>101</td>
+                                <td>Effective Leadership</td>
+                                <td><span class="badge bg-success">Completed</span></td>
+                                <td>2024-04-15</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>302</td>
+                                <td>E1002</td>
+                                <td>Sarah Johnson</td>
+                                <td>102</td>
+                                <td>Advanced Communication</td>
+                                <td><span class="badge bg-warning">In Progress</span></td>
+                                <td>-</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>303</td>
+                                <td>E1003</td>
+                                <td>Michael Lee</td>
+                                <td>103</td>
+                                <td>Time Management</td>
+                                <td><span class="badge bg-success">Completed</span></td>
+                                <td>2024-05-01</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>304</td>
+                                <td>E1004</td>
+                                <td>Emily Davis</td>
+                                <td>104</td>
+                                <td>Conflict Resolution</td>
+                                <td><span class="badge bg-secondary">Not Started</span></td>
+                                <td>-</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>305</td>
+                                <td>E1005</td>
+                                <td>David Kim</td>
+                                <td>105</td>
+                                <td>Project Planning Basics</td>
+                                <td><span class="badge bg-success">Completed</span></td>
+                                <td>2024-05-10</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>306</td>
+                                <td>E1006</td>
+                                <td>Linda Brown</td>
+                                <td>106</td>
+                                <td>Emotional Intelligence</td>
+                                <td><span class="badge bg-warning">In Progress</span></td>
+                                <td>-</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>307</td>
+                                <td>E1007</td>
+                                <td>Chris Evans</td>
+                                <td>107</td>
+                                <td>Strategic Thinking</td>
+                                <td><span class="badge bg-success">Completed</span></td>
+                                <td>2024-04-28</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>308</td>
+                                <td>E1008</td>
+                                <td>Jessica Miller</td>
+                                <td>108</td>
+                                <td>Effective Meetings</td>
+                                <td><span class="badge bg-secondary">Not Started</span></td>
+                                <td>-</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>309</td>
+                                <td>E1009</td>
+                                <td>Brian Clark</td>
+                                <td>109</td>
+                                <td>Presentation Skills</td>
+                                <td><span class="badge bg-success">Completed</span></td>
+                                <td>2024-05-12</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>310</td>
+                                <td>E1010</td>
+                                <td>Olivia Wilson</td>
+                                <td>110</td>
+                                <td>Agile Fundamentals</td>
+                                <td><span class="badge bg-warning">In Progress</span></td>
+                                <td>-</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>311</td>
+                                <td>E1011</td>
+                                <td>Matthew Turner</td>
+                                <td>111</td>
+                                <td>Critical Thinking</td>
+                                <td><span class="badge bg-success">Completed</span></td>
+                                <td>2024-05-18</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>312</td>
+                                <td>E1012</td>
+                                <td>Grace Lee</td>
+                                <td>112</td>
+                                <td>Team Collaboration</td>
+                                <td><span class="badge bg-secondary">Not Started</span></td>
+                                <td>-</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+      
+            <div id="assessments" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Learning Assessments</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="assessmentIdFilter" class="form-control me-2" placeholder="Filter by Assessment ID" style="width: 150px;">
+                            <input type="text" id="assessmentEmployeeIdFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                            <select id="assessmentResultFilter" class="form-control me-2" style="width: 180px;">
+                                <option value="">All Results</option>
+                                <option>Pass</option>
+                                <option>Fail</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetAssessmentFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Assessment ID</th>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Module ID</th>
+                                <th>Module Title</th>
+                                <th>Score</th>
+                                <th>Result</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assessmentTableBody">
+                            <tr>
+                                <td>401</td>
+                                <td>E1001</td>
+                                <td>John Smith</td>
+                                <td>101</td>
+                                <td>Effective Leadership</td>
+                                <td>92.5%</td>
+                                <td><span class="badge bg-success">Pass</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>402</td>
+                                <td>E1002</td>
+                                <td>Sarah Johnson</td>
+                                <td>102</td>
+                                <td>Advanced Communication</td>
+                                <td>85.0%</td>
+                                <td><span class="badge bg-success">Pass</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>403</td>
+                                <td>E1003</td>
+                                <td>Michael Lee</td>
+                                <td>103</td>
+                                <td>Time Management</td>
+                                <td>88.0%</td>
+                                <td><span class="badge bg-success">Pass</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>404</td>
+                                <td>E1004</td>
+                                <td>Emily Davis</td>
+                                <td>104</td>
+                                <td>Conflict Resolution</td>
+                                <td>70.0%</td>
+                                <td><span class="badge bg-danger">Fail</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>405</td>
+                                <td>E1005</td>
+                                <td>David Kim</td>
+                                <td>105</td>
+                                <td>Project Planning Basics</td>
+                                <td>95.0%</td>
+                                <td><span class="badge bg-success">Pass</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>406</td>
+                                <td>E1006</td>
+                                <td>Linda Brown</td>
+                                <td>106</td>
+                                <td>Emotional Intelligence</td>
+                                <td>80.0%</td>
+                                <td><span class="badge bg-success">Pass</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>407</td>
+                                <td>E1007</td>
+                                <td>Chris Evans</td>
+                                <td>107</td>
+                                <td>Strategic Thinking</td>
+                                <td>90.0%</td>
+                                <td><span class="badge bg-success">Pass</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>408</td>
+                                <td>E1008</td>
+                                <td>Jessica Miller</td>
+                                <td>108</td>
+                                <td>Effective Meetings</td>
+                                <td>75.0%</td>
+                                <td><span class="badge bg-success">Pass</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>409</td>
+                                <td>E1009</td>
+                                <td>Brian Clark</td>
+                                <td>109</td>
+                                <td>Presentation Skills</td>
+                                <td>82.0%</td>
+                                <td><span class="badge bg-success">Pass</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>410</td>
+                                <td>E1010</td>
+                                <td>Olivia Wilson</td>
+                                <td>110</td>
+                                <td>Agile Fundamentals</td>
+                                <td>78.0%</td>
+                                <td><span class="badge bg-success">Pass</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>411</td>
+                                <td>E1011</td>
+                                <td>Matthew Turner</td>
+                                <td>111</td>
+                                <td>Critical Thinking</td>
+                                <td>68.0%</td>
+                                <td><span class="badge bg-danger">Fail</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>412</td>
+                                <td>E1012</td>
+                                <td>Grace Lee</td>
+                                <td>112</td>
+                                <td>Team Collaboration</td>
+                                <td>89.0%</td>
+                                <td><span class="badge bg-success">Pass</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</section>
 
-	</section>
-
-	
-
-	<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script>
-		document.getElementById("profile-btn").addEventListener("click", function(event) {
-			event.preventDefault();
-			document.getElementById("dropdown-menu").classList.toggle("show");
-		});
-		
-		document.addEventListener("click", function(event) {
-			if (!document.getElementById("profile-btn").contains(event.target)) {
-				document.getElementById("dropdown-menu").classList.remove("show");
-			}
-		});
-
-        function openTab(evt, tabName) {
-            var i, tabcontent, tabbuttons;
-            
-            // Hide all tab content
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-            }
-            
-            // Remove active class from all tab buttons
-            tabbuttons = document.getElementsByClassName("tab-button");
-            for (i = 0; i < tabbuttons.length; i++) {
-                tabbuttons[i].classList.remove("active");
-            }
-            
-            // Show the current tab and add active class to the button
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-
-        // Add event listeners for edit and delete buttons
-        document.querySelectorAll('.btn-edit').forEach(button => {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                alert('Editing row with ID: ' + row.cells[0].textContent);
-                // In a real application, you would open a modal or form for editing
-            });
-        });
-
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', function() {
-                if (confirm('Are you sure you want to delete this record?')) {
-                    const row = this.closest('tr');
-                    row.style.display = 'none';
-                    // In a real application, you would send a request to the server to delete the record
-                    alert('Record with ID: ' + row.cells[0].textContent + ' has been deleted');
-                }
-            });
-        });
-        
-        document.querySelectorAll('.btn-view').forEach(button => {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                alert('Viewing details for ID: ' + row.cells[0].textContent);
-                // In a real application, you would show more detailed information
-            });
-        });
-	</script>
-
 <script>
-    // Wait for DOM to be fully loaded
+    // Initialize Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    // Initialize modals
+    var viewModal = new bootstrap.Modal(document.getElementById('viewModal'))
+    var editModal = new bootstrap.Modal(document.getElementById('editModal'))
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'))
+
+    // Store the original data for each table
+    const originalModuleData = Array.from(document.querySelectorAll('#moduleTableBody tr')).map(row => ({
+        element: row,
+        data: Array.from(row.cells).map(cell => cell.textContent.trim())
+    }));
+
+    const originalTrainingData = Array.from(document.querySelectorAll('#trainingTableBody tr')).map(row => ({
+        element: row,
+        data: Array.from(row.cells).map(cell => cell.textContent.trim())
+    }));
+
+    const originalRecommendationData = Array.from(document.querySelectorAll('#recommendationTableBody tr')).map(row => ({
+        element: row,
+        data: Array.from(row.cells).map(cell => cell.textContent.trim())
+    }));
+
+    const originalProgressData = Array.from(document.querySelectorAll('#progressTableBody tr')).map(row => ({
+        element: row,
+        data: Array.from(row.cells).map(cell => cell.textContent.trim())
+    }));
+
+    const originalAssessmentData = Array.from(document.querySelectorAll('#assessmentTableBody tr')).map(row => ({
+        element: row,
+        data: Array.from(row.cells).map(cell => cell.textContent.trim())
+    }));
+
+    // Current item to edit or delete
+    let currentItem = { type: null, index: null };
+
+    // Filter functions for each table
+    function filterModuleTable() {
+        const idFilter = document.getElementById('moduleIdFilter').value.toLowerCase();
+        const titleFilter = document.getElementById('moduleTitleFilter').value.toLowerCase();
+        const categoryFilter = document.getElementById('moduleCategoryFilter').value.toLowerCase();
+        
+        originalModuleData.forEach(item => {
+            const matchesId = item.data[0].toLowerCase().includes(idFilter);
+            const matchesTitle = item.data[1].toLowerCase().includes(titleFilter);
+            const matchesCategory = categoryFilter === '' || item.data[3].toLowerCase() === categoryFilter;
+            
+            item.element.style.display = matchesId && matchesTitle && matchesCategory ? '' : 'none';
+        });
+    }
+
+    function filterTrainingTable() {
+        const idFilter = document.getElementById('programIdFilter').value.toLowerCase();
+        const titleFilter = document.getElementById('programTitleFilter').value.toLowerCase();
+        const categoryFilter = document.getElementById('programCategoryFilter').value.toLowerCase();
+        
+        originalTrainingData.forEach(item => {
+            const matchesId = item.data[0].toLowerCase().includes(idFilter);
+            const matchesTitle = item.data[1].toLowerCase().includes(titleFilter);
+            const matchesCategory = categoryFilter === '' || item.data[3].toLowerCase() === categoryFilter;
+            
+            item.element.style.display = matchesId && matchesTitle && matchesCategory ? '' : 'none';
+        });
+    }
+
+    function filterRecommendationTable() {
+        const recIdFilter = document.getElementById('recommendationIdFilter').value.toLowerCase();
+        const reviewIdFilter = document.getElementById('reviewIdFilter').value.toLowerCase();
+        const moduleIdFilter = document.getElementById('moduleIdRecFilter').value.toLowerCase();
+        
+        originalRecommendationData.forEach(item => {
+            const matchesRecId = item.data[0].toLowerCase().includes(recIdFilter);
+            const matchesReviewId = item.data[1].toLowerCase().includes(reviewIdFilter);
+            const matchesModuleId = item.data[3].toLowerCase().includes(moduleIdFilter);
+            
+            item.element.style.display = matchesRecId && matchesReviewId && matchesModuleId ? '' : 'none';
+        });
+    }
+
+    function filterProgressTable() {
+        const progressIdFilter = document.getElementById('progressIdFilter').value.toLowerCase();
+        const employeeIdFilter = document.getElementById('employeeIdFilter').value.toLowerCase();
+        const statusFilter = document.getElementById('progressStatusFilter').value.toLowerCase();
+        
+        originalProgressData.forEach(item => {
+            const matchesProgressId = item.data[0].toLowerCase().includes(progressIdFilter);
+            const matchesEmployeeId = item.data[1].toLowerCase().includes(employeeIdFilter);
+            const matchesStatus = statusFilter === '' || item.data[5].toLowerCase().includes(statusFilter);
+            
+            item.element.style.display = matchesProgressId && matchesEmployeeId && matchesStatus ? '' : 'none';
+        });
+    }
+
+    function filterAssessmentTable() {
+        const assessmentIdFilter = document.getElementById('assessmentIdFilter').value.toLowerCase();
+        const employeeIdFilter = document.getElementById('assessmentEmployeeIdFilter').value.toLowerCase();
+        const resultFilter = document.getElementById('assessmentResultFilter').value.toLowerCase();
+        
+        originalAssessmentData.forEach(item => {
+            const matchesAssessmentId = item.data[0].toLowerCase().includes(assessmentIdFilter);
+            const matchesEmployeeId = item.data[1].toLowerCase().includes(employeeIdFilter);
+            const matchesResult = resultFilter === '' || item.data[6].toLowerCase().includes(resultFilter);
+            
+            item.element.style.display = matchesAssessmentId && matchesEmployeeId && matchesResult ? '' : 'none';
+        });
+    }
+
+    // Reset filter functions
+    function resetModuleFilters() {
+        document.getElementById('moduleIdFilter').value = '';
+        document.getElementById('moduleTitleFilter').value = '';
+        document.getElementById('moduleCategoryFilter').value = '';
+        filterModuleTable();
+    }
+
+    function resetTrainingFilters() {
+        document.getElementById('programIdFilter').value = '';
+        document.getElementById('programTitleFilter').value = '';
+        document.getElementById('programCategoryFilter').value = '';
+        filterTrainingTable();
+    }
+
+    function resetRecommendationFilters() {
+        document.getElementById('recommendationIdFilter').value = '';
+        document.getElementById('reviewIdFilter').value = '';
+        document.getElementById('moduleIdRecFilter').value = '';
+        filterRecommendationTable();
+    }
+
+    function resetProgressFilters() {
+        document.getElementById('progressIdFilter').value = '';
+        document.getElementById('employeeIdFilter').value = '';
+        document.getElementById('progressStatusFilter').value = '';
+        filterProgressTable();
+    }
+
+    function resetAssessmentFilters() {
+        document.getElementById('assessmentIdFilter').value = '';
+        document.getElementById('assessmentEmployeeIdFilter').value = '';
+        document.getElementById('assessmentResultFilter').value = '';
+        filterAssessmentTable();
+    }
+
+    // Set up event listeners for filters
+    document.getElementById('moduleIdFilter').addEventListener('input', filterModuleTable);
+    document.getElementById('moduleTitleFilter').addEventListener('input', filterModuleTable);
+    document.getElementById('moduleCategoryFilter').addEventListener('change', filterModuleTable);
+    document.getElementById('resetModuleFilters').addEventListener('click', resetModuleFilters);
+
+    document.getElementById('programIdFilter').addEventListener('input', filterTrainingTable);
+    document.getElementById('programTitleFilter').addEventListener('input', filterTrainingTable);
+    document.getElementById('programCategoryFilter').addEventListener('change', filterTrainingTable);
+    document.getElementById('resetProgramFilters').addEventListener('click', resetTrainingFilters);
+
+    document.getElementById('recommendationIdFilter').addEventListener('input', filterRecommendationTable);
+    document.getElementById('reviewIdFilter').addEventListener('input', filterRecommendationTable);
+    document.getElementById('moduleIdRecFilter').addEventListener('input', filterRecommendationTable);
+    document.getElementById('resetRecommendationFilters').addEventListener('click', resetRecommendationFilters);
+
+    document.getElementById('progressIdFilter').addEventListener('input', filterProgressTable);
+    document.getElementById('employeeIdFilter').addEventListener('input', filterProgressTable);
+    document.getElementById('progressStatusFilter').addEventListener('change', filterProgressTable);
+    document.getElementById('resetProgressFilters').addEventListener('click', resetProgressFilters);
+
+    document.getElementById('assessmentIdFilter').addEventListener('input', filterAssessmentTable);
+    document.getElementById('assessmentEmployeeIdFilter').addEventListener('input', filterAssessmentTable);
+    document.getElementById('assessmentResultFilter').addEventListener('change', filterAssessmentTable);
+    document.getElementById('resetAssessmentFilters').addEventListener('click', resetAssessmentFilters);
+
+    // View button functionality
+    document.querySelectorAll('.view-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const row = this.closest('tr')
+            const rowData = Array.from(row.cells).map(cell => cell.textContent)
+            
+            // Create view content based on which table the row is in
+            let viewContent = ''
+            if (row.closest('#modules')) {
+                viewContent = `
+                    <h6>Learning Module Details</h6>
+                    <p><strong>Module ID:</strong> ${rowData[0]}</p>
+                    <p><strong>Title:</strong> ${rowData[1]}</p>
+                    <p><strong>Description:</strong> ${rowData[2]}</p>
+                    <p><strong>Category:</strong> ${rowData[3]}</p>
+                    <p><strong>Duration:</strong> ${rowData[4]} minutes</p>
+                    <p><strong>Format:</strong> ${rowData[5]}</p>
+                `
+            } else if (row.closest('#training')) {
+                viewContent = `
+                    <h6>Training Program Details</h6>
+                    <p><strong>Program ID:</strong> ${rowData[0]}</p>
+                    <p><strong>Title:</strong> ${rowData[1]}</p>
+                    <p><strong>Description:</strong> ${rowData[2]}</p>
+                    <p><strong>Category:</strong> ${rowData[3]}</p>
+                    <p><strong>Start Date:</strong> ${rowData[4]}</p>
+                    <p><strong>End Date:</strong> ${rowData[5]}</p>
+                    <p><strong>Participants:</strong> ${rowData[6]}</p>
+                `
+            } else if (row.closest('#recommendations')) {
+                viewContent = `
+                    <h6>Module Recommendation Details</h6>
+                    <p><strong>Recommendation ID:</strong> ${rowData[0]}</p>
+                    <p><strong>Review ID:</strong> ${rowData[1]}</p>
+                    <p><strong>Area for Improvement:</strong> ${rowData[2]}</p>
+                    <p><strong>Module ID:</strong> ${rowData[3]}</p>
+                    <p><strong>Module Title:</strong> ${rowData[4]}</p>
+                `
+            } else if (row.closest('#progress')) {
+                viewContent = `
+                    <h6>Learning Progress Details</h6>
+                    <p><strong>Progress ID:</strong> ${rowData[0]}</p>
+                    <p><strong>Employee ID:</strong> ${rowData[1]}</p>
+                    <p><strong>Employee Name:</strong> ${rowData[2]}</p>
+                    <p><strong>Module ID:</strong> ${rowData[3]}</p>
+                    <p><strong>Module Title:</strong> ${rowData[4]}</p>
+                    <p><strong>Status:</strong> ${rowData[5]}</p>
+                    <p><strong>Completion Date:</strong> ${rowData[6]}</p>
+                `
+            } else if (row.closest('#assessments')) {
+                viewContent = `
+                    <h6>Learning Assessment Details</h6>
+                    <p><strong>Assessment ID:</strong> ${rowData[0]}</p>
+                    <p><strong>Employee ID:</strong> ${rowData[1]}</p>
+                    <p><strong>Employee Name:</strong> ${rowData[2]}</p>
+                    <p><strong>Module ID:</strong> ${rowData[3]}</p>
+                    <p><strong>Module Title:</strong> ${rowData[4]}</p>
+                    <p><strong>Score:</strong> ${rowData[5]}</p>
+                    <p><strong>Result:</strong> ${rowData[6]}</p>
+                `
+            }
+            
+            document.getElementById('viewModalBody').innerHTML = viewContent
+            viewModal.show()
+        })
+    })
+
+    // Edit button functionality
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const row = this.closest('tr')
+            const rowData = Array.from(row.cells).map(cell => cell.textContent.trim())
+            
+            // Determine which table we're editing from
+            if (row.closest('#modules')) {
+                currentItem = { type: 'module', index: Array.from(row.parentNode.children).indexOf(row) };
+            } else if (row.closest('#training')) {
+                currentItem = { type: 'training', index: Array.from(row.parentNode.children).indexOf(row) };
+            } else if (row.closest('#recommendations')) {
+                currentItem = { type: 'recommendation', index: Array.from(row.parentNode.children).indexOf(row) };
+            } else if (row.closest('#progress')) {
+                currentItem = { type: 'progress', index: Array.from(row.parentNode.children).indexOf(row) };
+            }
+            
+            // Create edit form based on which table the row is in
+            let editForm = ''
+            if (row.closest('#modules')) {
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Module ID</label>
+                        <input type="text" class="form-control" id="editModuleId" value="${rowData[0]}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-control" id="editModuleTitle" value="${rowData[1]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="editModuleDesc">${rowData[2]}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" id="editModuleCategory">
+                            <option ${rowData[3] === 'Leadership' ? 'selected' : ''}>Leadership</option>
+                            <option ${rowData[3] === 'Communication' ? 'selected' : ''}>Communication</option>
+                            <option ${rowData[3] === 'Productivity' ? 'selected' : ''}>Productivity</option>
+                            <option ${rowData[3] === 'Soft Skills' ? 'selected' : ''}>Soft Skills</option>
+                            <option ${rowData[3] === 'Project Management' ? 'selected' : ''}>Project Management</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Duration (minutes)</label>
+                        <input type="number" class="form-control" id="editModuleDuration" value="${rowData[4]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Format</label>
+                        <select class="form-select" id="editModuleFormat">
+                            <option ${rowData[5] === 'E-learning' ? 'selected' : ''}>E-learning</option>
+                            <option ${rowData[5] === 'In-person' ? 'selected' : ''}>In-person</option>
+                            <option ${rowData[5] === 'Hybrid' ? 'selected' : ''}>Hybrid</option>
+                        </select>
+                    </div>
+                `
+            } else if (row.closest('#training')) {
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Program ID</label>
+                        <input type="text" class="form-control" id="editProgramId" value="${rowData[0]}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-control" id="editProgramTitle" value="${rowData[1]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="editProgramDesc">${rowData[2]}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" id="editProgramCategory">
+                            <option ${rowData[3] === 'Leadership' ? 'selected' : ''}>Leadership</option>
+                            <option ${rowData[3] === 'Technical' ? 'selected' : ''}>Technical</option>
+                            <option ${rowData[3] === 'Soft Skills' ? 'selected' : ''}>Soft Skills</option>
+                            <option ${rowData[3] === 'Compliance' ? 'selected' : ''}>Compliance</option>
+                            <option ${rowData[3] === 'Sales' ? 'selected' : ''}>Sales</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="editProgramStart" value="${rowData[4]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="editProgramEnd" value="${rowData[5]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Participants</label>
+                        <input type="number" class="form-control" id="editProgramParticipants" value="${rowData[6]}">
+                    </div>
+                `
+            } else if (row.closest('#recommendations')) {
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Recommendation ID</label>
+                        <input type="text" class="form-control" id="editRecId" value="${rowData[0]}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Review ID</label>
+                        <input type="text" class="form-control" id="editRecReviewId" value="${rowData[1]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Area for Improvement</label>
+                        <textarea class="form-control" id="editRecArea">${rowData[2]}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Module ID</label>
+                        <input type="text" class="form-control" id="editRecModuleId" value="${rowData[3]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Module Title</label>
+                        <input type="text" class="form-control" id="editRecModuleTitle" value="${rowData[4]}">
+                    </div>
+                `
+            } else if (row.closest('#progress')) {
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Progress ID</label>
+                        <input type="text" class="form-control" id="editProgressId" value="${rowData[0]}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" id="editProgressEmpId" value="${rowData[1]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee Name</label>
+                        <input type="text" class="form-control" id="editProgressEmpName" value="${rowData[2]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Module ID</label>
+                        <input type="text" class="form-control" id="editProgressModuleId" value="${rowData[3]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Module Title</label>
+                        <input type="text" class="form-control" id="editProgressModuleTitle" value="${rowData[4]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="editProgressStatus">
+                            <option ${rowData[5].includes('Completed') ? 'selected' : ''}>Completed</option>
+                            <option ${rowData[5].includes('In Progress') ? 'selected' : ''}>In Progress</option>
+                            <option ${rowData[5].includes('Not Started') ? 'selected' : ''}>Not Started</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Completion Date</label>
+                        <input type="date" class="form-control" id="editProgressCompleteDate" value="${rowData[6] === '-' ? '' : rowData[6]}">
+                    </div>
+                `
+            }
+            
+            document.getElementById('editModalBody').innerHTML = editForm
+            editModal.show()
+        })
+    })
+
+    // Save changes button functionality
+    document.getElementById('saveChangesBtn').onclick = function() {
+        if (currentItem.type === 'module') {
+            const row = originalModuleData[currentItem.index].element;
+            row.cells[1].textContent = document.getElementById('editModuleTitle').value;
+            row.cells[2].textContent = document.getElementById('editModuleDesc').value;
+            row.cells[3].textContent = document.getElementById('editModuleCategory').value;
+            row.cells[4].textContent = document.getElementById('editModuleDuration').value;
+            row.cells[5].textContent = document.getElementById('editModuleFormat').value;
+        } else if (currentItem.type === 'training') {
+            const row = originalTrainingData[currentItem.index].element;
+            row.cells[1].textContent = document.getElementById('editProgramTitle').value;
+            row.cells[2].textContent = document.getElementById('editProgramDesc').value;
+            row.cells[3].textContent = document.getElementById('editProgramCategory').value;
+            row.cells[4].textContent = document.getElementById('editProgramStart').value;
+            row.cells[5].textContent = document.getElementById('editProgramEnd').value;
+            row.cells[6].textContent = document.getElementById('editProgramParticipants').value;
+        } else if (currentItem.type === 'recommendation') {
+            const row = originalRecommendationData[currentItem.index].element;
+            row.cells[1].textContent = document.getElementById('editRecReviewId').value;
+            row.cells[2].textContent = document.getElementById('editRecArea').value;
+            row.cells[3].textContent = document.getElementById('editRecModuleId').value;
+            row.cells[4].textContent = document.getElementById('editRecModuleTitle').value;
+        } else if (currentItem.type === 'progress') {
+            const row = originalProgressData[currentItem.index].element;
+            row.cells[1].textContent = document.getElementById('editProgressEmpId').value;
+            row.cells[2].textContent = document.getElementById('editProgressEmpName').value;
+            row.cells[3].textContent = document.getElementById('editProgressModuleId').value;
+            row.cells[4].textContent = document.getElementById('editProgressModuleTitle').value;
+            
+            const status = document.getElementById('editProgressStatus').value;
+            row.cells[5].innerHTML = status === 'Completed' ? '<span class="badge bg-success">Completed</span>' : 
+                                     status === 'In Progress' ? '<span class="badge bg-warning">In Progress</span>' : 
+                                     '<span class="badge bg-secondary">Not Started</span>';
+            
+            const completeDate = document.getElementById('editProgressCompleteDate').value;
+            row.cells[6].textContent = completeDate || '-';
+        }
+        
+        editModal.hide()
+        alert('Changes saved successfully!')
+    }
+
+    // Delete button functionality
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const row = this.closest('tr');
+            
+            // Determine which table we're deleting from
+            if (row.closest('#modules')) {
+                currentItem = { type: 'module', index: Array.from(row.parentNode.children).indexOf(row) };
+            } else if (row.closest('#training')) {
+                currentItem = { type: 'training', index: Array.from(row.parentNode.children).indexOf(row) };
+            } else if (row.closest('#recommendations')) {
+                currentItem = { type: 'recommendation', index: Array.from(row.parentNode.children).indexOf(row) };
+            } else if (row.closest('#progress')) {
+                currentItem = { type: 'progress', index: Array.from(row.parentNode.children).indexOf(row) };
+            }
+            
+            deleteModal.show();
+        })
+    })
+
+    // Confirm delete button functionality
+    document.getElementById('confirmDeleteBtn').onclick = function() {
+        if (currentItem.type === 'module') {
+            originalModuleData[currentItem.index].element.remove();
+            originalModuleData.splice(currentItem.index, 1);
+        } else if (currentItem.type === 'training') {
+            originalTrainingData[currentItem.index].element.remove();
+            originalTrainingData.splice(currentItem.index, 1);
+        } else if (currentItem.type === 'recommendation') {
+            originalRecommendationData[currentItem.index].element.remove();
+            originalRecommendationData.splice(currentItem.index, 1);
+        } else if (currentItem.type === 'progress') {
+            originalProgressData[currentItem.index].element.remove();
+            originalProgressData.splice(currentItem.index, 1);
+        }
+        
+        deleteModal.hide();
+        alert('Record deleted successfully!');
+    }
+
+    // Profile dropdown functionality
+    document.getElementById("profile-btn").addEventListener("click", function(event) {
+        event.preventDefault();
+        document.getElementById("dropdown-menu").classList.toggle("show");
+    });
+    
+    document.addEventListener("click", function(event) {
+        if (!document.getElementById("profile-btn").contains(event.target)) {
+            document.getElementById("dropdown-menu").classList.remove("show");
+        }
+    });
+
+    function openTab(evt, tabName) {
+        var i, tabcontent, tabbuttons;
+        
+        // Hide all tab content
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove("active");
+        }
+        
+        // Remove active class from all tab buttons
+        tabbuttons = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tabbuttons.length; i++) {
+            tabbuttons[i].classList.remove("active");
+        }
+        
+        // Show the current tab and add active class to the button
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
+    // Add event listeners for edit and delete buttons
+    document.querySelectorAll('.btn-edit').forEach(button => {
+        button.addEventListener('click', function() {
+            const row = this.closest('tr');
+            alert('Editing row with ID: ' + row.cells[0].textContent);
+            // In a real application, you would open a modal or form for editing
+        });
+    });
+
+    document.querySelectorAll('.btn-delete').forEach(button => {
+        button.addEventListener('click', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                const row = this.closest('tr');
+                row.style.display = 'none';
+                // In a real application, you would send a request to the server to delete the record
+                alert('Record with ID: ' + row.cells[0].textContent + ' has been deleted');
+            }
+        });
+    });
+    
+    document.querySelectorAll('.btn-view').forEach(button => {
+        button.addEventListener('click', function() {
+            const row = this.closest('tr');
+            alert('Viewing details for ID: ' + row.cells[0].textContent);
+            // In a real application, you would show more detailed information
+        });
+    });
+    
+    // Initialize charts
     document.addEventListener('DOMContentLoaded', function() {
         // Module Completion Chart
         const moduleCtx = document.getElementById('moduleCompletionChart');
@@ -668,6 +1877,51 @@
                             title: {
                                 display: true,
                                 text: 'Month'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Training Participation Chart
+        const trainingCtx = document.getElementById('trainingParticipationChart');
+        if (trainingCtx) {
+            new Chart(trainingCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    datasets: [{
+                        label: 'Training Participants',
+                        data: [45, 68, 72, 90],
+                        backgroundColor: '#28a745',
+                        borderColor: '#28a745',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Quarterly Training Participation',
+                            font: { size: 16 }
+                        },
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Participants'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Quarter'
                             }
                         }
                     }

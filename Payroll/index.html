@@ -1,15 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-	<link rel="stylesheet" href="style1.css">
-	<title>Payroll Management</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Payroll Management</title>
+    <style>
+      /* Filter controls styling */
+      .filter-controls {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+          flex-wrap: wrap;
+      }
+
+      .filter-controls select, 
+      .filter-controls input {
+          padding: 8px 12px;
+          border: 1px solid #ced4da;
+          border-radius: 4px;
+          background-color: white;
+          font-size: 14px;
+          height: 38px;
+      }
+
+      .filter-controls select {
+          appearance: none;
+          background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+          background-repeat: no-repeat;
+          background-position: right 0.75rem center;
+          background-size: 16px 12px;
+          padding-right: 2rem;
+      }
+
+      .filter-controls .btn {
+          padding: 8px 16px;
+          font-size: 14px;
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+      }
+
+      .filter-controls .btn-outline-secondary {
+          border-color: #6c757d;
+          color: #6c757d;
+      }
+
+      .filter-controls .btn-outline-secondary:hover {
+          background-color: #6c757d;
+          color: white;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+          .filter-controls {
+              flex-direction: column;
+              align-items: stretch;
+          }
+          
+          .filter-controls select,
+          .filter-controls input,
+          .filter-controls .btn {
+              width: 100% !important;
+              margin-right: 0 !important;
+          }
+      }
+    </style>
 </head>
 <body>
 
+<!-- View Modal -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewModalLabel">View Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="editModalBody">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this record? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <section id="sidebar">
     <a href="#" class="brand">
@@ -34,7 +156,7 @@
         </li>
         <li>
             <a href="../Performance/index.html">
-				<i class='bx bxs-bar-chart-alt-2' ></i>
+                <i class='bx bxs-bar-chart-alt-2' ></i>
                 <span class="text">Performance Management</span>
             </a>
         </li>
@@ -108,18 +230,15 @@
             </a>
         </li>
         <li>
-			<a href="../Corehuman/index.html">
-				<i class='bx bxs-user-badge' ></i>
-				<span class="text">Core Human Management</span>
-			</a>
-		</li>
-		
+            <a href="../Corehuman/index.html">
+                <i class='bx bxs-user-badge' ></i>
+                <span class="text">Core Human Management</span>
+            </a>
+        </li>
     </ul>
 
-    
-
     <ul class="side-menu">
-		<span class="separator">SETTINGS</span>
+        <span class="separator">SETTINGS</span>
         <li>
             <a href="../Settings.html">
                 <i class='bx bxs-cog'></i>
@@ -135,10 +254,9 @@
     </ul>
 </section>
 
-
 <section id="content">
     <nav>
-        <i class='bx bx-menu'></i>
+       
         <a href="#" class="nav-link">Categories</a>
         <form action="#">
             <div class="form-input">
@@ -148,7 +266,7 @@
         </form>
         
         <input type="checkbox" id="switch-mode" hidden>
-        <label for="switch-mode" class="switch-mode"></label>
+      
         <a href="#" class="notification">
             <i class='bx bxs-bell'></i>
             <span class="num">9+</span>
@@ -160,703 +278,2205 @@
             </a>
             <div class="dropdown-menu" id="dropdown-menu">
                 <a href="Profile.html">Profile</a>
-				<a href="Changepassword.html">Change Passowrd</a>
+                <a href="Changepassword.html">Change Passowrd</a>
             </div>
         </div>
     </nav>
-		<main>
-			<div class="head-title">
-				<div class="left">
-					<h1>Payroll Management</h1>
-					<ul class="breadcrumb">
-						<li>
-							<a href="#">Dashboard</a>
-						</li>
-						<li><i class='bx bx-chevron-right' ></i></li>
-						<li>
-							<a class="active" href="#">Payroll</a>
-						</li>
-					</ul>
-				</div>
-			</div>
 
-            <div class="tab-container">
-                <div class="tab-buttons">
-                    <button class="tab-button active" onclick="openTab(event, 'dashboard')">
-                        <i class='bx bxs-dashboard'></i> Dashboard
-                    </button>
-                    <button class="tab-button" onclick="openTab(event, 'payroll')">Payroll</button>
-                    <button class="tab-button" onclick="openTab(event, 'claims')">Claims & Reimbursements</button>
-                    <button class="tab-button" onclick="openTab(event, 'compensation')">Compensation Planning</button>
-                    <button class="tab-button" onclick="openTab(event, 'leave')">Leave Requests</button>
-                    <button class="tab-button" onclick="openTab(event, 'performance')">Performance Reviews</button>
-                    <button class="tab-button" onclick="openTab(event, 'attendance')">Time & Attendance</button>
-                </div>
-                
-          
-                <div id="dashboard" class="tab-content active">
-                    <div class="dashboard-container">
-                        <h3 class="dashboard-title">Payroll Dashboard</h3>
-                        
-                        <div class="metrics-grid">
-                            <div class="metric-card">
-                                <div class="metric-title">Total Payroll This Month</div>
-                                <div class="metric-value">$245,780</div>
-                                <div class="metric-change positive">↑ 8.5% from last month</div>
-                            </div>
-                            
-                            <div class="metric-card">
-                                <div class="metric-title">Average Salary</div>
-                                <div class="metric-value">$4,250</div>
-                                <div class="metric-change positive">↑ 3.2% from last quarter</div>
-                            </div>
-                            
-                            <div class="metric-card">
-                                <div class="metric-title">Pending Claims</div>
-                                <div class="metric-value">18</div>
-                                <div class="metric-change negative">↑ 5 from last month</div>
-                            </div>
-                            
-                            <div class="metric-card">
-                                <div class="metric-title">Overtime Hours</div>
-                                <div class="metric-value">320</div>
-                                <div class="metric-change negative">↑ 12% from last month</div>
-                            </div>
+    <main>
+        <div class="head-title">
+            <div class="left">
+                <h1>Payroll Management</h1>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="#">Dashboard</a>
+                    </li>
+                    <li><i class='bx bx-chevron-right' ></i></li>
+                    <li>
+                        <a class="active" href="#">Payroll</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="openTab(event, 'dashboard')">
+                    <i class='bx bxs-dashboard'></i> Dashboard
+                </button>
+                <button class="tab-button" onclick="openTab(event, 'payroll')">Payroll</button>
+                <button class="tab-button" onclick="openTab(event, 'claims')">Claims & Reimbursements</button>
+                <button class="tab-button" onclick="openTab(event, 'compensation')">Compensation Planning</button>
+                <button class="tab-button" onclick="openTab(event, 'leave')">Leave Requests</button>
+                <button class="tab-button" onclick="openTab(event, 'performance')">Performance Reviews</button>
+                <button class="tab-button" onclick="openTab(event, 'attendance')">Time & Attendance</button>
+            </div>
+            
+            <div id="dashboard" class="tab-content active">
+                <div class="dashboard-container">
+                    <h3 class="dashboard-title">Payroll Dashboard</h3>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-title">Total Payroll This Month</div>
+                            <div class="metric-value">₱245,780</div>
+                            <div class="metric-change positive">↑ 8.5% from last month</div>
                         </div>
                         
-                        <div class="chart-container">
-                            <canvas id="payrollTrendChart"></canvas>
+                        <div class="metric-card">
+                            <div class="metric-title">Average Salary</div>
+                            <div class="metric-value">₱4,250</div>
+                            <div class="metric-change positive">↑ 3.2% from last quarter</div>
                         </div>
                         
-                        <div class="chart-container" style="margin-top: 20px;">
-                            <canvas id="salaryDistribution"></canvas>
+                        <div class="metric-card">
+                            <div class="metric-title">Pending Claims</div>
+                            <div class="metric-value">18</div>
+                            <div class="metric-change negative">↑ 5 from last month</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-title">Overtime Hours</div>
+                            <div class="metric-value">320</div>
+                            <div class="metric-change negative">↑ 12% from last month</div>
                         </div>
                     </div>
-                </div>
-        
-                <div id="payroll" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Payroll Records</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Payroll ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Employee Name</th>
-                                    <th>Salary</th>
-                                    <th>Overtime Pay</th>
-                                    <th>Bonus</th>
-                                    <th>Deductions</th>
-                                    <th>Net Pay</th>
-                                    <th>Payroll Date</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>P1001</td>
-                                    <td>E1001</td>
-                                    <td>John Smith</td>
-                                    <td>$4,500.00</td>
-                                    <td>$250.00</td>
-                                    <td>$500.00</td>
-                                    <td>$320.50</td>
-                                    <td>$4,929.50</td>
-                                    <td>2023-06-30</td>
-                                    <td><span class="badge badge-success">Paid</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>P1002</td>
-                                    <td>E1002</td>
-                                    <td>Sarah Johnson</td>
-                                    <td>$5,200.00</td>
-                                    <td>$180.00</td>
-                                    <td>$300.00</td>
-                                    <td>$275.25</td>
-                                    <td>$5,404.75</td>
-                                    <td>2023-06-30</td>
-                                    <td><span class="badge badge-success">Paid</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>P1003</td>
-                                    <td>E1003</td>
-                                    <td>Michael Brown</td>
-                                    <td>$3,800.00</td>
-                                    <td>$320.00</td>
-                                    <td>$0.00</td>
-                                    <td>$210.75</td>
-                                    <td>$3,909.25</td>
-                                    <td>2023-06-30</td>
-                                    <td><span class="badge badge-success">Paid</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>P1004</td>
-                                    <td>E1004</td>
-                                    <td>Emily Davis</td>
-                                    <td>$4,750.00</td>
-                                    <td>$150.00</td>
-                                    <td>$400.00</td>
-                                    <td>$295.50</td>
-                                    <td>$5,004.50</td>
-                                    <td>2023-06-30</td>
-                                    <td><span class="badge badge-success">Paid</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>P1005</td>
-                                    <td>E1005</td>
-                                    <td>David Wilson</td>
-                                    <td>$6,000.00</td>
-                                    <td>$0.00</td>
-                                    <td>$750.00</td>
-                                    <td>$450.00</td>
-                                    <td>$6,300.00</td>
-                                    <td>2023-06-30</td>
-                                    <td><span class="badge badge-success">Paid</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    
+                    <div class="chart-container">
+                        <canvas id="payrollTrendChart"></canvas>
                     </div>
-                </div>
-                
-                <div id="claims" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Claims & Reimbursements</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Claim ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Employee Name</th>
-                                    <th>Claim Type</th>
-                                    <th>Amount</th>
-                                    <th>Claim Date</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>C2001</td>
-                                    <td>E1001</td>
-                                    <td>John Smith</td>
-                                    <td>Travel</td>
-                                    <td>$250.00</td>
-                                    <td>2023-06-15</td>
-                                    <td><span class="badge badge-success">Approved</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>C2002</td>
-                                    <td>E1002</td>
-                                    <td>Sarah Johnson</td>
-                                    <td>Medical</td>
-                                    <td>$180.50</td>
-                                    <td>2023-06-18</td>
-                                    <td><span class="badge badge-warning">Pending</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>C2003</td>
-                                    <td>E1003</td>
-                                    <td>Michael Brown</td>
-                                    <td>Training</td>
-                                    <td>$320.00</td>
-                                    <td>2023-06-20</td>
-                                    <td><span class="badge badge-danger">Rejected</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>C2004</td>
-                                    <td>E1004</td>
-                                    <td>Emily Davis</td>
-                                    <td>Equipment</td>
-                                    <td>$150.00</td>
-                                    <td>2023-06-22</td>
-                                    <td><span class="badge badge-success">Approved</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>C2005</td>
-                                    <td>E1005</td>
-                                    <td>David Wilson</td>
-                                    <td>Other</td>
-                                    <td>$75.25</td>
-                                    <td>2023-06-25</td>
-                                    <td><span class="badge badge-warning">Pending</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-       
-                <div id="compensation" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Compensation Planning</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Comp ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Employee Name</th>
-                                    <th>Salary Before</th>
-                                    <th>Salary After</th>
-                                    <th>Adjustment Reason</th>
-                                    <th>Effective Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>CP3001</td>
-                                    <td>E1001</td>
-                                    <td>John Smith</td>
-                                    <td>$4,200.00</td>
-                                    <td>$4,500.00</td>
-                                    <td>Annual raise</td>
-                                    <td>2023-01-01</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>CP3002</td>
-                                    <td>E1002</td>
-                                    <td>Sarah Johnson</td>
-                                    <td>$4,800.00</td>
-                                    <td>$5,200.00</td>
-                                    <td>Promotion</td>
-                                    <td>2023-03-15</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>CP3003</td>
-                                    <td>E1003</td>
-                                    <td>Michael Brown</td>
-                                    <td>$3,500.00</td>
-                                    <td>$3,800.00</td>
-                                    <td>Performance adjustment</td>
-                                    <td>2023-04-01</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>CP3004</td>
-                                    <td>E1004</td>
-                                    <td>Emily Davis</td>
-                                    <td>$4,500.00</td>
-                                    <td>$4,750.00</td>
-                                    <td>Market adjustment</td>
-                                    <td>2023-05-01</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>CP3005</td>
-                                    <td>E1005</td>
-                                    <td>David Wilson</td>
-                                    <td>$5,500.00</td>
-                                    <td>$6,000.00</td>
-                                    <td>Leadership role</td>
-                                    <td>2023-06-01</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-       
-                <div id="leave" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Leave Requests</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Leave ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Employee Name</th>
-                                    <th>Leave Type</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>L4001</td>
-                                    <td>E1001</td>
-                                    <td>John Smith</td>
-                                    <td>Vacation</td>
-                                    <td>2023-07-01</td>
-                                    <td>2023-07-07</td>
-                                    <td><span class="badge badge-success">Approved</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>L4002</td>
-                                    <td>E1002</td>
-                                    <td>Sarah Johnson</td>
-                                    <td>Sick Leave</td>
-                                    <td>2023-06-15</td>
-                                    <td>2023-06-16</td>
-                                    <td><span class="badge badge-success">Approved</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>L4003</td>
-                                    <td>E1003</td>
-                                    <td>Michael Brown</td>
-                                    <td>Personal</td>
-                                    <td>2023-07-10</td>
-                                    <td>2023-07-10</td>
-                                    <td><span class="badge badge-warning">Pending</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>L4004</td>
-                                    <td>E1004</td>
-                                    <td>Emily Davis</td>
-                                    <td>Maternity</td>
-                                    <td>2023-08-01</td>
-                                    <td>2023-11-01</td>
-                                    <td><span class="badge badge-success">Approved</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>L4005</td>
-                                    <td>E1005</td>
-                                    <td>David Wilson</td>
-                                    <td>Bereavement</td>
-                                    <td>2023-06-05</td>
-                                    <td>2023-06-07</td>
-                                    <td><span class="badge badge-danger">Rejected</span></td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-           
-                <div id="performance" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Performance Reviews</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Review ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Employee Name</th>
-                                    <th>Review Date</th>
-                                    <th>Performance Score</th>
-                                    <th>Bonus Amount</th>
-                                    <th>Salary Increment</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>PR5001</td>
-                                    <td>E1001</td>
-                                    <td>John Smith</td>
-                                    <td>2023-05-15</td>
-                                    <td>85</td>
-                                    <td>$500.00</td>
-                                    <td>$300.00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>PR5002</td>
-                                    <td>E1002</td>
-                                    <td>Sarah Johnson</td>
-                                    <td>2023-05-20</td>
-                                    <td>92</td>
-                                    <td>$750.00</td>
-                                    <td>$400.00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>PR5003</td>
-                                    <td>E1003</td>
-                                    <td>Michael Brown</td>
-                                    <td>2023-05-25</td>
-                                    <td>78</td>
-                                    <td>$300.00</td>
-                                    <td>$200.00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>PR5004</td>
-                                    <td>E1004</td>
-                                    <td>Emily Davis</td>
-                                    <td>2023-06-01</td>
-                                    <td>88</td>
-                                    <td>$600.00</td>
-                                    <td>$350.00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>PR5005</td>
-                                    <td>E1005</td>
-                                    <td>David Wilson</td>
-                                    <td>2023-06-10</td>
-                                    <td>95</td>
-                                    <td>$1,000.00</td>
-                                    <td>$500.00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-          
-                <div id="attendance" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Time & Attendance</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Attendance ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Employee Name</th>
-                                    <th>Clock In</th>
-                                    <th>Clock Out</th>
-                                    <th>Total Hours</th>
-                                    <th>Overtime Hours</th>
-                                    <th>Work Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>A6001</td>
-                                    <td>E1001</td>
-                                    <td>John Smith</td>
-                                    <td>2023-06-01 08:00:00</td>
-                                    <td>2023-06-01 17:15:00</td>
-                                    <td>8.25</td>
-                                    <td>1.25</td>
-                                    <td>2023-06-01</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>A6002</td>
-                                    <td>E1002</td>
-                                    <td>Sarah Johnson</td>
-                                    <td>2023-06-01 08:30:00</td>
-                                    <td>2023-06-01 17:45:00</td>
-                                    <td>8.25</td>
-                                    <td>1.25</td>
-                                    <td>2023-06-01</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>A6003</td>
-                                    <td>E1003</td>
-                                    <td>Michael Brown</td>
-                                    <td>2023-06-01 09:15:00</td>
-                                    <td>2023-06-01 18:30:00</td>
-                                    <td>8.25</td>
-                                    <td>1.25</td>
-                                    <td>2023-06-01</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>A6004</td>
-                                    <td>E1004</td>
-                                    <td>Emily Davis</td>
-                                    <td>2023-06-01 08:45:00</td>
-                                    <td>2023-06-01 17:00:00</td>
-                                    <td>7.25</td>
-                                    <td>0.25</td>
-                                    <td>2023-06-01</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>A6005</td>
-                                    <td>E1005</td>
-                                    <td>David Wilson</td>
-                                    <td>2023-06-01 07:30:00</td>
-                                    <td>2023-06-01 19:00:00</td>
-                                    <td>10.50</td>
-                                    <td>3.50</td>
-                                    <td>2023-06-01</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    
+                    <div class="chart-container" style="margin-top: 20px;">
+                        <canvas id="salaryDistribution"></canvas>
                     </div>
                 </div>
             </div>
-		</main>
+            
+            <div id="payroll" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Payroll Records</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="payrollEmployeeFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                            <input type="text" id="payrollNameFilter" class="form-control me-2" placeholder="Filter by Name" style="width: 200px;">
+                            <select id="payrollStatusFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Statuses</option>
+                                <option>Paid</option>
+                                <option>Pending</option>
+                                <option>Cancelled</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetPayrollFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Payroll ID</th>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Salary</th>
+                                <th>Overtime Pay</th>
+                                <th>Bonus</th>
+                                <th>Deductions</th>
+                                <th>Net Pay</th>
+                                <th>Payroll Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payrollTable">
+                            <tr>
+                                <td>P1001</td>
+                                <td>E1001</td>
+                                <td>John Smith</td>
+                                <td>₱4,500.00</td>
+                                <td>₱250.00</td>
+                                <td>₱500.00</td>
+                                <td>₱320.50</td>
+                                <td>₱4,929.50</td>
+                                <td>2023-06-30</td>
+                                <td><span class="badge bg-success">Paid</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P1002</td>
+                                <td>E1002</td>
+                                <td>Sarah Johnson</td>
+                                <td>₱5,200.00</td>
+                                <td>₱180.00</td>
+                                <td>₱300.00</td>
+                                <td>₱275.25</td>
+                                <td>₱5,404.75</td>
+                                <td>2023-06-30</td>
+                                <td><span class="badge bg-success">Paid</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P1003</td>
+                                <td>E1003</td>
+                                <td>Maria Garcia</td>
+                                <td>₱3,800.00</td>
+                                <td>₱120.00</td>
+                                <td>₱200.00</td>
+                                <td>₱150.00</td>
+                                <td>₱3,970.00</td>
+                                <td>2023-06-30</td>
+                                <td><span class="badge bg-success">Paid</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P1004</td>
+                                <td>E1004</td>
+                                <td>James Lee</td>
+                                <td>₱4,100.00</td>
+                                <td>₱200.00</td>
+                                <td>₱350.00</td>
+                                <td>₱210.00</td>
+                                <td>₱4,440.00</td>
+                                <td>2023-06-30</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P1005</td>
+                                <td>E1005</td>
+                                <td>Linda Kim</td>
+                                <td>₱4,900.00</td>
+                                <td>₱300.00</td>
+                                <td>₱400.00</td>
+                                <td>₱350.00</td>
+                                <td>₱5,250.00</td>
+                                <td>2023-06-30</td>
+                                <td><span class="badge bg-success">Paid</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P1006</td>
+                                <td>E1006</td>
+                                <td>Michael Brown</td>
+                                <td>₱5,600.00</td>
+                                <td>₱100.00</td>
+                                <td>₱600.00</td>
+                                <td>₱400.00</td>
+                                <td>₱5,900.00</td>
+                                <td>2023-06-30</td>
+                                <td><span class="badge bg-success">Paid</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P1007</td>
+                                <td>E1007</td>
+                                <td>Emily Davis</td>
+                                <td>₱3,950.00</td>
+                                <td>₱150.00</td>
+                                <td>₱250.00</td>
+                                <td>₱180.00</td>
+                                <td>₱4,170.00</td>
+                                <td>2023-06-30</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P1008</td>
+                                <td>E1008</td>
+                                <td>David Wilson</td>
+                                <td>₱4,700.00</td>
+                                <td>₱220.00</td>
+                                <td>₱320.00</td>
+                                <td>₱290.00</td>
+                                <td>₱4,950.00</td>
+                                <td>2023-06-30</td>
+                                <td><span class="badge bg-success">Paid</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P1009</td>
+                                <td>E1009</td>
+                                <td>Jessica Martinez</td>
+                                <td>₱4,300.00</td>
+                                <td>₱180.00</td>
+                                <td>₱280.00</td>
+                                <td>₱210.00</td>
+                                <td>₱4,550.00</td>
+                                <td>2023-06-30</td>
+                                <td><span class="badge bg-success">Paid</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P1010</td>
+                                <td>E1010</td>
+                                <td>Kevin Anderson</td>
+                                <td>₱5,100.00</td>
+                                <td>₱210.00</td>
+                                <td>₱350.00</td>
+                                <td>₱260.00</td>
+                                <td>₱5,400.00</td>
+                                <td>2023-06-30</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P1011</td>
+                                <td>E1011</td>
+                                <td>Olivia Thomas</td>
+                                <td>₱4,600.00</td>
+                                <td>₱170.00</td>
+                                <td>₱310.00</td>
+                                <td>₱200.00</td>
+                                <td>₱4,880.00</td>
+                                <td>2023-06-30</td>
+                                <td><span class="badge bg-success">Paid</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P1012</td>
+                                <td>E1012</td>
+                                <td>William Harris</td>
+                                <td>₱4,200.00</td>
+                                <td>₱140.00</td>
+                                <td>₱270.00</td>
+                                <td>₱180.00</td>
+                                <td>₱4,430.00</td>
+                                <td>2023-06-30</td>
+                                <td><span class="badge bg-danger">Cancelled</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="claims" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Claims & Reimbursements</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="claimsEmployeeFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                            <select id="claimsTypeFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Types</option>
+                                <option>Travel</option>
+                                <option>Medical</option>
+                                <option>Training</option>
+                                <option>Equipment</option>
+                                <option>Other</option>
+                            </select>
+                            <select id="claimsStatusFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Statuses</option>
+                                <option>Approved</option>
+                                <option>Pending</option>
+                                <option>Rejected</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetClaimsFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Claim ID</th>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Claim Type</th>
+                                <th>Amount</th>
+                                <th>Claim Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="claimsTable">
+                            <tr>
+                                <td>C2001</td>
+                                <td>E1001</td>
+                                <td>John Smith</td>
+                                <td>Travel</td>
+                                <td>₱250.00</td>
+                                <td>2023-06-15</td>
+                                <td><span class="badge bg-success">Approved</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C2002</td>
+                                <td>E1002</td>
+                                <td>Sarah Johnson</td>
+                                <td>Medical</td>
+                                <td>₱180.50</td>
+                                <td>2023-06-18</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C2003</td>
+                                <td>E1003</td>
+                                <td>Maria Garcia</td>
+                                <td>Training</td>
+                                <td>₱300.00</td>
+                                <td>2023-06-20</td>
+                                <td><span class="badge bg-success">Approved</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C2004</td>
+                                <td>E1004</td>
+                                <td>James Lee</td>
+                                <td>Equipment</td>
+                                <td>₱450.00</td>
+                                <td>2023-06-22</td>
+                                <td><span class="badge bg-danger">Rejected</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C2005</td>
+                                <td>E1005</td>
+                                <td>Linda Kim</td>
+                                <td>Other</td>
+                                <td>₱120.00</td>
+                                <td>2023-06-25</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C2006</td>
+                                <td>E1006</td>
+                                <td>Michael Brown</td>
+                                <td>Travel</td>
+                                <td>₱350.00</td>
+                                <td>2023-06-27</td>
+                                <td><span class="badge bg-success">Approved</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C2007</td>
+                                <td>E1007</td>
+                                <td>Emily Davis</td>
+                                <td>Medical</td>
+                                <td>₱200.00</td>
+                                <td>2023-06-28</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C2008</td>
+                                <td>E1008</td>
+                                <td>David Wilson</td>
+                                <td>Training</td>
+                                <td>₱500.00</td>
+                                <td>2023-06-29</td>
+                                <td><span class="badge bg-success">Approved</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C2009</td>
+                                <td>E1009</td>
+                                <td>Jessica Martinez</td>
+                                <td>Equipment</td>
+                                <td>₱180.00</td>
+                                <td>2023-06-30</td>
+                                <td><span class="badge bg-danger">Rejected</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C2010</td>
+                                <td>E1010</td>
+                                <td>Kevin Anderson</td>
+                                <td>Other</td>
+                                <td>₱220.00</td>
+                                <td>2023-07-01</td>
+                                <td><span class="badge bg-success">Approved</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C2011</td>
+                                <td>E1011</td>
+                                <td>Olivia Thomas</td>
+                                <td>Travel</td>
+                                <td>₱400.00</td>
+                                <td>2023-07-02</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C2012</td>
+                                <td>E1012</td>
+                                <td>William Harris</td>
+                                <td>Medical</td>
+                                <td>₱150.00</td>
+                                <td>2023-07-03</td>
+                                <td><span class="badge bg-danger">Rejected</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="compensation" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Compensation Planning</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="compEmployeeFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                            <select id="compReasonFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Reasons</option>
+                                <option>Annual raise</option>
+                                <option>Promotion</option>
+                                <option>Performance adjustment</option>
+                                <option>Market adjustment</option>
+                                <option>Leadership role</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetCompFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Comp ID</th>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Salary Before</th>
+                                <th>Salary After</th>
+                                <th>Adjustment Reason</th>
+                                <th>Effective Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="compensationTable">
+                            <tr>
+                                <td>CP3001</td>
+                                <td>E1001</td>
+                                <td>John Smith</td>
+                                <td>₱4,200.00</td>
+                                <td>₱4,500.00</td>
+                                <td>Annual raise</td>
+                                <td>2023-01-01</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CP3002</td>
+                                <td>E1002</td>
+                                <td>Sarah Johnson</td>
+                                <td>₱4,800.00</td>
+                                <td>₱5,200.00</td>
+                                <td>Promotion</td>
+                                <td>2023-03-15</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CP3003</td>
+                                <td>E1003</td>
+                                <td>Maria Garcia</td>
+                                <td>₱3,500.00</td>
+                                <td>₱3,800.00</td>
+                                <td>Performance adjustment</td>
+                                <td>2023-02-01</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CP3004</td>
+                                <td>E1004</td>
+                                <td>James Lee</td>
+                                <td>₱4,000.00</td>
+                                <td>₱4,100.00</td>
+                                <td>Market adjustment</td>
+                                <td>2023-04-01</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CP3005</td>
+                                <td>E1005</td>
+                                <td>Linda Kim</td>
+                                <td>₱4,500.00</td>
+                                <td>₱4,900.00</td>
+                                <td>Promotion</td>
+                                <td>2023-05-01</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CP3006</td>
+                                <td>E1006</td>
+                                <td>Michael Brown</td>
+                                <td>₱5,000.00</td>
+                                <td>₱5,600.00</td>
+                                <td>Leadership role</td>
+                                <td>2023-06-01</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CP3007</td>
+                                <td>E1007</td>
+                                <td>Emily Davis</td>
+                                <td>₱3,700.00</td>
+                                <td>₱3,950.00</td>
+                                <td>Annual raise</td>
+                                <td>2023-03-01</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CP3008</td>
+                                <td>E1008</td>
+                                <td>David Wilson</td>
+                                <td>₱4,200.00</td>
+                                <td>₱4,700.00</td>
+                                <td>Promotion</td>
+                                <td>2023-05-15</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CP3009</td>
+                                <td>E1009</td>
+                                <td>Jessica Martinez</td>
+                                <td>₱4,000.00</td>
+                                <td>₱4,300.00</td>
+                                <td>Performance adjustment</td>
+                                <td>2023-06-01</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CP3010</td>
+                                <td>E1010</td>
+                                <td>Kevin Anderson</td>
+                                <td>₱4,800.00</td>
+                                <td>₱5,100.00</td>
+                                <td>Market adjustment</td>
+                                <td>2023-06-10</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CP3011</td>
+                                <td>E1011</td>
+                                <td>Olivia Thomas</td>
+                                <td>₱4,200.00</td>
+                                <td>₱4,600.00</td>
+                                <td>Annual raise</td>
+                                <td>2023-06-15</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CP3012</td>
+                                <td>E1012</td>
+                                <td>William Harris</td>
+                                <td>₱3,900.00</td>
+                                <td>₱4,200.00</td>
+                                <td>Performance adjustment</td>
+                                <td>2023-06-20</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="leave" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Leave Requests</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="leaveEmployeeFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                            <select id="leaveTypeFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Types</option>
+                                <option>Vacation</option>
+                                <option>Sick Leave</option>
+                                <option>Personal</option>
+                                <option>Maternity</option>
+                                <option>Bereavement</option>
+                            </select>
+                            <select id="leaveStatusFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Statuses</option>
+                                <option>Approved</option>
+                                <option>Pending</option>
+                                <option>Rejected</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetLeaveFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Leave ID</th>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Leave Type</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaveTable">
+                            <tr>
+                                <td>L4001</td>
+                                <td>E1001</td>
+                                <td>John Smith</td>
+                                <td>Vacation</td>
+                                <td>2023-07-01</td>
+                                <td>2023-07-07</td>
+                                <td><span class="badge bg-success">Approved</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>L4002</td>
+                                <td>E1002</td>
+                                <td>Sarah Johnson</td>
+                                <td>Sick Leave</td>
+                                <td>2023-06-15</td>
+                                <td>2023-06-16</td>
+                                <td><span class="badge bg-success">Approved</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>L4003</td>
+                                <td>E1003</td>
+                                <td>Maria Garcia</td>
+                                <td>Personal</td>
+                                <td>2023-07-10</td>
+                                <td>2023-07-12</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>L4004</td>
+                                <td>E1004</td>
+                                <td>James Lee</td>
+                                <td>Maternity</td>
+                                <td>2023-07-15</td>
+                                <td>2023-07-30</td>
+                                <td><span class="badge bg-danger">Rejected</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>L4005</td>
+                                <td>E1005</td>
+                                <td>Linda Kim</td>
+                                <td>Bereavement</td>
+                                <td>2023-07-20</td>
+                                <td>2023-07-22</td>
+                                <td><span class="badge bg-success">Approved</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>L4006</td>
+                                <td>E1006</td>
+                                <td>Michael Brown</td>
+                                <td>Vacation</td>
+                                <td>2023-07-25</td>
+                                <td>2023-07-28</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>L4007</td>
+                                <td>E1007</td>
+                                <td>Emily Davis</td>
+                                <td>Sick Leave</td>
+                                <td>2023-07-29</td>
+                                <td>2023-07-30</td>
+                                <td><span class="badge bg-success">Approved</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>L4008</td>
+                                <td>E1008</td>
+                                <td>David Wilson</td>
+                                <td>Personal</td>
+                                <td>2023-08-01</td>
+                                <td>2023-08-03</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>L4009</td>
+                                <td>E1009</td>
+                                <td>Jessica Martinez</td>
+                                <td>Maternity</td>
+                                <td>2023-08-05</td>
+                                <td>2023-08-20</td>
+                                <td><span class="badge bg-danger">Rejected</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>L4010</td>
+                                <td>E1010</td>
+                                <td>Kevin Anderson</td>
+                                <td>Bereavement</td>
+                                <td>2023-08-10</td>
+                                <td>2023-08-12</td>
+                                <td><span class="badge bg-success">Approved</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>L4011</td>
+                                <td>E1011</td>
+                                <td>Olivia Thomas</td>
+                                <td>Vacation</td>
+                                <td>2023-08-15</td>
+                                <td>2023-08-20</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>L4012</td>
+                                <td>E1012</td>
+                                <td>William Harris</td>
+                                <td>Sick Leave</td>
+                                <td>2023-08-21</td>
+                                <td>2023-08-22</td>
+                                <td><span class="badge bg-danger">Rejected</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="performance" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Performance Reviews</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="performanceEmployeeFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                            <input type="date" id="performanceDateFilter" class="form-control me-2" style="width: 200px;">
+                            <button class="btn btn-outline-secondary" id="resetPerformanceFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Review ID</th>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Review Date</th>
+                                <th>Performance Score</th>
+                                <th>Bonus Amount</th>
+                                <th>Salary Increment</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="performanceTable">
+                            <tr>
+                                <td>PR5001</td>
+                                <td>E1001</td>
+                                <td>John Smith</td>
+                                <td>2023-05-15</td>
+                                <td>85</td>
+                                <td>₱500.00</td>
+                                <td>₱300.00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PR5002</td>
+                                <td>E1002</td>
+                                <td>Sarah Johnson</td>
+                                <td>2023-05-20</td>
+                                <td>92</td>
+                                <td>₱750.00</td>
+                                <td>₱400.00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PR5003</td>
+                                <td>E1003</td>
+                                <td>Maria Garcia</td>
+                                <td>2023-05-25</td>
+                                <td>88</td>
+                                <td>₱600.00</td>
+                                <td>₱350.00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PR5004</td>
+                                <td>E1004</td>
+                                <td>James Lee</td>
+                                <td>2023-05-28</td>
+                                <td>79</td>
+                                <td>₱400.00</td>
+                                <td>₱200.00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PR5005</td>
+                                <td>E1005</td>
+                                <td>Linda Kim</td>
+                                <td>2023-06-01</td>
+                                <td>90</td>
+                                <td>₱800.00</td>
+                                <td>₱500.00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PR5006</td>
+                                <td>E1006</td>
+                                <td>Michael Brown</td>
+                                <td>2023-06-05</td>
+                                <td>84</td>
+                                <td>₱550.00</td>
+                                <td>₱320.00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PR5007</td>
+                                <td>E1007</td>
+                                <td>Emily Davis</td>
+                                <td>2023-06-10</td>
+                                <td>87</td>
+                                <td>₱620.00</td>
+                                <td>₱370.00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PR5008</td>
+                                <td>E1008</td>
+                                <td>David Wilson</td>
+                                <td>2023-06-15</td>
+                                <td>91</td>
+                                <td>₱700.00</td>
+                                <td>₱420.00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PR5009</td>
+                                <td>E1009</td>
+                                <td>Jessica Martinez</td>
+                                <td>2023-06-18</td>
+                                <td>83</td>
+                                <td>₱480.00</td>
+                                <td>₱290.00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PR5010</td>
+                                <td>E1010</td>
+                                <td>Kevin Anderson</td>
+                                <td>2023-06-20</td>
+                                <td>89</td>
+                                <td>₱770.00</td>
+                                <td>₱410.00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PR5011</td>
+                                <td>E1011</td>
+                                <td>Olivia Thomas</td>
+                                <td>2023-06-22</td>
+                                <td>86</td>
+                                <td>₱530.00</td>
+                                <td>₱330.00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PR5012</td>
+                                <td>E1012</td>
+                                <td>William Harris</td>
+                                <td>2023-06-25</td>
+                                <td>82</td>
+                                <td>₱460.00</td>
+                                <td>₱270.00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="attendance" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Time & Attendance</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="attendanceEmployeeFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                            <input type="date" id="attendanceDateFilter" class="form-control me-2" style="width: 200px;">
+                            <button class="btn btn-outline-secondary" id="resetAttendanceFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Attendance ID</th>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Clock In</th>
+                                <th>Clock Out</th>
+                                <th>Total Hours</th>
+                                <th>Overtime Hours</th>
+                                <th>Work Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTable">
+                            <tr>
+                                <td>A6001</td>
+                                <td>E1001</td>
+                                <td>John Smith</td>
+                                <td>2023-06-01 08:00:00</td>
+                                <td>2023-06-01 17:15:00</td>
+                                <td>8.25</td>
+                                <td>1.25</td>
+                                <td>2023-06-01</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A6002</td>
+                                <td>E1002</td>
+                                <td>Sarah Johnson</td>
+                                <td>2023-06-01 08:30:00</td>
+                                <td>2023-06-01 17:45:00</td>
+                                <td>8.25</td>
+                                <td>1.25</td>
+                                <td>2023-06-01</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A6003</td>
+                                <td>E1003</td>
+                                <td>Maria Garcia</td>
+                                <td>2023-06-02 08:10:00</td>
+                                <td>2023-06-02 17:20:00</td>
+                                <td>8.17</td>
+                                <td>1.17</td>
+                                <td>2023-06-02</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A6004</td>
+                                <td>E1004</td>
+                                <td>James Lee</td>
+                                <td>2023-06-03 08:05:00</td>
+                                <td>2023-06-03 17:10:00</td>
+                                <td>8.08</td>
+                                <td>1.08</td>
+                                <td>2023-06-03</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A6005</td>
+                                <td>E1005</td>
+                                <td>Linda Kim</td>
+                                <td>2023-06-04 08:00:00</td>
+                                <td>2023-06-04 17:00:00</td>
+                                <td>8.00</td>
+                                <td>1.00</td>
+                                <td>2023-06-04</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A6006</td>
+                                <td>E1006</td>
+                                <td>Michael Brown</td>
+                                <td>2023-06-05 08:20:00</td>
+                                <td>2023-06-05 17:30:00</td>
+                                <td>8.17</td>
+                                <td>1.17</td>
+                                <td>2023-06-05</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A6007</td>
+                                <td>E1007</td>
+                                <td>Emily Davis</td>
+                                <td>2023-06-06 08:15:00</td>
+                                <td>2023-06-06 17:25:00</td>
+                                <td>8.17</td>
+                                <td>1.17</td>
+                                <td>2023-06-06</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A6008</td>
+                                <td>E1008</td>
+                                <td>David Wilson</td>
+                                <td>2023-06-07 08:00:00</td>
+                                <td>2023-06-07 17:10:00</td>
+                                <td>8.08</td>
+                                <td>1.08</td>
+                                <td>2023-06-07</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A6009</td>
+                                <td>E1009</td>
+                                <td>Jessica Martinez</td>
+                                <td>2023-06-08 08:10:00</td>
+                                <td>2023-06-08 17:20:00</td>
+                                <td>8.17</td>
+                                <td>1.17</td>
+                                <td>2023-06-08</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A6010</td>
+                                <td>E1010</td>
+                                <td>Kevin Anderson</td>
+                                <td>2023-06-09 08:05:00</td>
+                                <td>2023-06-09 17:15:00</td>
+                                <td>8.17</td>
+                                <td>1.17</td>
+                                <td>2023-06-09</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A6011</td>
+                                <td>E1011</td>
+                                <td>Olivia Thomas</td>
+                                <td>2023-06-10 08:00:00</td>
+                                <td>2023-06-10 17:00:00</td>
+                                <td>8.00</td>
+                                <td>1.00</td>
+                                <td>2023-06-10</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A6012</td>
+                                <td>E1012</td>
+                                <td>William Harris</td>
+                                <td>2023-06-11 08:20:00</td>
+                                <td>2023-06-11 17:30:00</td>
+                                <td>8.17</td>
+                                <td>1.17</td>
+                                <td>2023-06-11</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</section>
 
-	</section>
-	
-	
-
-	<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script>
-		document.getElementById("profile-btn").addEventListener("click", function(event) {
-			event.preventDefault();
-			document.getElementById("dropdown-menu").classList.toggle("show");
-		});
-		
-		document.addEventListener("click", function(event) {
-			if (!document.getElementById("profile-btn").contains(event.target)) {
-				document.getElementById("dropdown-menu").classList.remove("show");
-			}
-		});
-
-        function openTab(evt, tabName) {
-            var i, tabcontent, tabbuttons;
-            
-            // Hide all tab content
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-            }
-            
-            // Remove active class from all tab buttons
-            tabbuttons = document.getElementsByClassName("tab-button");
-            for (i = 0; i < tabbuttons.length; i++) {
-                tabbuttons[i].classList.remove("active");
-            }
-            
-            // Show the current tab and add active class to the button
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-
-        // Add event listeners for edit and delete buttons
-        document.querySelectorAll('.btn-edit').forEach(button => {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                alert('Editing row with ID: ' + row.cells[0].textContent);
-                // In a real application, you would open a modal or form for editing
-            });
-        });
-
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', function() {
-                if (confirm('Are you sure you want to delete this record?')) {
-                    const row = this.closest('tr');
-                    row.style.display = 'none';
-                    // In a real application, you would send a request to the server to delete the record
-                    alert('Record with ID: ' + row.cells[0].textContent + ' has been deleted');
-                }
-            });
-        });
-        
-        document.querySelectorAll('.btn-view').forEach(button => {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                alert('Viewing details for ID: ' + row.cells[0].textContent);
-                // In a real application, you would show more detailed information
-            });
-        });
-	</script>
-
 <script>
-    // Wait for DOM to be fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    // Initialize modals
+    var viewModal = new bootstrap.Modal(document.getElementById('viewModal'))
+    var editModal = new bootstrap.Modal(document.getElementById('editModal'))
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'))
+
+    // Current item to edit or delete
+    let currentItem = { type: null, index: null };
+
+   
+    // Sample data for all tables (now includes all rows from HTML)
+    let payrollData = [
+        { id: "P1001", empId: "E1001", empName: "John Smith", salary: "₱4,500.00", overtime: "₱250.00", bonus: "₱500.00", deductions: "₱320.50", netPay: "₱4,929.50", date: "2023-06-30", status: "Paid" },
+        { id: "P1002", empId: "E1002", empName: "Sarah Johnson", salary: "₱5,200.00", overtime: "₱180.00", bonus: "₱300.00", deductions: "₱275.25", netPay: "₱5,404.75", date: "2023-06-30", status: "Paid" },
+        { id: "P1003", empId: "E1003", empName: "Maria Garcia", salary: "₱3,800.00", overtime: "₱120.00", bonus: "₱200.00", deductions: "₱150.00", netPay: "₱3,970.00", date: "2023-06-30", status: "Paid" },
+        { id: "P1004", empId: "E1004", empName: "James Lee", salary: "₱4,100.00", overtime: "₱200.00", bonus: "₱350.00", deductions: "₱210.00", netPay: "₱4,440.00", date: "2023-06-30", status: "Pending" },
+        { id: "P1005", empId: "E1005", empName: "Linda Kim", salary: "₱4,900.00", overtime: "₱300.00", bonus: "₱400.00", deductions: "₱350.00", netPay: "₱5,250.00", date: "2023-06-30", status: "Paid" },
+        { id: "P1006", empId: "E1006", empName: "Michael Brown", salary: "₱5,600.00", overtime: "₱100.00", bonus: "₱600.00", deductions: "₱400.00", netPay: "₱5,900.00", date: "2023-06-30", status: "Paid" },
+        { id: "P1007", empId: "E1007", empName: "Emily Davis", salary: "₱3,950.00", overtime: "₱150.00", bonus: "₱250.00", deductions: "₱180.00", netPay: "₱4,170.00", date: "2023-06-30", status: "Pending" },
+        { id: "P1008", empId: "E1008", empName: "David Wilson", salary: "₱4,700.00", overtime: "₱220.00", bonus: "₱320.00", deductions: "₱290.00", netPay: "₱4,950.00", date: "2023-06-30", status: "Paid" },
+        { id: "P1009", empId: "E1009", empName: "Jessica Martinez", salary: "₱4,300.00", overtime: "₱180.00", bonus: "₱280.00", deductions: "₱210.00", netPay: "₱4,550.00", date: "2023-06-30", status: "Paid" },
+        { id: "P1010", empId: "E1010", empName: "Kevin Anderson", salary: "₱5,100.00", overtime: "₱210.00", bonus: "₱350.00", deductions: "₱260.00", netPay: "₱5,400.00", date: "2023-06-30", status: "Pending" },
+        { id: "P1011", empId: "E1011", empName: "Olivia Thomas", salary: "₱4,600.00", overtime: "₱170.00", bonus: "₱310.00", deductions: "₱200.00", netPay: "₱4,880.00", date: "2023-06-30", status: "Paid" },
+        { id: "P1012", empId: "E1012", empName: "William Harris", salary: "₱4,200.00", overtime: "₱140.00", bonus: "₱270.00", deductions: "₱180.00", netPay: "₱4,430.00", date: "2023-06-30", status: "Cancelled" }
+    ];
+
+    let claimsData = [
+        { id: "C2001", empId: "E1001", empName: "John Smith", type: "Travel", amount: "₱250.00", date: "2023-06-15", status: "Approved" },
+        { id: "C2002", empId: "E1002", empName: "Sarah Johnson", type: "Medical", amount: "₱180.50", date: "2023-06-18", status: "Pending" },
+        { id: "C2003", empId: "E1003", empName: "Maria Garcia", type: "Training", amount: "₱300.00", date: "2023-06-20", status: "Approved" },
+        { id: "C2004", empId: "E1004", empName: "James Lee", type: "Equipment", amount: "₱450.00", date: "2023-06-22", status: "Rejected" },
+        { id: "C2005", empId: "E1005", empName: "Linda Kim", type: "Other", amount: "₱120.00", date: "2023-06-25", status: "Pending" },
+        { id: "C2006", empId: "E1006", empName: "Michael Brown", type: "Travel", amount: "₱350.00", date: "2023-06-27", status: "Approved" },
+        { id: "C2007", empId: "E1007", empName: "Emily Davis", type: "Medical", amount: "₱200.00", date: "2023-06-28", status: "Pending" },
+        { id: "C2008", empId: "E1008", empName: "David Wilson", type: "Training", amount: "₱500.00", date: "2023-06-29", status: "Approved" },
+        { id: "C2009", empId: "E1009", empName: "Jessica Martinez", type: "Equipment", amount: "₱180.00", date: "2023-06-30", status: "Rejected" },
+        { id: "C2010", empId: "E1010", empName: "Kevin Anderson", type: "Other", amount: "₱220.00", date: "2023-07-01", status: "Approved" },
+        { id: "C2011", empId: "E1011", empName: "Olivia Thomas", type: "Travel", amount: "₱400.00", date: "2023-07-02", status: "Pending" },
+        { id: "C2012", empId: "E1012", empName: "William Harris", type: "Medical", amount: "₱150.00", date: "2023-07-03", status: "Rejected" }
+    ];
+
+    let compensationData = [
+        { id: "CP3001", empId: "E1001", empName: "John Smith", salaryBefore: "₱4,200.00", salaryAfter: "₱4,500.00", reason: "Annual raise", date: "2023-01-01" },
+        { id: "CP3002", empId: "E1002", empName: "Sarah Johnson", salaryBefore: "₱4,800.00", salaryAfter: "₱5,200.00", reason: "Promotion", date: "2023-03-15" },
+        { id: "CP3003", empId: "E1003", empName: "Maria Garcia", salaryBefore: "₱3,500.00", salaryAfter: "₱3,800.00", reason: "Performance adjustment", date: "2023-02-01" },
+        { id: "CP3004", empId: "E1004", empName: "James Lee", salaryBefore: "₱4,000.00", salaryAfter: "₱4,100.00", reason: "Market adjustment", date: "2023-04-01" },
+        { id: "CP3005", empId: "E1005", empName: "Linda Kim", salaryBefore: "₱4,500.00", salaryAfter: "₱4,900.00", reason: "Promotion", date: "2023-05-01" },
+        { id: "CP3006", empId: "E1006", empName: "Michael Brown", salaryBefore: "₱5,000.00", salaryAfter: "₱5,600.00", reason: "Leadership role", date: "2023-06-01" },
+        { id: "CP3007", empId: "E1007", empName: "Emily Davis", salaryBefore: "₱3,700.00", salaryAfter: "₱3,950.00", reason: "Annual raise", date: "2023-03-01" },
+        { id: "CP3008", empId: "E1008", empName: "David Wilson", salaryBefore: "₱4,200.00", salaryAfter: "₱4,700.00", reason: "Promotion", date: "2023-05-15" },
+        { id: "CP3009", empId: "E1009", empName: "Jessica Martinez", salaryBefore: "₱4,000.00", salaryAfter: "₱4,300.00", reason: "Performance adjustment", date: "2023-06-01" },
+        { id: "CP3010", empId: "E1010", empName: "Kevin Anderson", salaryBefore: "₱4,800.00", salaryAfter: "₱5,100.00", reason: "Market adjustment", date: "2023-06-10" },
+        { id: "CP3011", empId: "E1011", empName: "Olivia Thomas", salaryBefore: "₱4,200.00", salaryAfter: "₱4,600.00", reason: "Annual raise", date: "2023-06-15" },
+        { id: "CP3012", empId: "E1012", empName: "William Harris", salaryBefore: "₱3,900.00", salaryAfter: "₱4,200.00", reason: "Performance adjustment", date: "2023-06-20" }
+    ];
+
+    let leaveData = [
+        { id: "L4001", empId: "E1001", empName: "John Smith", type: "Vacation", startDate: "2023-07-01", endDate: "2023-07-07", status: "Approved" },
+        { id: "L4002", empId: "E1002", empName: "Sarah Johnson", type: "Sick Leave", startDate: "2023-06-15", endDate: "2023-06-16", status: "Approved" },
+        { id: "L4003", empId: "E1003", empName: "Maria Garcia", type: "Personal", startDate: "2023-07-10", endDate: "2023-07-12", status: "Pending" },
+        { id: "L4004", empId: "E1004", empName: "James Lee", type: "Maternity", startDate: "2023-07-15", endDate: "2023-07-30", status: "Rejected" },
+        { id: "L4005", empId: "E1005", empName: "Linda Kim", type: "Bereavement", startDate: "2023-07-20", endDate: "2023-07-22", status: "Approved" },
+        { id: "L4006", empId: "E1006", empName: "Michael Brown", type: "Vacation", startDate: "2023-07-25", endDate: "2023-07-28", status: "Pending" },
+        { id: "L4007", empId: "E1007", empName: "Emily Davis", type: "Sick Leave", startDate: "2023-07-29", endDate: "2023-07-30", status: "Approved" },
+        { id: "L4008", empId: "E1008", empName: "David Wilson", type: "Personal", startDate: "2023-08-01", endDate: "2023-08-03", status: "Pending" },
+        { id: "L4009", empId: "E1009", empName: "Jessica Martinez", type: "Maternity", startDate: "2023-08-05", endDate: "2023-08-20", status: "Rejected" },
+        { id: "L4010", empId: "E1010", empName: "Kevin Anderson", type: "Bereavement", startDate: "2023-08-10", endDate: "2023-08-12", status: "Approved" },
+        { id: "L4011", empId: "E1011", empName: "Olivia Thomas", type: "Vacation", startDate: "2023-08-15", endDate: "2023-08-20", status: "Pending" },
+        { id: "L4012", empId: "E1012", empName: "William Harris", type: "Sick Leave", startDate: "2023-08-21", endDate: "2023-08-22", status: "Rejected" }
+    ];
+
+    let performanceData = [
+        { id: "PR5001", empId: "E1001", empName: "John Smith", date: "2023-05-15", score: 85, bonus: "₱500.00", increment: "₱300.00" },
+        { id: "PR5002", empId: "E1002", empName: "Sarah Johnson", date: "2023-05-20", score: 92, bonus: "₱750.00", increment: "₱400.00" },
+        { id: "PR5003", empId: "E1003", empName: "Maria Garcia", date: "2023-05-25", score: 88, bonus: "₱600.00", increment: "₱350.00" },
+        { id: "PR5004", empId: "E1004", empName: "James Lee", date: "2023-05-28", score: 79, bonus: "₱400.00", increment: "₱200.00" },
+        { id: "PR5005", empId: "E1005", empName: "Linda Kim", date: "2023-06-01", score: 90, bonus: "₱800.00", increment: "₱500.00" },
+        { id: "PR5006", empId: "E1006", empName: "Michael Brown", date: "2023-06-05", score: 84, bonus: "₱550.00", increment: "₱320.00" },
+        { id: "PR5007", empId: "E1007", empName: "Emily Davis", date: "2023-06-10", score: 87, bonus: "₱620.00", increment: "₱370.00" },
+        { id: "PR5008", empId: "E1008", empName: "David Wilson", date: "2023-06-15", score: 91, bonus: "₱700.00", increment: "₱420.00" },
+        { id: "PR5009", empId: "E1009", empName: "Jessica Martinez", date: "2023-06-18", score: 83, bonus: "₱480.00", increment: "₱290.00" },
+        { id: "PR5010", empId: "E1010", empName: "Kevin Anderson", date: "2023-06-20", score: 89, bonus: "₱770.00", increment: "₱410.00" },
+        { id: "PR5011", empId: "E1011", empName: "Olivia Thomas", date: "2023-06-22", score: 86, bonus: "₱530.00", increment: "₱330.00" },
+        { id: "PR5012", empId: "E1012", empName: "William Harris", date: "2023-06-25", score: 82, bonus: "₱460.00", increment: "₱270.00" }
+    ];
+
+    let attendanceData = [
+        { id: "A6001", empId: "E1001", empName: "John Smith", clockIn: "2023-06-01 08:00:00", clockOut: "2023-06-01 17:15:00", totalHours: 8.25, overtime: 1.25, workDate: "2023-06-01" },
+        { id: "A6002", empId: "E1002", empName: "Sarah Johnson", clockIn: "2023-06-01 08:30:00", clockOut: "2023-06-01 17:45:00", totalHours: 8.25, overtime: 1.25, workDate: "2023-06-01" },
+        { id: "A6003", empId: "E1003", empName: "Maria Garcia", clockIn: "2023-06-02 08:10:00", clockOut: "2023-06-02 17:20:00", totalHours: 8.17, overtime: 1.17, workDate: "2023-06-02" },
+        { id: "A6004", empId: "E1004", empName: "James Lee", clockIn: "2023-06-03 08:05:00", clockOut: "2023-06-03 17:10:00", totalHours: 8.08, overtime: 1.08, workDate: "2023-06-03" },
+        { id: "A6005", empId: "E1005", empName: "Linda Kim", clockIn: "2023-06-04 08:00:00", clockOut: "2023-06-04 17:00:00", totalHours: 8.00, overtime: 1.00, workDate: "2023-06-04" },
+        { id: "A6006", empId: "E1006", empName: "Michael Brown", clockIn: "2023-06-05 08:20:00", clockOut: "2023-06-05 17:30:00", totalHours: 8.17, overtime: 1.17, workDate: "2023-06-05" },
+        { id: "A6007", empId: "E1007", empName: "Emily Davis", clockIn: "2023-06-06 08:15:00", clockOut: "2023-06-06 17:25:00", totalHours: 8.17, overtime: 1.17, workDate: "2023-06-06" },
+        { id: "A6008", empId: "E1008", empName: "David Wilson", clockIn: "2023-06-07 08:00:00", clockOut: "2023-06-07 17:10:00", totalHours: 8.08, overtime: 1.08, workDate: "2023-06-07" },
+        { id: "A6009", empId: "E1009", empName: "Jessica Martinez", clockIn: "2023-06-08 08:10:00", clockOut: "2023-06-08 17:20:00", totalHours: 8.17, overtime: 1.17, workDate: "2023-06-08" },
+        { id: "A6010", empId: "E1010", empName: "Kevin Anderson", clockIn: "2023-06-09 08:05:00", clockOut: "2023-06-09 17:15:00", totalHours: 8.17, overtime: 1.17, workDate: "2023-06-09" },
+        { id: "A6011", empId: "E1011", empName: "Olivia Thomas", clockIn: "2023-06-10 08:00:00", clockOut: "2023-06-10 17:00:00", totalHours: 8.00, overtime: 1.00, workDate: "2023-06-10" },
+        { id: "A6012", empId: "E1012", empName: "William Harris", clockIn: "2023-06-11 08:20:00", clockOut: "2023-06-11 17:30:00", totalHours: 8.17, overtime: 1.17, workDate: "2023-06-11" }
+    ];
+
+    // Render all tables
+    function renderAllTables() {
+        renderPayrollTable();
+        renderClaimsTable();
+        renderCompensationTable();
+        renderLeaveTable();
+        renderPerformanceTable();
+        renderAttendanceTable();
+    }
+
+    // Render payroll table with filtering
+    function renderPayrollTable() {
+        const empIdFilter = document.getElementById('payrollEmployeeFilter').value.toLowerCase();
+        const nameFilter = document.getElementById('payrollNameFilter').value.toLowerCase();
+        const statusFilter = document.getElementById('payrollStatusFilter').value;
+        
+        const filtered = payrollData.filter(item => 
+            item.empId.toLowerCase().includes(empIdFilter) &&
+            item.empName.toLowerCase().includes(nameFilter) &&
+            (statusFilter === "" || item.status === statusFilter)
+        );
+        
+        document.getElementById("payrollTable").innerHTML = filtered.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.empId}</td>
+                <td>${item.empName}</td>
+                <td>${item.salary}</td>
+                <td>${item.overtime}</td>
+                <td>${item.bonus}</td>
+                <td>${item.deductions}</td>
+                <td>${item.netPay}</td>
+                <td>${item.date}</td>
+                <td><span class="badge bg-${item.status === 'Paid' ? 'success' : item.status === 'Pending' ? 'warning' : 'danger'}">${item.status}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render claims table with filtering
+    function renderClaimsTable() {
+        const empIdFilter = document.getElementById('claimsEmployeeFilter').value.toLowerCase();
+        const typeFilter = document.getElementById('claimsTypeFilter').value;
+        const statusFilter = document.getElementById('claimsStatusFilter').value;
+        
+        const filtered = claimsData.filter(item => 
+            item.empId.toLowerCase().includes(empIdFilter) &&
+            (typeFilter === "" || item.type === typeFilter) &&
+            (statusFilter === "" || item.status === statusFilter)
+        );
+        
+        document.getElementById("claimsTable").innerHTML = filtered.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.empId}</td>
+                <td>${item.empName}</td>
+                <td>${item.type}</td>
+                <td>${item.amount}</td>
+                <td>${item.date}</td>
+                <td><span class="badge bg-${item.status === 'Approved' ? 'success' : item.status === 'Pending' ? 'warning' : 'danger'}">${item.status}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render compensation table with filtering
+    function renderCompensationTable() {
+        const empIdFilter = document.getElementById('compEmployeeFilter').value.toLowerCase();
+        const reasonFilter = document.getElementById('compReasonFilter').value;
+        
+        const filtered = compensationData.filter(item => 
+            item.empId.toLowerCase().includes(empIdFilter) &&
+            (reasonFilter === "" || item.reason === reasonFilter)
+        );
+        
+        document.getElementById("compensationTable").innerHTML = filtered.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.empId}</td>
+                <td>${item.empName}</td>
+                <td>${item.salaryBefore}</td>
+                <td>${item.salaryAfter}</td>
+                <td>${item.reason}</td>
+                <td>${item.date}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render leave table with filtering
+    function renderLeaveTable() {
+        const empIdFilter = document.getElementById('leaveEmployeeFilter').value.toLowerCase();
+        const typeFilter = document.getElementById('leaveTypeFilter').value;
+        const statusFilter = document.getElementById('leaveStatusFilter').value;
+        
+        const filtered = leaveData.filter(item => 
+            item.empId.toLowerCase().includes(empIdFilter) &&
+            (typeFilter === "" || item.type === typeFilter) &&
+            (statusFilter === "" || item.status === statusFilter)
+        );
+        
+        document.getElementById("leaveTable").innerHTML = filtered.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.empId}</td>
+                <td>${item.empName}</td>
+                <td>${item.type}</td>
+                <td>${item.startDate}</td>
+                <td>${item.endDate}</td>
+                <td><span class="badge bg-${item.status === 'Approved' ? 'success' : item.status === 'Pending' ? 'warning' : 'danger'}">${item.status}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render performance table with filtering
+    function renderPerformanceTable() {
+        const empIdFilter = document.getElementById('performanceEmployeeFilter').value.toLowerCase();
+        const dateFilter = document.getElementById('performanceDateFilter').value;
+        
+        const filtered = performanceData.filter(item => 
+            item.empId.toLowerCase().includes(empIdFilter) &&
+            (dateFilter === "" || item.date === dateFilter)
+        );
+        
+        document.getElementById("performanceTable").innerHTML = filtered.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.empId}</td>
+                <td>${item.empName}</td>
+                <td>${item.date}</td>
+                <td>${item.score}</td>
+                <td>${item.bonus}</td>
+                <td>${item.increment}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render attendance table with filtering
+    function renderAttendanceTable() {
+        const empIdFilter = document.getElementById('attendanceEmployeeFilter').value.toLowerCase();
+        const dateFilter = document.getElementById('attendanceDateFilter').value;
+        
+        const filtered = attendanceData.filter(item => 
+            item.empId.toLowerCase().includes(empIdFilter) &&
+            (dateFilter === "" || item.workDate === dateFilter)
+        );
+        
+        document.getElementById("attendanceTable").innerHTML = filtered.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.empId}</td>
+                <td>${item.empName}</td>
+                <td>${item.clockIn}</td>
+                <td>${item.clockOut}</td>
+                <td>${item.totalHours}</td>
+                <td>${item.overtime}</td>
+                <td>${item.workDate}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // View button functionality
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('view-btn')) {
+            const row = e.target.closest('tr');
+            const rowData = Array.from(row.cells).map(cell => cell.textContent);
+            
+            let viewContent = '';
+            if (row.closest('#payrollTable')) {
+                viewContent = `
+                    <h6>Payroll Details</h6>
+                    <p><strong>Payroll ID:</strong> ${rowData[0]}</p>
+                    <p><strong>Employee ID:</strong> ${rowData[1]}</p>
+                    <p><strong>Employee Name:</strong> ${rowData[2]}</p>
+                    <p><strong>Salary:</strong> ${rowData[3]}</p>
+                    <p><strong>Overtime Pay:</strong> ${rowData[4]}</p>
+                    <p><strong>Bonus:</strong> ${rowData[5]}</p>
+                    <p><strong>Deductions:</strong> ${rowData[6]}</p>
+                    <p><strong>Net Pay:</strong> ${rowData[7]}</p>
+                    <p><strong>Payroll Date:</strong> ${rowData[8]}</p>
+                    <p><strong>Status:</strong> ${rowData[9]}</p>
+                `;
+            } else if (row.closest('#claimsTable')) {
+                viewContent = `
+                    <h6>Claim Details</h6>
+                    <p><strong>Claim ID:</strong> ${rowData[0]}</p>
+                    <p><strong>Employee ID:</strong> ${rowData[1]}</p>
+                    <p><strong>Employee Name:</strong> ${rowData[2]}</p>
+                    <p><strong>Claim Type:</strong> ${rowData[3]}</p>
+                    <p><strong>Amount:</strong> ${rowData[4]}</p>
+                    <p><strong>Claim Date:</strong> ${rowData[5]}</p>
+                    <p><strong>Status:</strong> ${rowData[6]}</p>
+                `;
+            } else if (row.closest('#compensationTable')) {
+                viewContent = `
+                    <h6>Compensation Details</h6>
+                    <p><strong>Comp ID:</strong> ${rowData[0]}</p>
+                    <p><strong>Employee ID:</strong> ${rowData[1]}</p>
+                    <p><strong>Employee Name:</strong> ${rowData[2]}</p>
+                    <p><strong>Salary Before:</strong> ${rowData[3]}</p>
+                    <p><strong>Salary After:</strong> ${rowData[4]}</p>
+                    <p><strong>Adjustment Reason:</strong> ${rowData[5]}</p>
+                    <p><strong>Effective Date:</strong> ${rowData[6]}</p>
+                `;
+            } else if (row.closest('#leaveTable')) {
+                viewContent = `
+                    <h6>Leave Request Details</h6>
+                    <p><strong>Leave ID:</strong> ${rowData[0]}</p>
+                    <p><strong>Employee ID:</strong> ${rowData[1]}</p>
+                    <p><strong>Employee Name:</strong> ${rowData[2]}</p>
+                    <p><strong>Leave Type:</strong> ${rowData[3]}</p>
+                    <p><strong>Start Date:</strong> ${rowData[4]}</p>
+                    <p><strong>End Date:</strong> ${rowData[5]}</p>
+                    <p><strong>Status:</strong> ${rowData[6]}</p>
+                `;
+            } else if (row.closest('#performanceTable')) {
+                viewContent = `
+                    <h6>Performance Review Details</h6>
+                    <p><strong>Review ID:</strong> ${rowData[0]}</p>
+                    <p><strong>Employee ID:</strong> ${rowData[1]}</p>
+                    <p><strong>Employee Name:</strong> ${rowData[2]}</p>
+                    <p><strong>Review Date:</strong> ${rowData[3]}</p>
+                    <p><strong>Performance Score:</strong> ${rowData[4]}</p>
+                    <p><strong>Bonus Amount:</strong> ${rowData[5]}</p>
+                    <p><strong>Salary Increment:</strong> ${rowData[6]}</p>
+                `;
+            } else if (row.closest('#attendanceTable')) {
+                viewContent = `
+                    <h6>Attendance Details</h6>
+                    <p><strong>Attendance ID:</strong> ${rowData[0]}</p>
+                    <p><strong>Employee ID:</strong> ${rowData[1]}</p>
+                    <p><strong>Employee Name:</strong> ${rowData[2]}</p>
+                    <p><strong>Clock In:</strong> ${rowData[3]}</p>
+                    <p><strong>Clock Out:</strong> ${rowData[4]}</p>
+                    <p><strong>Total Hours:</strong> ${rowData[5]}</p>
+                    <p><strong>Overtime Hours:</strong> ${rowData[6]}</p>
+                    <p><strong>Work Date:</strong> ${rowData[7]}</p>
+                `;
+            }
+            
+            document.getElementById('viewModalBody').innerHTML = viewContent;
+            viewModal.show();
+        }
+    });
+
+    // Edit button functionality
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('edit-btn')) {
+            const row = e.target.closest('tr');
+            const rowData = Array.from(row.cells).map(cell => cell.textContent);
+            
+            let editForm = '';
+            if (row.closest('#payrollTable')) {
+                currentItem = { type: 'payroll', index: payrollData.findIndex(item => item.id === rowData[0]) };
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Payroll ID</label>
+                        <input type="text" class="form-control" id="editPayrollId" value="${rowData[0]}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" id="editPayrollEmpId" value="${rowData[1]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee Name</label>
+                        <input type="text" class="form-control" id="editPayrollEmpName" value="${rowData[2]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Salary</label>
+                        <input type="text" class="form-control" id="editPayrollSalary" value="${rowData[3]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Overtime Pay</label>
+                        <input type="text" class="form-control" id="editPayrollOvertime" value="${rowData[4]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Bonus</label>
+                        <input type="text" class="form-control" id="editPayrollBonus" value="${rowData[5]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Deductions</label>
+                        <input type="text" class="form-control" id="editPayrollDeductions" value="${rowData[6]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Net Pay</label>
+                        <input type="text" class="form-control" id="editPayrollNetPay" value="${rowData[7]}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payroll Date</label>
+                        <input type="date" class="form-control" id="editPayrollDate" value="${rowData[8]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="editPayrollStatus">
+                            <option ${rowData[9].includes('Paid') ? 'selected' : ''}>Paid</option>
+                            <option ${rowData[9].includes('Pending') ? 'selected' : ''}>Pending</option>
+                            <option ${rowData[9].includes('Cancelled') ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                    </div>
+                `;
+            } else if (row.closest('#claimsTable')) {
+                currentItem = { type: 'claims', index: claimsData.findIndex(item => item.id === rowData[0]) };
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Claim ID</label>
+                        <input type="text" class="form-control" id="editClaimId" value="${rowData[0]}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" id="editClaimEmpId" value="${rowData[1]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee Name</label>
+                        <input type="text" class="form-control" id="editClaimEmpName" value="${rowData[2]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Claim Type</label>
+                        <select class="form-select" id="editClaimType">
+                            <option ${rowData[3] === 'Travel' ? 'selected' : ''}>Travel</option>
+                            <option ${rowData[3] === 'Medical' ? 'selected' : ''}>Medical</option>
+                            <option ${rowData[3] === 'Training' ? 'selected' : ''}>Training</option>
+                            <option ${rowData[3] === 'Equipment' ? 'selected' : ''}>Equipment</option>
+                            <option ${rowData[3] === 'Other' ? 'selected' : ''}>Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Amount</label>
+                        <input type="text" class="form-control" id="editClaimAmount" value="${rowData[4]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Claim Date</label>
+                        <input type="date" class="form-control" id="editClaimDate" value="${rowData[5]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="editClaimStatus">
+                            <option ${rowData[6].includes('Approved') ? 'selected' : ''}>Approved</option>
+                            <option ${rowData[6].includes('Pending') ? 'selected' : ''}>Pending</option>
+                            <option ${rowData[6].includes('Rejected') ? 'selected' : ''}>Rejected</option>
+                        </select>
+                    </div>
+                `;
+            } else if (row.closest('#compensationTable')) {
+                currentItem = { type: 'compensation', index: compensationData.findIndex(item => item.id === rowData[0]) };
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Comp ID</label>
+                        <input type="text" class="form-control" id="editCompId" value="${rowData[0]}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" id="editCompEmpId" value="${rowData[1]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee Name</label>
+                        <input type="text" class="form-control" id="editCompEmpName" value="${rowData[2]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Salary Before</label>
+                        <input type="text" class="form-control" id="editCompSalaryBefore" value="${rowData[3]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Salary After</label>
+                        <input type="text" class="form-control" id="editCompSalaryAfter" value="${rowData[4]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Adjustment Reason</label>
+                        <select class="form-select" id="editCompReason">
+                            <option ${rowData[5] === 'Annual raise' ? 'selected' : ''}>Annual raise</option>
+                            <option ${rowData[5] === 'Promotion' ? 'selected' : ''}>Promotion</option>
+                            <option ${rowData[5] === 'Performance adjustment' ? 'selected' : ''}>Performance adjustment</option>
+                            <option ${rowData[5] === 'Market adjustment' ? 'selected' : ''}>Market adjustment</option>
+                            <option ${rowData[5] === 'Leadership role' ? 'selected' : ''}>Leadership role</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Effective Date</label>
+                        <input type="date" class="form-control" id="editCompDate" value="${rowData[6]}">
+                    </div>
+                `;
+            } else if (row.closest('#leaveTable')) {
+                currentItem = { type: 'leave', index: leaveData.findIndex(item => item.id === rowData[0]) };
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Leave ID</label>
+                        <input type="text" class="form-control" id="editLeaveId" value="${rowData[0]}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" id="editLeaveEmpId" value="${rowData[1]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee Name</label>
+                        <input type="text" class="form-control" id="editLeaveEmpName" value="${rowData[2]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Leave Type</label>
+                        <select class="form-select" id="editLeaveType">
+                            <option ${rowData[3] === 'Vacation' ? 'selected' : ''}>Vacation</option>
+                            <option ${rowData[3] === 'Sick Leave' ? 'selected' : ''}>Sick Leave</option>
+                            <option ${rowData[3] === 'Personal' ? 'selected' : ''}>Personal</option>
+                            <option ${rowData[3] === 'Maternity' ? 'selected' : ''}>Maternity</option>
+                            <option ${rowData[3] === 'Bereavement' ? 'selected' : ''}>Bereavement</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="editLeaveStart" value="${rowData[4]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="editLeaveEnd" value="${rowData[5]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="editLeaveStatus">
+                            <option ${rowData[6].includes('Approved') ? 'selected' : ''}>Approved</option>
+                            <option ${rowData[6].includes('Pending') ? 'selected' : ''}>Pending</option>
+                            <option ${rowData[6].includes('Rejected') ? 'selected' : ''}>Rejected</option>
+                        </select>
+                    </div>
+                `;
+            } else if (row.closest('#performanceTable')) {
+                currentItem = { type: 'performance', index: performanceData.findIndex(item => item.id === rowData[0]) };
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Review ID</label>
+                        <input type="text" class="form-control" id="editPerfId" value="${rowData[0]}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" id="editPerfEmpId" value="${rowData[1]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee Name</label>
+                        <input type="text" class="form-control" id="editPerfEmpName" value="${rowData[2]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Review Date</label>
+                        <input type="date" class="form-control" id="editPerfDate" value="${rowData[3]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Performance Score</label>
+                        <input type="number" class="form-control" id="editPerfScore" value="${rowData[4]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Bonus Amount</label>
+                        <input type="text" class="form-control" id="editPerfBonus" value="${rowData[5]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Salary Increment</label>
+                        <input type="text" class="form-control" id="editPerfIncrement" value="${rowData[6]}">
+                    </div>
+                `;
+            } else if (row.closest('#attendanceTable')) {
+                currentItem = { type: 'attendance', index: attendanceData.findIndex(item => item.id === rowData[0]) };
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Attendance ID</label>
+                        <input type="text" class="form-control" id="editAttendId" value="${rowData[0]}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" id="editAttendEmpId" value="${rowData[1]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee Name</label>
+                        <input type="text" class="form-control" id="editAttendEmpName" value="${rowData[2]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Clock In</label>
+                        <input type="datetime-local" class="form-control" id="editAttendClockIn" value="${rowData[3].replace(' ', 'T')}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Clock Out</label>
+                        <input type="datetime-local" class="form-control" id="editAttendClockOut" value="${rowData[4].replace(' ', 'T')}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Total Hours</label>
+                        <input type="number" step="0.01" class="form-control" id="editAttendTotal" value="${rowData[5]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Overtime Hours</label>
+                        <input type="number" step="0.01" class="form-control" id="editAttendOvertime" value="${rowData[6]}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Work Date</label>
+                        <input type="date" class="form-control" id="editAttendDate" value="${rowData[7]}">
+                    </div>
+                `;
+            }
+            
+            document.getElementById('editModalBody').innerHTML = editForm;
+            editModal.show();
+        }
+    });
+
+    // Save changes button functionality
+    document.getElementById('saveChangesBtn').addEventListener('click', function() {
+        if (currentItem.type === 'payroll') {
+            payrollData[currentItem.index] = {
+                id: document.getElementById('editPayrollId').value,
+                empId: document.getElementById('editPayrollEmpId').value,
+                empName: document.getElementById('editPayrollEmpName').value,
+                salary: document.getElementById('editPayrollSalary').value,
+                overtime: document.getElementById('editPayrollOvertime').value,
+                bonus: document.getElementById('editPayrollBonus').value,
+                deductions: document.getElementById('editPayrollDeductions').value,
+                netPay: document.getElementById('editPayrollNetPay').value,
+                date: document.getElementById('editPayrollDate').value,
+                status: document.getElementById('editPayrollStatus').value
+            };
+        } else if (currentItem.type === 'claims') {
+            claimsData[currentItem.index] = {
+                id: document.getElementById('editClaimId').value,
+                empId: document.getElementById('editClaimEmpId').value,
+                empName: document.getElementById('editClaimEmpName').value,
+                type: document.getElementById('editClaimType').value,
+                amount: document.getElementById('editClaimAmount').value,
+                date: document.getElementById('editClaimDate').value,
+                status: document.getElementById('editClaimStatus').value
+            };
+        } else if (currentItem.type === 'compensation') {
+            compensationData[currentItem.index] = {
+                id: document.getElementById('editCompId').value,
+                empId: document.getElementById('editCompEmpId').value,
+                empName: document.getElementById('editCompEmpName').value,
+                salaryBefore: document.getElementById('editCompSalaryBefore').value,
+                salaryAfter: document.getElementById('editCompSalaryAfter').value,
+                reason: document.getElementById('editCompReason').value,
+                date: document.getElementById('editCompDate').value
+            };
+        } else if (currentItem.type === 'leave') {
+            leaveData[currentItem.index] = {
+                id: document.getElementById('editLeaveId').value,
+                empId: document.getElementById('editLeaveEmpId').value,
+                empName: document.getElementById('editLeaveEmpName').value,
+                type: document.getElementById('editLeaveType').value,
+                startDate: document.getElementById('editLeaveStart').value,
+                endDate: document.getElementById('editLeaveEnd').value,
+                status: document.getElementById('editLeaveStatus').value
+            };
+        } else if (currentItem.type === 'performance') {
+            performanceData[currentItem.index] = {
+                id: document.getElementById('editPerfId').value,
+                empId: document.getElementById('editPerfEmpId').value,
+                empName: document.getElementById('editPerfEmpName').value,
+                date: document.getElementById('editPerfDate').value,
+                score: document.getElementById('editPerfScore').value,
+                bonus: document.getElementById('editPerfBonus').value,
+                increment: document.getElementById('editPerfIncrement').value
+            };
+        } else if (currentItem.type === 'attendance') {
+            attendanceData[currentItem.index] = {
+                id: document.getElementById('editAttendId').value,
+                empId: document.getElementById('editAttendEmpId').value,
+                empName: document.getElementById('editAttendEmpName').value,
+                clockIn: document.getElementById('editAttendClockIn').value.replace('T', ' '),
+                clockOut: document.getElementById('editAttendClockOut').value.replace('T', ' '),
+                totalHours: document.getElementById('editAttendTotal').value,
+                overtime: document.getElementById('editAttendOvertime').value,
+                workDate: document.getElementById('editAttendDate').value
+            };
+        }
+        
+        renderAllTables();
+        editModal.hide();
+        alert('Changes saved successfully!');
+    });
+
+    // Delete button functionality
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('delete-btn')) {
+            const row = e.target.closest('tr');
+            const rowId = row.cells[0].textContent;
+            
+            if (row.closest('#payrollTable')) {
+                currentItem = { type: 'payroll', index: payrollData.findIndex(item => item.id === rowId) };
+            } else if (row.closest('#claimsTable')) {
+                currentItem = { type: 'claims', index: claimsData.findIndex(item => item.id === rowId) };
+            } else if (row.closest('#compensationTable')) {
+                currentItem = { type: 'compensation', index: compensationData.findIndex(item => item.id === rowId) };
+            } else if (row.closest('#leaveTable')) {
+                currentItem = { type: 'leave', index: leaveData.findIndex(item => item.id === rowId) };
+            } else if (row.closest('#performanceTable')) {
+                currentItem = { type: 'performance', index: performanceData.findIndex(item => item.id === rowId) };
+            } else if (row.closest('#attendanceTable')) {
+                currentItem = { type: 'attendance', index: attendanceData.findIndex(item => item.id === rowId) };
+            }
+            
+            deleteModal.show();
+        }
+    });
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        if (currentItem.type === 'payroll') {
+            payrollData.splice(currentItem.index, 1);
+        } else if (currentItem.type === 'claims') {
+            claimsData.splice(currentItem.index, 1);
+        } else if (currentItem.type === 'compensation') {
+            compensationData.splice(currentItem.index, 1);
+        } else if (currentItem.type === 'leave') {
+            leaveData.splice(currentItem.index, 1);
+        } else if (currentItem.type === 'performance') {
+            performanceData.splice(currentItem.index, 1);
+        } else if (currentItem.type === 'attendance') {
+            attendanceData.splice(currentItem.index, 1);
+        }
+        
+        renderAllTables();
+        deleteModal.hide();
+        alert('Record deleted successfully!');
+    });
+
+    // Profile dropdown functionality
+    document.getElementById("profile-btn").addEventListener("click", function(event) {
+        event.preventDefault()
+        document.getElementById("dropdown-menu").classList.toggle("show")
+    })
+    
+    document.addEventListener("click", function(event) {
+        if (!document.getElementById("profile-btn").contains(event.target)) {
+            document.getElementById("dropdown-menu").classList.remove("show")
+        }
+    })
+
+    function openTab(evt, tabName) {
+        var i, tabcontent, tabbuttons
+        
+        // Hide all tab content
+        tabcontent = document.getElementsByClassName("tab-content")
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove("active")
+        }
+        
+        // Remove active class from all tab buttons
+        tabbuttons = document.getElementsByClassName("tab-button")
+        for (i = 0; i < tabbuttons.length; i++) {
+            tabbuttons[i].classList.remove("active")
+        }
+        
+        // Show the current tab and add active class to the button
+        document.getElementById(tabName).classList.add("active")
+        evt.currentTarget.classList.add("active")
+    }
+
+    // Reset filter handlers
+    document.getElementById('resetPayrollFilters').addEventListener('click', function() {
+        document.getElementById('payrollEmployeeFilter').value = '';
+        document.getElementById('payrollNameFilter').value = '';
+        document.getElementById('payrollStatusFilter').value = '';
+        renderPayrollTable();
+    });
+
+    document.getElementById('resetClaimsFilters').addEventListener('click', function() {
+        document.getElementById('claimsEmployeeFilter').value = '';
+        document.getElementById('claimsTypeFilter').value = '';
+        document.getElementById('claimsStatusFilter').value = '';
+        renderClaimsTable();
+    });
+
+    document.getElementById('resetCompFilters').addEventListener('click', function() {
+        document.getElementById('compEmployeeFilter').value = '';
+        document.getElementById('compReasonFilter').value = '';
+        renderCompensationTable();
+    });
+
+    document.getElementById('resetLeaveFilters').addEventListener('click', function() {
+        document.getElementById('leaveEmployeeFilter').value = '';
+        document.getElementById('leaveTypeFilter').value = '';
+        document.getElementById('leaveStatusFilter').value = '';
+        renderLeaveTable();
+    });
+
+    document.getElementById('resetPerformanceFilters').addEventListener('click', function() {
+        document.getElementById('performanceEmployeeFilter').value = '';
+        document.getElementById('performanceDateFilter').value = '';
+        renderPerformanceTable();
+    });
+
+    document.getElementById('resetAttendanceFilters').addEventListener('click', function() {
+        document.getElementById('attendanceEmployeeFilter').value = '';
+        document.getElementById('attendanceDateFilter').value = '';
+        renderAttendanceTable();
+    });
+
+    // Filter change handlers
+    document.getElementById('payrollEmployeeFilter').addEventListener('input', renderPayrollTable);
+    document.getElementById('payrollNameFilter').addEventListener('input', renderPayrollTable);
+    document.getElementById('payrollStatusFilter').addEventListener('change', renderPayrollTable);
+    document.getElementById('claimsEmployeeFilter').addEventListener('input', renderClaimsTable);
+    document.getElementById('claimsTypeFilter').addEventListener('change', renderClaimsTable);
+    document.getElementById('claimsStatusFilter').addEventListener('change', renderClaimsTable);
+    document.getElementById('compEmployeeFilter').addEventListener('input', renderCompensationTable);
+    document.getElementById('compReasonFilter').addEventListener('change', renderCompensationTable);
+    document.getElementById('leaveEmployeeFilter').addEventListener('input', renderLeaveTable);
+    document.getElementById('leaveTypeFilter').addEventListener('change', renderLeaveTable);
+    document.getElementById('leaveStatusFilter').addEventListener('change', renderLeaveTable);
+    document.getElementById('performanceEmployeeFilter').addEventListener('input', renderPerformanceTable);
+    document.getElementById('performanceDateFilter').addEventListener('change', renderPerformanceTable);
+    document.getElementById('attendanceEmployeeFilter').addEventListener('input', renderAttendanceTable);
+    document.getElementById('attendanceDateFilter').addEventListener('change', renderAttendanceTable);
+
+    // Charts initialization
+    document.addEventListener('DOMContentLoaded', function () {
         // Payroll Trend Chart
-        const payrollCtx = document.getElementById('payrollTrendChart');
+        const payrollCtx = document.getElementById('payrollTrendChart')
         if (payrollCtx) {
             new Chart(payrollCtx, {
                 type: 'line',
@@ -898,11 +2518,11 @@
                         }
                     }
                 }
-            });
+            })
         }
 
         // Salary Distribution Chart
-        const salaryCtx = document.getElementById('salaryDistribution');
+        const salaryCtx = document.getElementById('salaryDistribution')
         if (salaryCtx) {
             new Chart(salaryCtx, {
                 type: 'bar',
@@ -949,9 +2569,12 @@
                         }
                     }
                 }
-            });
+            })
         }
-    });
+
+        // Initialize all tables
+        renderAllTables();
+    })
 </script>
 </body>
 </html>

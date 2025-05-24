@@ -1,15 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-	<link rel="stylesheet" href="style1.css">
-	<title>HR</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>HR</title>
+    <style>
+      /* Filter controls styling */
+      .filter-controls {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+          flex-wrap: wrap;
+      }
+
+      .filter-controls select, 
+      .filter-controls input {
+          padding: 8px 12px;
+          border: 1px solid #ced4da;
+          border-radius: 4px;
+          background-color: white;
+          font-size: 14px;
+          height: 38px;
+      }
+
+      .filter-controls select {
+          appearance: none;
+          background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+          background-repeat: no-repeat;
+          background-position: right 0.75rem center;
+          background-size: 16px 12px;
+          padding-right: 2rem;
+      }
+
+      .filter-controls .btn {
+          padding: 8px 16px;
+          font-size: 14px;
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+      }
+
+      .filter-controls .btn-outline-secondary {
+          border-color: #6c757d;
+          color: #6c757d;
+      }
+
+      .filter-controls .btn-outline-secondary:hover {
+          background-color: #6c757d;
+          color: white;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+          .filter-controls {
+              flex-direction: column;
+              align-items: stretch;
+          }
+          
+          .filter-controls select,
+          .filter-controls input,
+          .filter-controls .btn {
+              width: 100% !important;
+              margin-right: 0 !important;
+          }
+      }
+    </style>
 </head>
 <body>
 
+<div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewModalLabel">View Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="editModalBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this record? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <section id="sidebar">
     <a href="#" class="brand">
@@ -34,7 +151,7 @@
         </li>
         <li>
             <a href="../Performance/index.html">
-				<i class='bx bxs-bar-chart-alt-2' ></i>
+                <i class='bx bxs-bar-chart-alt-2' ></i>
                 <span class="text">Performance Management</span>
             </a>
         </li>
@@ -108,18 +225,15 @@
             </a>
         </li>
         <li>
-			<a href="../Corehuman/index.html">
-				<i class='bx bxs-user-badge' ></i>
-				<span class="text">Core Human Management</span>
-			</a>
-		</li>
-		
+            <a href="../Corehuman/index.html">
+                <i class='bx bxs-user-badge' ></i>
+                <span class="text">Core Human Management</span>
+            </a>
+        </li>
     </ul>
 
-    
-
     <ul class="side-menu">
-		<span class="separator">SETTINGS</span>
+        <span class="separator">SETTINGS</span>
         <li>
             <a href="../Settings.html">
                 <i class='bx bxs-cog'></i>
@@ -137,7 +251,7 @@
 
 <section id="content">
     <nav>
-        <i class='bx bx-menu'></i>
+       
         <a href="#" class="nav-link">Categories</a>
         <form action="#">
             <div class="form-input">
@@ -147,7 +261,7 @@
         </form>
         
         <input type="checkbox" id="switch-mode" hidden>
-        <label for="switch-mode" class="switch-mode"></label>
+     
         <a href="#" class="notification">
             <i class='bx bxs-bell'></i>
             <span class="num">9+</span>
@@ -159,896 +273,2098 @@
             </a>
             <div class="dropdown-menu" id="dropdown-menu">
                 <a href="Profile.html">Profile</a>
-				<a href="Changepassword.html">Change Passowrd</a>
+                <a href="Changepassword.html">Change Passowrd</a>
             </div>
         </div>
     </nav>
 
-		<main>
-			<div class="head-title">
-				<div class="left">
-					<h1>Competency Management</h1>
-					<ul class="breadcrumb">
-						<li>
-							<a href="#">Dashboard</a>
-						</li>
-						<li><i class='bx bx-chevron-right' ></i></li>
-						<li>
-							<a class="active" href="#">Competency Management</a>
-						</li>
-					</ul>
-				</div>
-			</div>
+    <main>
+        <div class="head-title">
+            <div class="left">
+                <h1>Competency Management</h1>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="#">Dashboard</a>
+                    </li>
+                    <li><i class='bx bx-chevron-right' ></i></li>
+                    <li>
+                        <a class="active" href="#">Competency Management</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-            <div class="tab-container">
-                <div class="tab-buttons">
-                    <button class="tab-button" onclick="openTab(event, 'dashboard')">
-                        <i class='bx bxs-dashboard'></i> Dashboard
-                    </button>
-                    <button class="tab-button active" onclick="openTab(event, 'certifications')">Certifications</button>
-                    <button class="tab-button" onclick="openTab(event, 'competencies')">Competencies</button>
-                    <button class="tab-button" onclick="openTab(event, 'employee-competencies')">Employee Competencies</button>
-                    <button class="tab-button" onclick="openTab(event, 'training')">Training</button>
-                    <button class="tab-button" onclick="openTab(event, 'feedback')">Training Feedback</button>
-                </div>
-                
-            
-<div id="dashboard" class="tab-content">
-    <div class="dashboard-container">
-        <h3 class="dashboard-title">Competency Analytics Dashboard</h3>
-        
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <div class="metric-title">Total Certifications</div>
-                <div class="metric-value">142</div>
-                <div class="metric-change positive">↑ 12% from last month</div>
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button" onclick="openTab(event, 'dashboard')">
+                    <i class='bx bxs-dashboard'></i> Dashboard
+                </button>
+                <button class="tab-button active" onclick="openTab(event, 'certifications')">Certifications</button>
+                <button class="tab-button" onclick="openTab(event, 'competencies')">Competencies</button>
+                <button class="tab-button" onclick="openTab(event, 'employee-competencies')">Employee Competencies</button>
+                <button class="tab-button" onclick="openTab(event, 'training')">Training</button>
+                <button class="tab-button" onclick="openTab(event, 'feedback')">Training Feedback</button>
+                <button class="tab-button" onclick="openTab(event, 'vacancies')">Job Vacancies</button>
             </div>
             
-            <div class="metric-card">
-                <div class="metric-title">Active Competencies</div>
-                <div class="metric-value">28</div>
-                <div class="metric-change positive">↑ 3 new this quarter</div>
-            </div>
-            
-            <div class="metric-card">
-                <div class="metric-title">Certifications Expiring Soon</div>
-                <div class="metric-value">17</div>
-                <div class="metric-change negative">↑ 5 more than last month</div>
-            </div>
-            
-            <div class="metric-card">
-                <div class="metric-title">Avg. Training Rating</div>
-                <div class="metric-value">4.2/5</div>
-                <div class="metric-change positive">↑ 0.3 from last quarter</div>
-            </div>
-        </div>
-        
-        <div class="chart-container">
-            <canvas id="competencyChart"></canvas>
-        </div>
-        
-        <div class="chart-container" style="margin-top: 20px;">
-            <canvas id="certificationTimeline"></canvas>
-        </div>
-    </div>
-</div>
-         
-                <div id="certifications" class="tab-content active">
-                    <div class="table-container">
-                        <h3 class="table-title">Employee Certifications</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Certification ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Competency ID</th>
-                                    <th>Certification Name</th>
-                                    <th>Issued Date</th>
-                                    <th>Expiry Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1001</td>
-                                    <td>5001</td>
-                                    <td>2001</td>
-                                    <td>E-commerce Professional Certification</td>
-                                    <td>2022-03-15</td>
-                                    <td>2025-03-15</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1002</td>
-                                    <td>5002</td>
-                                    <td>2002</td>
-                                    <td>Digital Marketing Specialist</td>
-                                    <td>2023-01-10</td>
-                                    <td>2025-01-10</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1003</td>
-                                    <td>5003</td>
-                                    <td>2003</td>
-                                    <td>Shopify Development Certification</td>
-                                    <td>2023-05-20</td>
-                                    <td>2024-05-20</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1004</td>
-                                    <td>5001</td>
-                                    <td>2004</td>
-                                    <td>Google Ads Certification</td>
-                                    <td>2022-11-05</td>
-                                    <td>2024-11-05</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1005</td>
-                                    <td>5004</td>
-                                    <td>2005</td>
-                                    <td>Supply Chain Management Professional</td>
-                                    <td>2023-02-28</td>
-                                    <td>2026-02-28</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1006</td>
-                                    <td>5005</td>
-                                    <td>2006</td>
-                                    <td>Customer Service Excellence</td>
-                                    <td>2023-04-15</td>
-                                    <td>2024-04-15</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1007</td>
-                                    <td>5002</td>
-                                    <td>2007</td>
-                                    <td>Facebook Blueprint Certification</td>
-                                    <td>2023-03-10</td>
-                                    <td>2025-03-10</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1008</td>
-                                    <td>5006</td>
-                                    <td>2008</td>
-                                    <td>Inventory Management Professional</td>
-                                    <td>2022-09-20</td>
-                                    <td>2024-09-20</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1009</td>
-                                    <td>5003</td>
-                                    <td>2009</td>
-                                    <td>WooCommerce Expert</td>
-                                    <td>2023-01-05</td>
-                                    <td>2026-01-05</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1010</td>
-                                    <td>5007</td>
-                                    <td>2010</td>
-                                    <td>Data Privacy Compliance</td>
-                                    <td>2023-06-12</td>
-                                    <td>2025-06-12</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <div id="dashboard" class="tab-content">
+                <div class="dashboard-container">
+                    <h3 class="dashboard-title">Competency Analytics Dashboard</h3>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-title">Total Certifications</div>
+                            <div class="metric-value">142</div>
+                            <div class="metric-change positive">↑ 12% from last month</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-title">Active Competencies</div>
+                            <div class="metric-value">28</div>
+                            <div class="metric-change positive">↑ 3 new this quarter</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-title">Certifications Expiring Soon</div>
+                            <div class="metric-value">17</div>
+                            <div class="metric-change negative">↑ 5 more than last month</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-title">Avg. Training Rating</div>
+                            <div class="metric-value">4.2/5</div>
+                            <div class="metric-change positive">↑ 0.3 from last quarter</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="competencyChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container" style="margin-top: 20px;">
+                        <canvas id="certificationTimeline"></canvas>
                     </div>
                 </div>
-                
+            </div>
              
-                <div id="competencies" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Competencies</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Competency ID</th>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Category</th>
-                                    <th>Created At</th>
-                                    <th>Updated At</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>2001</td>
-                                    <td>E-commerce Platform Management</td>
-                                    <td>Ability to manage and operate e-commerce platforms</td>
-                                    <td>Technical</td>
-                                    <td>2022-01-10 09:30:00</td>
-                                    <td>2022-01-10 09:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2002</td>
-                                    <td>Digital Marketing</td>
-                                    <td>Knowledge of online marketing strategies and tools</td>
-                                    <td>Marketing</td>
-                                    <td>2022-01-15 10:15:00</td>
-                                    <td>2023-02-20 11:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2003</td>
-                                    <td>Web Development</td>
-                                    <td>Skills in developing and maintaining e-commerce websites</td>
-                                    <td>Technical</td>
-                                    <td>2022-02-05 14:20:00</td>
-                                    <td>2023-01-18 16:45:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2004</td>
-                                    <td>PPC Advertising</td>
-                                    <td>Expertise in pay-per-click advertising campaigns</td>
-                                    <td>Marketing</td>
-                                    <td>2022-03-12 11:10:00</td>
-                                    <td>2023-03-01 10:25:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2005</td>
-                                    <td>Supply Chain Management</td>
-                                    <td>Understanding of logistics and inventory flow</td>
-                                    <td>Operations</td>
-                                    <td>2022-04-18 13:45:00</td>
-                                    <td>2023-04-22 09:15:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2006</td>
-                                    <td>Customer Support</td>
-                                    <td>Skills in handling customer inquiries and complaints</td>
-                                    <td>Service</td>
-                                    <td>2022-05-22 10:30:00</td>
-                                    <td>2023-02-15 14:20:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2007</td>
-                                    <td>Social Media Marketing</td>
-                                    <td>Ability to create and manage social media campaigns</td>
-                                    <td>Marketing</td>
-                                    <td>2022-06-30 11:20:00</td>
-                                    <td>2023-01-25 16:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2008</td>
-                                    <td>Warehouse Operations</td>
-                                    <td>Knowledge of warehouse management and fulfillment</td>
-                                    <td>Operations</td>
-                                    <td>2022-07-15 09:10:00</td>
-                                    <td>2023-03-18 10:45:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2009</td>
-                                    <td>Conversion Rate Optimization</td>
-                                    <td>Skills in improving website conversion rates</td>
-                                    <td>Marketing</td>
-                                    <td>2022-08-05 14:15:00</td>
-                                    <td>2023-04-10 11:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2010</td>
-                                    <td>Data Privacy Compliance</td>
-                                    <td>Understanding of GDPR and other privacy regulations</td>
-                                    <td>Legal</td>
-                                    <td>2022-09-20 16:25:00</td>
-                                    <td>2023-05-15 13:40:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <div id="certifications" class="tab-content active">
+                <div class="table-container">
+                    <h3 class="table-title">Employee Certifications</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="certEmpIdFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                            <input type="text" id="certCompIdFilter" class="form-control me-2" placeholder="Filter by Competency ID" style="width: 200px;">
+                            <input type="text" id="certNameFilter" class="form-control me-2" placeholder="Filter by Name" style="width: 200px;">
+                            <button class="btn btn-outline-secondary" id="resetCertFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
                     </div>
-                </div>
-                
-      
-                <div id="employee-competencies" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Employee Competencies</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Competency ID</th>
-                                    <th>Proficiency Level</th>
-                                    <th>Assessment Date</th>
-                                    <th>Assessed By</th>
-                                    <th>Created At</th>
-                                    <th>Updated At</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>3001</td>
-                                    <td>5001</td>
-                                    <td>2001</td>
-                                    <td><span class="badge badge-success">Expert</span></td>
-                                    <td>2023-01-15</td>
-                                    <td>6001</td>
-                                    <td>2023-01-15 14:30:00</td>
-                                    <td>2023-01-15 14:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3002</td>
-                                    <td>5002</td>
-                                    <td>2002</td>
-                                    <td><span class="badge badge-primary">Advanced</span></td>
-                                    <td>2023-02-20</td>
-                                    <td>6002</td>
-                                    <td>2023-02-20 10:15:00</td>
-                                    <td>2023-06-18 11:20:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3003</td>
-                                    <td>5003</td>
-                                    <td>2003</td>
-                                    <td><span class="badge badge-warning">Intermediate</span></td>
-                                    <td>2023-03-10</td>
-                                    <td>6001</td>
-                                    <td>2023-03-10 09:45:00</td>
-                                    <td>2023-05-22 16:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3004</td>
-                                    <td>5001</td>
-                                    <td>2004</td>
-                                    <td><span class="badge badge-danger">Beginner</span></td>
-                                    <td>2023-04-05</td>
-                                    <td>6003</td>
-                                    <td>2023-04-05 13:20:00</td>
-                                    <td>2023-04-05 13:20:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3005</td>
-                                    <td>5004</td>
-                                    <td>2005</td>
-                                    <td><span class="badge badge-primary">Advanced</span></td>
-                                    <td>2023-05-12</td>
-                                    <td>6002</td>
-                                    <td>2023-05-12 11:10:00</td>
-                                    <td>2023-07-20 14:45:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3006</td>
-                                    <td>5005</td>
-                                    <td>2006</td>
-                                    <td><span class="badge badge-success">Expert</span></td>
-                                    <td>2023-06-18</td>
-                                    <td>6004</td>
-                                    <td>2023-06-18 09:30:00</td>
-                                    <td>2023-06-18 09:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3007</td>
-                                    <td>5002</td>
-                                    <td>2007</td>
-                                    <td><span class="badge badge-warning">Intermediate</span></td>
-                                    <td>2023-07-05</td>
-                                    <td>6001</td>
-                                    <td>2023-07-05 15:20:00</td>
-                                    <td>2023-09-10 10:15:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3008</td>
-                                    <td>5006</td>
-                                    <td>2008</td>
-                                    <td><span class="badge badge-info">Proficient</span></td>
-                                    <td>2023-08-22</td>
-                                    <td>6003</td>
-                                    <td>2023-08-22 13:45:00</td>
-                                    <td>2023-10-05 16:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3009</td>
-                                    <td>5003</td>
-                                    <td>2009</td>
-                                    <td><span class="badge badge-primary">Advanced</span></td>
-                                    <td>2023-09-15</td>
-                                    <td>6002</td>
-                                    <td>2023-09-15 10:10:00</td>
-                                    <td>2023-11-20 14:25:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3010</td>
-                                    <td>5007</td>
-                                    <td>2010</td>
-                                    <td><span class="badge badge-danger">Beginner</span></td>
-                                    <td>2023-10-10</td>
-                                    <td>6004</td>
-                                    <td>2023-10-10 16:15:00</td>
-                                    <td>2023-10-10 16:15:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-               
-                <div id="training" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Training Programs</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Training ID</th>
-                                    <th>Training Name</th>
-                                    <th>Description</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
-                                    <th>Employee ID</th>
-                                    <th>Created At</th>
-                                    <th>Updated At</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>3001</td>
-                                    <td>E-commerce Platform Fundamentals</td>
-                                    <td>Training on managing our e-commerce platform</td>
-                                    <td>2023-06-01</td>
-                                    <td>2023-06-03</td>
-                                    <td>5001</td>
-                                    <td>2023-05-10 09:30:00</td>
-                                    <td>2023-05-10 09:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3002</td>
-                                    <td>Digital Marketing Strategies</td>
-                                    <td>Advanced training on digital marketing techniques</td>
-                                    <td>2023-07-15</td>
-                                    <td>2023-07-17</td>
-                                    <td>5002</td>
-                                    <td>2023-06-01 11:15:00</td>
-                                    <td>2023-06-05 14:20:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3003</td>
-                                    <td>Shopify Development Workshop</td>
-                                    <td>Hands-on training for Shopify store development</td>
-                                    <td>2023-08-10</td>
-                                    <td>2023-08-12</td>
-                                    <td>5003</td>
-                                    <td>2023-07-20 10:45:00</td>
-                                    <td>2023-07-25 16:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3004</td>
-                                    <td>Google Ads Certification Prep</td>
-                                    <td>Preparation for Google Ads certification exam</td>
-                                    <td>2023-09-05</td>
-                                    <td>2023-09-08</td>
-                                    <td>5001</td>
-                                    <td>2023-08-15 13:10:00</td>
-                                    <td>2023-08-18 11:25:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3005</td>
-                                    <td>Inventory Management Best Practices</td>
-                                    <td>Training on effective inventory management</td>
-                                    <td>2023-10-10</td>
-                                    <td>2023-10-11</td>
-                                    <td>5004</td>
-                                    <td>2023-09-15 14:20:00</td>
-                                    <td>2023-09-20 10:15:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3006</td>
-                                    <td>Customer Service Excellence</td>
-                                    <td>Training on handling customer inquiries and complaints</td>
-                                    <td>2023-11-07</td>
-                                    <td>2023-11-09</td>
-                                    <td>5005</td>
-                                    <td>2023-10-10 11:30:00</td>
-                                    <td>2023-10-15 16:45:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3007</td>
-                                    <td>Social Media Marketing</td>
-                                    <td>Training on creating effective social media campaigns</td>
-                                    <td>2023-12-05</td>
-                                    <td>2023-12-07</td>
-                                    <td>5002</td>
-                                    <td>2023-11-10 09:15:00</td>
-                                    <td>2023-11-15 14:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3008</td>
-                                    <td>Warehouse Operations Training</td>
-                                    <td>Training on warehouse management and fulfillment</td>
-                                    <td>2024-01-15</td>
-                                    <td>2024-01-16</td>
-                                    <td>5006</td>
-                                    <td>2023-12-10 13:20:00</td>
-                                    <td>2023-12-15 10:45:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3009</td>
-                                    <td>Conversion Rate Optimization</td>
-                                    <td>Training on improving website conversion rates</td>
-                                    <td>2024-02-12</td>
-                                    <td>2024-02-16</td>
-                                    <td>5003</td>
-                                    <td>2024-01-15 10:10:00</td>
-                                    <td>2024-01-20 14:25:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3010</td>
-                                    <td>Data Privacy Compliance</td>
-                                    <td>Training on GDPR and other privacy regulations</td>
-                                    <td>2024-03-05</td>
-                                    <td>2024-03-08</td>
-                                    <td>5007</td>
-                                    <td>2024-02-10 16:15:00</td>
-                                    <td>2024-02-15 11:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                        <button class="btn-view">View</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-             
-                <div id="feedback" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Training Feedback</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Feedback ID</th>
-                                    <th>Training ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Rating</th>
-                                    <th>Comments</th>
-                                    <th>Submitted At</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>4001</td>
-                                    <td>3001</td>
-                                    <td>5001</td>
-                                    <td>5</td>
-                                    <td>Excellent course with practical examples</td>
-                                    <td>2023-06-05 15:20:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4002</td>
-                                    <td>3002</td>
-                                    <td>5002</td>
-                                    <td>4</td>
-                                    <td>Good content but needed more hands-on exercises</td>
-                                    <td>2023-07-20 11:45:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4003</td>
-                                    <td>3003</td>
-                                    <td>5003</td>
-                                    <td>3</td>
-                                    <td>Content was too basic for my level</td>
-                                    <td>2023-08-15 14:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4004</td>
-                                    <td>3004</td>
-                                    <td>5001</td>
-                                    <td>5</td>
-                                    <td>Instructor was very knowledgeable and engaging</td>
-                                    <td>2023-09-10 10:15:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4005</td>
-                                    <td>3005</td>
-                                    <td>5004</td>
-                                    <td>4</td>
-                                    <td>Very informative, but the pace was a bit fast</td>
-                                    <td>2023-10-12 13:45:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4006</td>
-                                    <td>3006</td>
-                                    <td>5005</td>
-                                    <td>5</td>
-                                    <td>Perfect balance of theory and practice</td>
-                                    <td>2023-11-10 09:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4007</td>
-                                    <td>3007</td>
-                                    <td>5002</td>
-                                    <td>2</td>
-                                    <td>Material was outdated and not very useful</td>
-                                    <td>2023-12-08 16:20:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4008</td>
-                                    <td>3008</td>
-                                    <td>5006</td>
-                                    <td>4</td>
-                                    <td>Good overview of warehouse operations</td>
-                                    <td>2024-01-17 10:15:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4009</td>
-                                    <td>3009</td>
-                                    <td>5003</td>
-                                    <td>5</td>
-                                    <td>Best conversion optimization course I've taken!</td>
-                                    <td>2024-02-18 14:45:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4010</td>
-                                    <td>3010</td>
-                                    <td>5007</td>
-                                    <td>3</td>
-                                    <td>Content was good but too much information in too little time</td>
-                                    <td>2024-03-09 11:30:00</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Certification ID</th>
+                                <th>Employee ID</th>
+                                <th>Competency ID</th>
+                                <th>Certification Name</th>
+                                <th>Issued Date</th>
+                                <th>Expiry Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="certificationsTable">
+                            <tr>
+                                <td>1001</td>
+                                <td>5001</td>
+                                <td>2001</td>
+                                <td>E-commerce Professional Certification</td>
+                                <td>2024-03-15</td>
+                                <td>2027-03-15</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>1002</td>
+                                <td>5002</td>
+                                <td>2002</td>
+                                <td>Digital Marketing Specialist</td>
+                                <td>2024-01-10</td>
+                                <td>2026-01-10</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>1003</td>
+                                <td>5003</td>
+                                <td>2003</td>
+                                <td>Project Management Professional</td>
+                                <td>2024-04-01</td>
+                                <td>2027-04-01</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>1004</td>
+                                <td>5004</td>
+                                <td>2004</td>
+                                <td>Certified Scrum Master</td>
+                                <td>2024-05-12</td>
+                                <td>2026-05-12</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>1005</td>
+                                <td>5005</td>
+                                <td>2005</td>
+                                <td>Data Analytics Certification</td>
+                                <td>2024-02-20</td>
+                                <td>2027-02-20</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>1006</td>
+                                <td>5006</td>
+                                <td>2006</td>
+                                <td>Cloud Solutions Architect</td>
+                                <td>2024-06-10</td>
+                                <td>2027-06-10</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>1007</td>
+                                <td>5007</td>
+                                <td>2007</td>
+                                <td>HR Management Certification</td>
+                                <td>2024-03-25</td>
+                                <td>2027-03-25</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>1008</td>
+                                <td>5008</td>
+                                <td>2008</td>
+                                <td>Finance Professional Certificate</td>
+                                <td>2024-04-18</td>
+                                <td>2027-04-18</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>1009</td>
+                                <td>5009</td>
+                                <td>2009</td>
+                                <td>Legal Compliance Certification</td>
+                                <td>2024-05-05</td>
+                                <td>2027-05-05</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>1010</td>
+                                <td>5010</td>
+                                <td>2010</td>
+                                <td>Customer Service Excellence</td>
+                                <td>2024-06-01</td>
+                                <td>2027-06-01</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>1011</td>
+                                <td>5011</td>
+                                <td>2011</td>
+                                <td>Operations Management Certificate</td>
+                                <td>2024-05-28</td>
+                                <td>2027-05-28</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>1012</td>
+                                <td>5012</td>
+                                <td>2012</td>
+                                <td>IT Security Certification</td>
+                                <td>2024-06-12</td>
+                                <td>2027-06-12</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-		</main>
-		
-	</section>
+             
+            <div id="competencies" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Competencies</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="compIdFilter" class="form-control me-2" placeholder="Filter by Competency ID" style="width: 200px;">
+                            <input type="text" id="compNameFilter" class="form-control me-2" placeholder="Filter by Name" style="width: 200px;">
+                            <select id="compCategoryFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Categories</option>
+                                <option>Technical</option>
+                                <option>Marketing</option>
+                                <option>Operations</option>
+                                <option>Service</option>
+                                <option>Legal</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetCompFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Competency ID</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Created At</th>
+                                <th>Updated At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="competenciesTable">
+                            <tr>
+                                <td>2001</td>
+                                <td>E-commerce Platform Management</td>
+                                <td>Ability to manage and operate e-commerce platforms</td>
+                                <td>Technical</td>
+                                <td>2024-01-10 09:30:00</td>
+                                <td>2024-01-10 09:30:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2002</td>
+                                <td>Digital Marketing</td>
+                                <td>Knowledge of online marketing strategies and tools</td>
+                                <td>Marketing</td>
+                                <td>2024-01-15 10:15:00</td>
+                                <td>2024-02-20 11:30:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2003</td>
+                                <td>Project Management</td>
+                                <td>Managing projects efficiently and effectively</td>
+                                <td>Operations</td>
+                                <td>2024-02-01 08:00:00</td>
+                                <td>2024-03-01 09:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2004</td>
+                                <td>Scrum Mastery</td>
+                                <td>Expertise in Scrum and Agile methodologies</td>
+                                <td>Operations</td>
+                                <td>2024-03-12 10:00:00</td>
+                                <td>2024-03-12 10:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2005</td>
+                                <td>Data Analytics</td>
+                                <td>Analyzing and interpreting complex data</td>
+                                <td>Technical</td>
+                                <td>2024-02-20 11:00:00</td>
+                                <td>2024-02-20 11:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2006</td>
+                                <td>Cloud Architecture</td>
+                                <td>Designing scalable cloud solutions</td>
+                                <td>Technical</td>
+                                <td>2024-04-10 09:30:00</td>
+                                <td>2024-04-10 09:30:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2007</td>
+                                <td>HR Management</td>
+                                <td>Managing human resources and talent</td>
+                                <td>Service</td>
+                                <td>2024-03-25 12:00:00</td>
+                                <td>2024-03-25 12:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2008</td>
+                                <td>Financial Analysis</td>
+                                <td>Analyzing financial data and trends</td>
+                                <td>Marketing</td>
+                                <td>2024-04-18 13:00:00</td>
+                                <td>2024-04-18 13:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2009</td>
+                                <td>Legal Compliance</td>
+                                <td>Ensuring compliance with legal standards</td>
+                                <td>Legal</td>
+                                <td>2024-05-05 14:00:00</td>
+                                <td>2024-05-05 14:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2010</td>
+                                <td>Customer Service</td>
+                                <td>Delivering excellent customer service</td>
+                                <td>Service</td>
+                                <td>2024-06-01 15:00:00</td>
+                                <td>2024-06-01 15:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2011</td>
+                                <td>Operations Management</td>
+                                <td>Managing daily business operations</td>
+                                <td>Operations</td>
+                                <td>2024-05-28 16:00:00</td>
+                                <td>2024-05-28 16:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2012</td>
+                                <td>IT Security</td>
+                                <td>Protecting IT infrastructure and data</td>
+                                <td>Technical</td>
+                                <td>2024-06-12 17:00:00</td>
+                                <td>2024-06-12 17:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+              
+            <div id="employee-competencies" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Employee Competencies</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="empCompEmpIdFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                            <input type="text" id="empCompCompIdFilter" class="form-control me-2" placeholder="Filter by Competency ID" style="width: 200px;">
+                            <select id="empCompProfFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Proficiency Levels</option>
+                                <option>Expert</option>
+                                <option>Advanced</option>
+                                <option>Intermediate</option>
+                                <option>Beginner</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetEmpCompFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Employee ID</th>
+                                <th>Competency ID</th>
+                                <th>Proficiency Level</th>
+                                <th>Assessment Date</th>
+                                <th>Assessed By</th>
+                                <th>Created At</th>
+                                <th>Updated At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeeCompetenciesTable">
+                            <tr>
+                                <td>3001</td>
+                                <td>5001</td>
+                                <td>2001</td>
+                                <td><span class="badge bg-success">Expert</span></td>
+                                <td>2024-01-15</td>
+                                <td>6001</td>
+                                <td>2024-01-15 14:30:00</td>
+                                <td>2024-01-15 14:30:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3002</td>
+                                <td>5002</td>
+                                <td>2002</td>
+                                <td><span class="badge bg-primary">Advanced</span></td>
+                                <td>2024-02-20</td>
+                                <td>6002</td>
+                                <td>2024-02-20 10:15:00</td>
+                                <td>2024-06-18 11:20:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3003</td>
+                                <td>5003</td>
+                                <td>2003</td>
+                                <td><span class="badge bg-warning">Intermediate</span></td>
+                                <td>2024-03-10</td>
+                                <td>6003</td>
+                                <td>2024-03-10 09:00:00</td>
+                                <td>2024-03-10 09:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3004</td>
+                                <td>5004</td>
+                                <td>2004</td>
+                                <td><span class="badge bg-info">Beginner</span></td>
+                                <td>2024-04-05</td>
+                                <td>6004</td>
+                                <td>2024-04-05 08:30:00</td>
+                                <td>2024-04-05 08:30:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3005</td>
+                                <td>5005</td>
+                                <td>2005</td>
+                                <td><span class="badge bg-success">Expert</span></td>
+                                <td>2024-02-25</td>
+                                <td>6005</td>
+                                <td>2024-02-25 11:00:00</td>
+                                <td>2024-02-25 11:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3006</td>
+                                <td>5006</td>
+                                <td>2006</td>
+                                <td><span class="badge bg-primary">Advanced</span></td>
+                                <td>2024-05-12</td>
+                                <td>6006</td>
+                                <td>2024-05-12 10:00:00</td>
+                                <td>2024-05-12 10:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3007</td>
+                                <td>5007</td>
+                                <td>2007</td>
+                                <td><span class="badge bg-warning">Intermediate</span></td>
+                                <td>2024-03-28</td>
+                                <td>6007</td>
+                                <td>2024-03-28 13:00:00</td>
+                                <td>2024-03-28 13:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3008</td>
+                                <td>5008</td>
+                                <td>2008</td>
+                                <td><span class="badge bg-info">Beginner</span></td>
+                                <td>2024-04-20</td>
+                                <td>6008</td>
+                                <td>2024-04-20 14:00:00</td>
+                                <td>2024-04-20 14:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3009</td>
+                                <td>5009</td>
+                                <td>2009</td>
+                                <td><span class="badge bg-success">Expert</span></td>
+                                <td>2024-05-10</td>
+                                <td>6009</td>
+                                <td>2024-05-10 15:00:00</td>
+                                <td>2024-05-10 15:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3010</td>
+                                <td>5010</td>
+                                <td>2010</td>
+                                <td><span class="badge bg-primary">Advanced</span></td>
+                                <td>2024-06-01</td>
+                                <td>6010</td>
+                                <td>2024-06-01 16:00:00</td>
+                                <td>2024-06-01 16:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3011</td>
+                                <td>5011</td>
+                                <td>2011</td>
+                                <td><span class="badge bg-warning">Intermediate</span></td>
+                                <td>2024-05-28</td>
+                                <td>6011</td>
+                                <td>2024-05-28 17:00:00</td>
+                                <td>2024-05-28 17:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3012</td>
+                                <td>5012</td>
+                                <td>2012</td>
+                                <td><span class="badge bg-info">Beginner</span></td>
+                                <td>2024-06-12</td>
+                                <td>6012</td>
+                                <td>2024-06-12 18:00:00</td>
+                                <td>2024-06-12 18:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                
+            <div id="training" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Training Programs</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="trainingIdFilter" class="form-control me-2" placeholder="Filter by Training ID" style="width: 200px;">
+                            <input type="text" id="trainingNameFilter" class="form-control me-2" placeholder="Filter by Name" style="width: 200px;">
+                            <input type="text" id="trainingEmpIdFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                            <button class="btn btn-outline-secondary" id="resetTrainingFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Training ID</th>
+                                <th>Training Name</th>
+                                <th>Description</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Employee ID</th>
+                                <th>Created At</th>
+                                <th>Updated At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trainingTable">
+                            <tr>
+                                <td>3001</td>
+                                <td>E-commerce Platform Fundamentals</td>
+                                <td>Training on managing our e-commerce platform</td>
+                                <td>2024-06-01</td>
+                                <td>2024-06-03</td>
+                                <td>5001</td>
+                                <td>2024-05-10 09:30:00</td>
+                                <td>2024-05-10 09:30:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3002</td>
+                                <td>Digital Marketing Strategies</td>
+                                <td>Advanced training on digital marketing techniques</td>
+                                <td>2024-07-15</td>
+                                <td>2024-07-17</td>
+                                <td>5002</td>
+                                <td>2024-06-01 11:15:00</td>
+                                <td>2024-06-05 14:20:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3003</td>
+                                <td>Project Management Bootcamp</td>
+                                <td>Intensive project management training</td>
+                                <td>2024-05-10</td>
+                                <td>2024-05-12</td>
+                                <td>5003</td>
+                                <td>2024-04-20 10:00:00</td>
+                                <td>2024-04-20 10:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3004</td>
+                                <td>Scrum Master Workshop</td>
+                                <td>Workshop on Scrum and Agile</td>
+                                <td>2024-06-15</td>
+                                <td>2024-06-16</td>
+                                <td>5004</td>
+                                <td>2024-05-25 09:00:00</td>
+                                <td>2024-05-25 09:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3005</td>
+                                <td>Data Analytics Essentials</td>
+                                <td>Basics of data analytics</td>
+                                <td>2024-04-20</td>
+                                <td>2024-04-22</td>
+                                <td>5005</td>
+                                <td>2024-03-15 08:00:00</td>
+                                <td>2024-03-15 08:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3006</td>
+                                <td>Cloud Solutions Training</td>
+                                <td>Cloud architecture and deployment</td>
+                                <td>2024-05-30</td>
+                                <td>2024-06-01</td>
+                                <td>5006</td>
+                                <td>2024-05-01 11:00:00</td>
+                                <td>2024-05-01 11:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3007</td>
+                                <td>HR Management Seminar</td>
+                                <td>Seminar on HR best practices</td>
+                                <td>2024-06-10</td>
+                                <td>2024-06-11</td>
+                                <td>5007</td>
+                                <td>2024-05-20 12:00:00</td>
+                                <td>2024-05-20 12:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3008</td>
+                                <td>Finance for Non-Finance</td>
+                                <td>Finance basics for all employees</td>
+                                <td>2024-05-18</td>
+                                <td>2024-05-19</td>
+                                <td>5008</td>
+                                <td>2024-04-28 13:00:00</td>
+                                <td>2024-04-28 13:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3009</td>
+                                <td>Legal Compliance Training</td>
+                                <td>Legal standards and compliance</td>
+                                <td>2024-06-05</td>
+                                <td>2024-06-06</td>
+                                <td>5009</td>
+                                <td>2024-05-15 14:00:00</td>
+                                <td>2024-05-15 14:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3010</td>
+                                <td>Customer Service Skills</td>
+                                <td>Improving customer service</td>
+                                <td>2024-06-20</td>
+                                <td>2024-06-21</td>
+                                <td>5010</td>
+                                <td>2024-05-30 15:00:00</td>
+                                <td>2024-05-30 15:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3011</td>
+                                <td>Operations Management Training</td>
+                                <td>Managing business operations</td>
+                                <td>2024-06-25</td>
+                                <td>2024-06-26</td>
+                                <td>5011</td>
+                                <td>2024-06-01 16:00:00</td>
+                                <td>2024-06-01 16:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3012</td>
+                                <td>IT Security Awareness</td>
+                                <td>Security best practices for IT</td>
+                                <td>2024-06-28</td>
+                                <td>2024-06-29</td>
+                                <td>5012</td>
+                                <td>2024-06-10 17:00:00</td>
+                                <td>2024-06-10 17:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                
+            <div id="feedback" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Training Feedback</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="feedbackIdFilter" class="form-control me-2" placeholder="Filter by Feedback ID" style="width: 200px;">
+                            <input type="text" id="feedbackTrainingIdFilter" class="form-control me-2" placeholder="Filter by Training ID" style="width: 200px;">
+                            <input type="text" id="feedbackEmpIdFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                            <button class="btn btn-outline-secondary" id="resetFeedbackFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Feedback ID</th>
+                                <th>Training ID</th>
+                                <th>Employee ID</th>
+                                <th>Rating</th>
+                                <th>Comments</th>
+                                <th>Submitted At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feedbackTable">
+                            <tr>
+                                <td>4001</td>
+                                <td>3001</td>
+                                <td>5001</td>
+                                <td>5</td>
+                                <td>Excellent course with practical examples</td>
+                                <td>2024-06-05 15:20:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4002</td>
+                                <td>3002</td>
+                                <td>5002</td>
+                                <td>4</td>
+                                <td>Good content but needed more hands-on exercises</td>
+                                <td>2024-07-20 11:45:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4003</td>
+                                <td>3003</td>
+                                <td>5003</td>
+                                <td>5</td>
+                                <td>Very informative and well structured</td>
+                                <td>2024-05-13 10:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4004</td>
+                                <td>3004</td>
+                                <td>5004</td>
+                                <td>4</td>
+                                <td>Great workshop, learned a lot</td>
+                                <td>2024-06-17 09:30:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4005</td>
+                                <td>3005</td>
+                                <td>5005</td>
+                                <td>3</td>
+                                <td>Could use more real-world examples</td>
+                                <td>2024-04-23 11:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4006</td>
+                                <td>3006</td>
+                                <td>5006</td>
+                                <td>5</td>
+                                <td>Excellent cloud training</td>
+                                <td>2024-06-02 12:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4007</td>
+                                <td>3007</td>
+                                <td>5007</td>
+                                <td>4</td>
+                                <td>Very useful HR insights</td>
+                                <td>2024-06-12 13:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4008</td>
+                                <td>3008</td>
+                                <td>5008</td>
+                                <td>5</td>
+                                <td>Finance basics explained clearly</td>
+                                <td>2024-05-20 14:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4009</td>
+                                <td>3009</td>
+                                <td>5009</td>
+                                <td>4</td>
+                                <td>Good legal compliance overview</td>
+                                <td>2024-06-07 15:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4010</td>
+                                <td>3010</td>
+                                <td>5010</td>
+                                <td>5</td>
+                                <td>Customer service tips were practical</td>
+                                <td>2024-06-22 16:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4011</td>
+                                <td>3011</td>
+                                <td>5011</td>
+                                <td>4</td>
+                                <td>Operations training was helpful</td>
+                                <td>2024-06-27 17:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4012</td>
+                                <td>3012</td>
+                                <td>5012</td>
+                                <td>5</td>
+                                <td>Security awareness is a must</td>
+                                <td>2024-06-29 18:00:00</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-	
+            <div id="vacancies" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Job Vacancies and Competencies</h3>
+                    <div class="table-controls mb-3">
+                        <div class="filter-controls">
+                            <input type="text" id="vacancyIdFilter" class="form-control me-2" placeholder="Filter by Vacancy ID" style="width: 200px;">
+                            <input type="text" id="vacancyTitleFilter" class="form-control me-2" placeholder="Filter by Job Title" style="width: 200px;">
+                            <select id="vacancyProfFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Proficiency Levels</option>
+                                <option>Basic</option>
+                                <option>Intermediate</option>
+                                <option>Advanced</option>
+                                <option>Expert</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetVacancyFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Jvc Id</th>
+                                <th>Vacancy ID</th>
+                                <th>Job Title</th>
+                                <th>Core Competencies</th>
+                                <th>Required Proficiency Level</th>
+                                <th>Essential Skills</th>
+                                <th>Nice-to-Have Skills</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vacanciesTable">
+                            <tr>
+                                <td>JVC-2000</td>
+                                <td>V7001</td>
+                                <td>Software Developer</td>
+                                <td>Technical Expertise</td>
+                                <td>Advanced</td>
+                                <td>
+                                    <ul>
+                                        <li>Programming (Java/Python)</li>
+                                        <li>Database/SQL</li>
+                                        <li>API Development</li>
+                                        <li>Version Control (Git)</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Cloud Architecture</li>
+                                        <li>DevOps Tools</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>JVC-2001</td>
+                                <td>V7002</td>
+                                <td>Project Manager</td>
+                                <td>Project Management</td>
+                                <td>Expert</td>
+                                <td>
+                                    <ul>
+                                        <li>Agile Methodologies</li>
+                                        <li>Risk Management</li>
+                                        <li>Stakeholder Communication</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>PMP Certification</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>JVC-2002</td>
+                                <td>V7003</td>
+                                <td>Marketing Specialist</td>
+                                <td>Digital Marketing</td>
+                                <td>Advanced</td>
+                                <td>
+                                    <ul>
+                                        <li>SEO/SEM</li>
+                                        <li>Content Creation</li>
+                                        <li>Social Media Management</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Google Analytics</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>JVC-2003</td>
+                                <td>V7004</td>
+                                <td>Data Analyst</td>
+                                <td>Data Analytics</td>
+                                <td>Intermediate</td>
+                                <td>
+                                    <ul>
+                                        <li>Excel</li>
+                                        <li>SQL</li>
+                                        <li>Data Visualization</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Python</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>JVC-2004</td>
+                                <td>V7005</td>
+                                <td>Cloud Engineer</td>
+                                <td>Cloud Architecture</td>
+                                <td>Advanced</td>
+                                <td>
+                                    <ul>
+                                        <li>AWS/Azure</li>
+                                        <li>CI/CD</li>
+                                        <li>Infrastructure as Code</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Kubernetes</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>JVC-2005</td>
+                                <td>V7006</td>
+                                <td>HR Officer</td>
+                                <td>HR Management</td>
+                                <td>Intermediate</td>
+                                <td>
+                                    <ul>
+                                        <li>Recruitment</li>
+                                        <li>Payroll</li>
+                                        <li>Employee Relations</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>HRIS</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>JVC-2006</td>
+                                <td>V7007</td>
+                                <td>Finance Analyst</td>
+                                <td>Financial Analysis</td>
+                                <td>Advanced</td>
+                                <td>
+                                    <ul>
+                                        <li>Financial Modeling</li>
+                                        <li>Budgeting</li>
+                                        <li>Forecasting</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>CPA</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>JVC-2007</td>
+                                <td>V7008</td>
+                                <td>Legal Advisor</td>
+                                <td>Legal Compliance</td>
+                                <td>Expert</td>
+                                <td>
+                                    <ul>
+                                        <li>Contract Law</li>
+                                        <li>Corporate Governance</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>LLB</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>JVC-2008</td>
+                                <td>V7009</td>
+                                <td>Customer Service Rep</td>
+                                <td>Customer Service</td>
+                                <td>Basic</td>
+                                <td>
+                                    <ul>
+                                        <li>Communication</li>
+                                        <li>Problem Solving</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>CRM Tools</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>JVC-2009</td>
+                                <td>V7010</td>
+                                <td>Operations Manager</td>
+                                <td>Operations Management</td>
+                                <td>Expert</td>
+                                <td>
+                                    <ul>
+                                        <li>Process Optimization</li>
+                                        <li>Team Leadership</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Lean Six Sigma</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>JVC-2010</td>
+                                <td>V7011</td>
+                                <td>IT Security Analyst</td>
+                                <td>IT Security</td>
+                                <td>Advanced</td>
+                                <td>
+                                    <ul>
+                                        <li>Network Security</li>
+                                        <li>Incident Response</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>CISSP</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1 view-btn">View</button>
+                                    <button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</section>
 
-	<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script>
-		document.getElementById("profile-btn").addEventListener("click", function(event) {
-			event.preventDefault();
-			document.getElementById("dropdown-menu").classList.toggle("show");
-		});
-		
-		document.addEventListener("click", function(event) {
-			if (!document.getElementById("profile-btn").contains(event.target)) {
-				document.getElementById("dropdown-menu").classList.remove("show");
-			}
-		});
-
-        function openTab(evt, tabName) {
-            var i, tabcontent, tabbuttons;
-            
-            // Hide all tab content
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-            }
-            
-            // Remove active class from all tab buttons
-            tabbuttons = document.getElementsByClassName("tab-button");
-            for (i = 0; i < tabbuttons.length; i++) {
-                tabbuttons[i].classList.remove("active");
-            }
-            
-            // Show the current tab and add active class to the button
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-
-        // Add event listeners for edit and delete buttons
-        document.querySelectorAll('.btn-edit').forEach(button => {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                alert('Editing row with ID: ' + row.cells[0].textContent);
-                // In a real application, you would open a modal or form for editing
-            });
-        });
-
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', function() {
-                if (confirm('Are you sure you want to delete this record?')) {
-                    const row = this.closest('tr');
-                    row.style.display = 'none';
-                    // In a real application, you would send a request to the server to delete the record
-                    alert('Record with ID: ' + row.cells[0].textContent + ' has been deleted');
-                }
-            });
-        });
-        
-        document.querySelectorAll('.btn-view').forEach(button => {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                alert('Viewing details for training ID: ' + row.cells[0].textContent);
-                // In a real application, you would show more detailed information
-            });
-        });
-	</script>
-
 <script>
-    // Wait for DOM to be fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        // Competency Distribution Chart - Based on actual competency categories
+    // Initialize Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    // Initialize modals
+    var viewModal = new bootstrap.Modal(document.getElementById('viewModal'))
+    var editModal = new bootstrap.Modal(document.getElementById('editModal'))
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'))
+
+    // Profile dropdown functionality
+    document.getElementById("profile-btn").addEventListener("click", function(event) {
+        event.preventDefault()
+        document.getElementById("dropdown-menu").classList.toggle("show")
+    })
+    
+    document.addEventListener("click", function(event) {
+        if (!document.getElementById("profile-btn").contains(event.target)) {
+            document.getElementById("dropdown-menu").classList.remove("show")
+        }
+    })
+
+    function openTab(evt, tabName) {
+        var i, tabcontent, tabbuttons
+        
+        // Hide all tab content
+        tabcontent = document.getElementsByClassName("tab-content")
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove("active")
+        }
+        
+        // Remove active class from all tab buttons
+        tabbuttons = document.getElementsByClassName("tab-button")
+        for (i = 0; i < tabbuttons.length; i++) {
+            tabbuttons[i].classList.remove("active")
+        }
+        
+        // Show the current tab and add active class to the button
+        document.getElementById(tabName).classList.add("active")
+        evt.currentTarget.classList.add("active")
+    }
+
+    // Data storage for all tables
+    let certificationsData = [
+        { id: "1001", empId: "5001", compId: "2001", name: "E-commerce Professional Certification", issued: "2024-03-15", expiry: "2027-03-15" },
+        { id: "1002", empId: "5002", compId: "2002", name: "Digital Marketing Specialist", issued: "2024-01-10", expiry: "2026-01-10" },
+        { id: "1003", empId: "5003", compId: "2003", name: "Project Management Professional", issued: "2024-04-01", expiry: "2027-04-01" },
+        { id: "1004", empId: "5004", compId: "2004", name: "Certified Scrum Master", issued: "2024-05-12", expiry: "2026-05-12" },
+        { id: "1005", empId: "5005", compId: "2005", name: "Data Analytics Certification", issued: "2024-02-20", expiry: "2027-02-20" },
+        { id: "1006", empId: "5006", compId: "2006", name: "Cloud Solutions Architect", issued: "2024-06-10", expiry: "2027-06-10" },
+        { id: "1007", empId: "5007", compId: "2007", name: "HR Management Certification", issued: "2024-03-25", expiry: "2027-03-25" },
+        { id: "1008", empId: "5008", compId: "2008", name: "Finance Professional Certificate", issued: "2024-04-18", expiry: "2027-04-18" },
+        { id: "1009", empId: "5009", compId: "2009", name: "Legal Compliance Certification", issued: "2024-05-05", expiry: "2027-05-05" },
+        { id: "1010", empId: "5010", compId: "2010", name: "Customer Service Excellence", issued: "2024-06-01", expiry: "2027-06-01" },
+        { id: "1011", empId: "5011", compId: "2011", name: "Operations Management Certificate", issued: "2024-05-28", expiry: "2027-05-28" },
+        { id: "1012", empId: "5012", compId: "2012", name: "IT Security Certification", issued: "2024-06-12", expiry: "2027-06-12" }
+    ];
+
+    let competenciesData = [
+        { id: "2001", name: "E-commerce Platform Management", desc: "Ability to manage and operate e-commerce platforms", category: "Technical", createdAt: "2024-01-10 09:30:00", updatedAt: "2024-01-10 09:30:00" },
+        { id: "2002", name: "Digital Marketing", desc: "Knowledge of online marketing strategies and tools", category: "Marketing", createdAt: "2024-01-15 10:15:00", updatedAt: "2024-02-20 11:30:00" },
+        { id: "2003", name: "Project Management", desc: "Managing projects efficiently and effectively", category: "Operations", createdAt: "2024-02-01 08:00:00", updatedAt: "2024-03-01 09:00:00" },
+        { id: "2004", name: "Scrum Mastery", desc: "Expertise in Scrum and Agile methodologies", category: "Operations", createdAt: "2024-03-12 10:00:00", updatedAt: "2024-03-12 10:00:00" },
+        { id: "2005", name: "Data Analytics", desc: "Analyzing and interpreting complex data", category: "Technical", createdAt: "2024-02-20 11:00:00", updatedAt: "2024-02-20 11:00:00" },
+        { id: "2006", name: "Cloud Architecture", desc: "Designing scalable cloud solutions", category: "Technical", createdAt: "2024-04-10 09:30:00", updatedAt: "2024-04-10 09:30:00" },
+        { id: "2007", name: "HR Management", desc: "Managing human resources and talent", category: "Service", createdAt: "2024-03-25 12:00:00", updatedAt: "2024-03-25 12:00:00" },
+        { id: "2008", name: "Financial Analysis", desc: "Analyzing financial data and trends", category: "Marketing", createdAt: "2024-04-18 13:00:00", updatedAt: "2024-04-18 13:00:00" },
+        { id: "2009", name: "Legal Compliance", desc: "Ensuring compliance with legal standards", category: "Legal", createdAt: "2024-05-05 14:00:00", updatedAt: "2024-05-05 14:00:00" },
+        { id: "2010", name: "Customer Service", desc: "Delivering excellent customer service", category: "Service", createdAt: "2024-06-01 15:00:00", updatedAt: "2024-06-01 15:00:00" },
+        { id: "2011", name: "Operations Management", desc: "Managing daily business operations", category: "Operations", createdAt: "2024-05-28 16:00:00", updatedAt: "2024-05-28 16:00:00" },
+        { id: "2012", name: "IT Security", desc: "Protecting IT infrastructure and data", category: "Technical", createdAt: "2024-06-12 17:00:00", updatedAt: "2024-06-12 17:00:00" }
+    ];
+
+    let empCompetenciesData = [
+        { id: "3001", empId: "5001", compId: "2001", profLevel: "Expert", assessDate: "2024-01-15", assessedBy: "6001", createdAt: "2024-01-15 14:30:00", updatedAt: "2024-01-15 14:30:00" },
+        { id: "3002", empId: "5002", compId: "2002", profLevel: "Advanced", assessDate: "2024-02-20", assessedBy: "6002", createdAt: "2024-02-20 10:15:00", updatedAt: "2024-06-18 11:20:00" },
+        { id: "3003", empId: "5003", compId: "2003", profLevel: "Intermediate", assessDate: "2024-03-10", assessedBy: "6003", createdAt: "2024-03-10 09:00:00", updatedAt: "2024-03-10 09:00:00" },
+        { id: "3004", empId: "5004", compId: "2004", profLevel: "Beginner", assessDate: "2024-04-05", assessedBy: "6004", createdAt: "2024-04-05 08:30:00", updatedAt: "2024-04-05 08:30:00" },
+        { id: "3005", empId: "5005", compId: "2005", profLevel: "Expert", assessDate: "2024-02-25", assessedBy: "6005", createdAt: "2024-02-25 11:00:00", updatedAt: "2024-02-25 11:00:00" },
+        { id: "3006", empId: "5006", compId: "2006", profLevel: "Advanced", assessDate: "2024-05-12", assessedBy: "6006", createdAt: "2024-05-12 10:00:00", updatedAt: "2024-05-12 10:00:00" },
+        { id: "3007", empId: "5007", compId: "2007", profLevel: "Intermediate", assessDate: "2024-03-28", assessedBy: "6007", createdAt: "2024-03-28 13:00:00", updatedAt: "2024-03-28 13:00:00" },
+        { id: "3008", empId: "5008", compId: "2008", profLevel: "Beginner", assessDate: "2024-04-20", assessedBy: "6008", createdAt: "2024-04-20 14:00:00", updatedAt: "2024-04-20 14:00:00" },
+        { id: "3009", empId: "5009", compId: "2009", profLevel: "Expert", assessDate: "2024-05-10", assessedBy: "6009", createdAt: "2024-05-10 15:00:00", updatedAt: "2024-05-10 15:00:00" },
+        { id: "3010", empId: "5010", compId: "2010", profLevel: "Advanced", assessDate: "2024-06-01", assessedBy: "6010", createdAt: "2024-06-01 16:00:00", updatedAt: "2024-06-01 16:00:00" },
+        { id: "3011", empId: "5011", compId: "2011", profLevel: "Intermediate", assessDate: "2024-05-28", assessedBy: "6011", createdAt: "2024-05-28 17:00:00", updatedAt: "2024-05-28 17:00:00" },
+        { id: "3012", empId: "5012", compId: "2012", profLevel: "Beginner", assessDate: "2024-06-12", assessedBy: "6012", createdAt: "2024-06-12 18:00:00", updatedAt: "2024-06-12 18:00:00" }
+    ];
+
+    let trainingData = [
+        { id: "3001", name: "E-commerce Platform Fundamentals", desc: "Training on managing our e-commerce platform", start: "2024-06-01", end: "2024-06-03", empId: "5001", createdAt: "2024-05-10 09:30:00", updatedAt: "2024-05-10 09:30:00" },
+        { id: "3002", name: "Digital Marketing Strategies", desc: "Advanced training on digital marketing techniques", start: "2024-07-15", end: "2024-07-17", empId: "5002", createdAt: "2024-06-01 11:15:00", updatedAt: "2024-06-05 14:20:00" },
+        { id: "3003", name: "Project Management Bootcamp", desc: "Intensive project management training", start: "2024-05-10", end: "2024-05-12", empId: "5003", createdAt: "2024-04-20 10:00:00", updatedAt: "2024-04-20 10:00:00" },
+        { id: "3004", name: "Scrum Master Workshop", desc: "Workshop on Scrum and Agile", start: "2024-06-15", end: "2024-06-16", empId: "5004", createdAt: "2024-05-25 09:00:00", updatedAt: "2024-05-25 09:00:00" },
+        { id: "3005", name: "Data Analytics Essentials", desc: "Basics of data analytics", start: "2024-04-20", end: "2024-04-22", empId: "5005", createdAt: "2024-03-15 08:00:00", updatedAt: "2024-03-15 08:00:00" },
+        { id: "3006", name: "Cloud Solutions Training", desc: "Cloud architecture and deployment", start: "2024-05-30", end: "2024-06-01", empId: "5006", createdAt: "2024-05-01 11:00:00", updatedAt: "2024-05-01 11:00:00" },
+        { id: "3007", name: "HR Management Seminar", desc: "Seminar on HR best practices", start: "2024-06-10", end: "2024-06-11", empId: "5007", createdAt: "2024-05-20 12:00:00", updatedAt: "2024-05-20 12:00:00" },
+        { id: "3008", name: "Finance for Non-Finance", desc: "Finance basics for all employees", start: "2024-05-18", end: "2024-05-19", empId: "5008", createdAt: "2024-04-28 13:00:00", updatedAt: "2024-04-28 13:00:00" },
+        { id: "3009", name: "Legal Compliance Training", desc: "Legal standards and compliance", start: "2024-06-05", end: "2024-06-06", empId: "5009", createdAt: "2024-05-15 14:00:00", updatedAt: "2024-05-15 14:00:00" },
+        { id: "3010", name: "Customer Service Skills", desc: "Improving customer service", start: "2024-06-20", end: "2024-06-21", empId: "5010", createdAt: "2024-05-30 15:00:00", updatedAt: "2024-05-30 15:00:00" },
+        { id: "3011", name: "Operations Management Training", desc: "Managing business operations", start: "2024-06-25", end: "2024-06-26", empId: "5011", createdAt: "2024-06-01 16:00:00", updatedAt: "2024-06-01 16:00:00" },
+        { id: "3012", name: "IT Security Awareness", desc: "Security best practices for IT", start: "2024-06-28", end: "2024-06-29", empId: "5012", createdAt: "2024-06-10 17:00:00", updatedAt: "2024-06-10 17:00:00" }
+    ];
+
+    let feedbackData = [
+        { id: "4001", trainingId: "3001", empId: "5001", rating: "5", comments: "Excellent course with practical examples", submittedAt: "2024-06-05 15:20:00" },
+        { id: "4002", trainingId: "3002", empId: "5002", rating: "4", comments: "Good content but needed more hands-on exercises", submittedAt: "2024-07-20 11:45:00" },
+        { id: "4003", trainingId: "3003", empId: "5003", rating: "5", comments: "Very informative and well structured", submittedAt: "2024-05-13 10:00:00" },
+        { id: "4004", trainingId: "3004", empId: "5004", rating: "4", comments: "Great workshop, learned a lot", submittedAt: "2024-06-17 09:30:00" },
+        { id: "4005", trainingId: "3005", empId: "5005", rating: "3", comments: "Could use more real-world examples", submittedAt: "2024-04-23 11:00:00" },
+        { id: "4006", trainingId: "3006", empId: "5006", rating: "5", comments: "Excellent cloud training", submittedAt: "2024-06-02 12:00:00" },
+        { id: "4007", trainingId: "3007", empId: "5007", rating: "4", comments: "Very useful HR insights", submittedAt: "2024-06-12 13:00:00" },
+        { id: "4008", trainingId: "3008", empId: "5008", rating: "5", comments: "Finance basics explained clearly", submittedAt: "2024-05-20 14:00:00" },
+        { id: "4009", trainingId: "3009", empId: "5009", rating: "4", comments: "Good legal compliance overview", submittedAt: "2024-06-07 15:00:00" },
+        { id: "4010", trainingId: "3010", empId: "5010", rating: "5", comments: "Customer service tips were practical", submittedAt: "2024-06-22 16:00:00" },
+        { id: "4011", trainingId: "3011", empId: "5011", rating: "4", comments: "Operations training was helpful", submittedAt: "2024-06-27 17:00:00" },
+        { id: "4012", trainingId: "3012", empId: "5012", rating: "5", comments: "Security awareness is a must", submittedAt: "2024-06-29 18:00:00" }
+    ];
+
+    let vacanciesData = [
+        { jvcId: "JVC-2000", vacancyId: "V7001", title: "Software Developer", competencies: "Technical Expertise", profLevel: "Advanced", 
+          essentialSkills: "<ul><li>Programming (Java/Python)</li><li>Database/SQL</li><li>API Development</li><li>Version Control (Git)</li></ul>", 
+          niceSkills: "<ul><li>Cloud Architecture</li><li>DevOps Tools</li></ul>" },
+        { jvcId: "JVC-2001", vacancyId: "V7002", title: "Project Manager", competencies: "Project Management", profLevel: "Expert",
+          essentialSkills: "<ul><li>Agile Methodologies</li><li>Risk Management</li><li>Stakeholder Communication</li></ul>",
+          niceSkills: "<ul><li>PMP Certification</li></ul>" },
+        { jvcId: "JVC-2002", vacancyId: "V7003", title: "Marketing Specialist", competencies: "Digital Marketing", profLevel: "Advanced",
+          essentialSkills: "<ul><li>SEO/SEM</li><li>Content Creation</li><li>Social Media Management</li></ul>",
+          niceSkills: "<ul><li>Google Analytics</li></ul>" },
+        { jvcId: "JVC-2003", vacancyId: "V7004", title: "Data Analyst", competencies: "Data Analytics", profLevel: "Intermediate",
+          essentialSkills: "<ul><li>Excel</li><li>SQL</li><li>Data Visualization</li></ul>",
+          niceSkills: "<ul><li>Python</li></ul>" },
+        { jvcId: "JVC-2004", vacancyId: "V7005", title: "Cloud Engineer", competencies: "Cloud Architecture", profLevel: "Advanced",
+          essentialSkills: "<ul><li>AWS/Azure</li><li>CI/CD</li><li>Infrastructure as Code</li></ul>",
+          niceSkills: "<ul><li>Kubernetes</li></ul>" },
+        { jvcId: "JVC-2005", vacancyId: "V7006", title: "HR Officer", competencies: "HR Management", profLevel: "Intermediate",
+          essentialSkills: "<ul><li>Recruitment</li><li>Payroll</li><li>Employee Relations</li></ul>",
+          niceSkills: "<ul><li>HRIS</li></ul>" },
+        { jvcId: "JVC-2006", vacancyId: "V7007", title: "Finance Analyst", competencies: "Financial Analysis", profLevel: "Advanced",
+          essentialSkills: "<ul><li>Financial Modeling</li><li>Budgeting</li><li>Forecasting</li></ul>",
+          niceSkills: "<ul><li>CPA</li></ul>" },
+        { jvcId: "JVC-2007", vacancyId: "V7008", title: "Legal Advisor", competencies: "Legal Compliance", profLevel: "Expert",
+          essentialSkills: "<ul><li>Contract Law</li><li>Corporate Governance</li></ul>",
+          niceSkills: "<ul><li>LLB</li></ul>" },
+        { jvcId: "JVC-2008", vacancyId: "V7009", title: "Customer Service Rep", competencies: "Customer Service", profLevel: "Basic",
+          essentialSkills: "<ul><li>Communication</li><li>Problem Solving</li></ul>",
+          niceSkills: "<ul><li>CRM Tools</li></ul>" },
+        { jvcId: "JVC-2009", vacancyId: "V7010", title: "Operations Manager", competencies: "Operations Management", profLevel: "Expert",
+          essentialSkills: "<ul><li>Process Optimization</li><li>Team Leadership</li></ul>",
+          niceSkills: "<ul><li>Lean Six Sigma</li></ul>" },
+        { jvcId: "JVC-2010", vacancyId: "V7011", title: "IT Security Analyst", competencies: "IT Security", profLevel: "Advanced",
+          essentialSkills: "<ul><li>Network Security</li><li>Incident Response</li></ul>",
+          niceSkills: "<ul><li>CISSP</li></ul>" }
+    ];
+
+    // Current item to edit/delete
+    let currentItem = { type: null, index: null };
+
+    // Render all tables
+    function renderAllTables() {
+        renderCertificationsTable();
+        renderCompetenciesTable();
+        renderEmpCompetenciesTable();
+        renderTrainingTable();
+        renderFeedbackTable();
+        renderVacanciesTable();
+    }
+
+    // Render certifications table with filtering
+    function renderCertificationsTable() {
+        const empIdFilter = document.getElementById('certEmpIdFilter').value.toLowerCase();
+        const compIdFilter = document.getElementById('certCompIdFilter').value.toLowerCase();
+        const nameFilter = document.getElementById('certNameFilter').value.toLowerCase();
+        
+        const filtered = certificationsData.filter(c => 
+            c.empId.toLowerCase().includes(empIdFilter) &&
+            c.compId.toLowerCase().includes(compIdFilter) &&
+            c.name.toLowerCase().includes(nameFilter)
+        );
+        
+        document.getElementById("certificationsTable").innerHTML = filtered.map(c => `
+            <tr>
+                <td>${c.id}</td>
+                <td>${c.empId}</td>
+                <td>${c.compId}</td>
+                <td>${c.name}</td>
+                <td>${c.issued}</td>
+                <td>${c.expiry}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewItem('certification', ${certificationsData.indexOf(c)})">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn" onclick="editItem('certification', ${certificationsData.indexOf(c)})">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('certification', ${certificationsData.indexOf(c)})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render competencies table with filtering
+    function renderCompetenciesTable() {
+        const idFilter = document.getElementById('compIdFilter').value.toLowerCase();
+        const nameFilter = document.getElementById('compNameFilter').value.toLowerCase();
+        const categoryFilter = document.getElementById('compCategoryFilter').value;
+        
+        const filtered = competenciesData.filter(c => 
+            c.id.toLowerCase().includes(idFilter) &&
+            c.name.toLowerCase().includes(nameFilter) &&
+            (categoryFilter === "" || c.category === categoryFilter)
+        );
+        
+        document.getElementById("competenciesTable").innerHTML = filtered.map(c => `
+            <tr>
+                <td>${c.id}</td>
+                <td>${c.name}</td>
+                <td>${c.desc}</td>
+                <td>${c.category}</td>
+                <td>${c.createdAt}</td>
+                <td>${c.updatedAt}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewItem('competency', ${competenciesData.indexOf(c)})">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn" onclick="editItem('competency', ${competenciesData.indexOf(c)})">Edit</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render employee competencies table with filtering
+    function renderEmpCompetenciesTable() {
+        const empIdFilter = document.getElementById('empCompEmpIdFilter').value.toLowerCase();
+        const compIdFilter = document.getElementById('empCompCompIdFilter').value.toLowerCase();
+        const profFilter = document.getElementById('empCompProfFilter').value;
+        
+        const filtered = empCompetenciesData.filter(ec => 
+            ec.empId.toLowerCase().includes(empIdFilter) &&
+            ec.compId.toLowerCase().includes(compIdFilter) &&
+            (profFilter === "" || ec.profLevel === profFilter)
+        );
+        
+        document.getElementById("employeeCompetenciesTable").innerHTML = filtered.map(ec => `
+            <tr>
+                <td>${ec.id}</td>
+                <td>${ec.empId}</td>
+                <td>${ec.compId}</td>
+                <td><span class="badge ${getBadgeClass(ec.profLevel)}">${ec.profLevel}</span></td>
+                <td>${ec.assessDate}</td>
+                <td>${ec.assessedBy}</td>
+                <td>${ec.createdAt}</td>
+                <td>${ec.updatedAt}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewItem('empCompetency', ${empCompetenciesData.indexOf(ec)})">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn" onclick="editItem('empCompetency', ${empCompetenciesData.indexOf(ec)})">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('empCompetency', ${empCompetenciesData.indexOf(ec)})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render training table with filtering
+    function renderTrainingTable() {
+        const idFilter = document.getElementById('trainingIdFilter').value.toLowerCase();
+        const nameFilter = document.getElementById('trainingNameFilter').value.toLowerCase();
+        const empIdFilter = document.getElementById('trainingEmpIdFilter').value.toLowerCase();
+        
+        const filtered = trainingData.filter(t => 
+            t.id.toLowerCase().includes(idFilter) &&
+            t.name.toLowerCase().includes(nameFilter) &&
+            t.empId.toLowerCase().includes(empIdFilter)
+        );
+        
+        document.getElementById("trainingTable").innerHTML = filtered.map(t => `
+            <tr>
+                <td>${t.id}</td>
+                <td>${t.name}</td>
+                <td>${t.desc}</td>
+                <td>${t.start}</td>
+                <td>${t.end}</td>
+                <td>${t.empId}</td>
+                <td>${t.createdAt}</td>
+                <td>${t.updatedAt}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewItem('training', ${trainingData.indexOf(t)})">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn" onclick="editItem('training', ${trainingData.indexOf(t)})">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('training', ${trainingData.indexOf(t)})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render feedback table with filtering
+    function renderFeedbackTable() {
+        const idFilter = document.getElementById('feedbackIdFilter').value.toLowerCase();
+        const trainingIdFilter = document.getElementById('feedbackTrainingIdFilter').value.toLowerCase();
+        const empIdFilter = document.getElementById('feedbackEmpIdFilter').value.toLowerCase();
+        
+        const filtered = feedbackData.filter(f => 
+            f.id.toLowerCase().includes(idFilter) &&
+            f.trainingId.toLowerCase().includes(trainingIdFilter) &&
+            f.empId.toLowerCase().includes(empIdFilter)
+        );
+        
+        document.getElementById("feedbackTable").innerHTML = filtered.map(f => `
+            <tr>
+                <td>${f.id}</td>
+                <td>${f.trainingId}</td>
+                <td>${f.empId}</td>
+                <td>${f.rating}</td>
+                <td>${f.comments}</td>
+                <td>${f.submittedAt}</td>
+                <td>
+                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('feedback', ${feedbackData.indexOf(f)})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render vacancies table with filtering
+    function renderVacanciesTable() {
+        const idFilter = document.getElementById('vacancyIdFilter').value.toLowerCase();
+        const titleFilter = document.getElementById('vacancyTitleFilter').value.toLowerCase();
+        const profFilter = document.getElementById('vacancyProfFilter').value;
+        
+        const filtered = vacanciesData.filter(v => 
+            v.vacancyId.toLowerCase().includes(idFilter) &&
+            v.title.toLowerCase().includes(titleFilter) &&
+            (profFilter === "" || v.profLevel === profFilter)
+        );
+        
+        document.getElementById("vacanciesTable").innerHTML = filtered.map(v => `
+            <tr>
+                <td>${v.jvcId}</td>
+                <td>${v.vacancyId}</td>
+                <td>${v.title}</td>
+                <td>${v.competencies}</td>
+                <td>${v.profLevel}</td>
+                <td>${v.essentialSkills}</td>
+                <td>${v.niceSkills}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewItem('vacancy', ${vacanciesData.indexOf(v)})">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn" onclick="editItem('vacancy', ${vacanciesData.indexOf(v)})">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('vacancy', ${vacanciesData.indexOf(v)})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Helper function to get badge class based on proficiency level
+    function getBadgeClass(level) {
+        switch(level) {
+            case 'Expert': return 'bg-success';
+            case 'Advanced': return 'bg-primary';
+            case 'Intermediate': return 'bg-warning';
+            case 'Beginner': return 'bg-info';
+            default: return 'bg-secondary';
+        }
+    }
+
+    // View item function
+    function viewItem(type, index) {
+        let viewContent = '';
+        
+        if (type === 'certification') {
+            const c = certificationsData[index];
+            viewContent = `
+                <h6>Certification Details</h6>
+                <p><strong>Certification ID:</strong> ${c.id}</p>
+                <p><strong>Employee ID:</strong> ${c.empId}</p>
+                <p><strong>Competency ID:</strong> ${c.compId}</p>
+                <p><strong>Certification Name:</strong> ${c.name}</p>
+                <p><strong>Issued Date:</strong> ${c.issued}</p>
+                <p><strong>Expiry Date:</strong> ${c.expiry}</p>
+            `;
+        } else if (type === 'competency') {
+            const c = competenciesData[index];
+            viewContent = `
+                <h6>Competency Details</h6>
+                <p><strong>Competency ID:</strong> ${c.id}</p>
+                <p><strong>Name:</strong> ${c.name}</p>
+                <p><strong>Description:</strong> ${c.desc}</p>
+                <p><strong>Category:</strong> ${c.category}</p>
+                <p><strong>Created At:</strong> ${c.createdAt}</p>
+                <p><strong>Updated At:</strong> ${c.updatedAt}</p>
+            `;
+        } else if (type === 'empCompetency') {
+            const ec = empCompetenciesData[index];
+            viewContent = `
+                <h6>Employee Competency Details</h6>
+                <p><strong>ID:</strong> ${ec.id}</p>
+                <p><strong>Employee ID:</strong> ${ec.empId}</p>
+                <p><strong>Competency ID:</strong> ${ec.compId}</p>
+                <p><strong>Proficiency Level:</strong> ${ec.profLevel}</p>
+                <p><strong>Assessment Date:</strong> ${ec.assessDate}</p>
+                <p><strong>Assessed By:</strong> ${ec.assessedBy}</p>
+                <p><strong>Created At:</strong> ${ec.createdAt}</p>
+                <p><strong>Updated At:</strong> ${ec.updatedAt}</p>
+            `;
+        } else if (type === 'training') {
+            const t = trainingData[index];
+            viewContent = `
+                <h6>Training Program Details</h6>
+                <p><strong>Training ID:</strong> ${t.id}</p>
+                <p><strong>Training Name:</strong> ${t.name}</p>
+                <p><strong>Description:</strong> ${t.desc}</p>
+                <p><strong>Start Date:</strong> ${t.start}</p>
+                <p><strong>End Date:</strong> ${t.end}</p>
+                <p><strong>Employee ID:</strong> ${t.empId}</p>
+                <p><strong>Created At:</strong> ${t.createdAt}</p>
+                <p><strong>Updated At:</strong> ${t.updatedAt}</p>
+            `;
+        } else if (type === 'feedback') {
+            const f = feedbackData[index];
+            viewContent = `
+                <h6>Training Feedback Details</h6>
+                <p><strong>Feedback ID:</strong> ${f.id}</p>
+                <p><strong>Training ID:</strong> ${f.trainingId}</p>
+                <p><strong>Employee ID:</strong> ${f.empId}</p>
+                <p><strong>Rating:</strong> ${f.rating}</p>
+                <p><strong>Comments:</strong> ${f.comments}</p>
+                <p><strong>Submitted At:</strong> ${f.submittedAt}</p>
+            `;
+        } else if (type === 'vacancy') {
+            const v = vacanciesData[index];
+            viewContent = `
+                <h6>Job Vacancy Details</h6>
+                <p><strong>Jvc ID:</strong> ${v.jvcId}</p>
+                <p><strong>Vacancy ID:</strong> ${v.vacancyId}</p>
+                <p><strong>Job Title:</strong> ${v.title}</p>
+                <p><strong>Core Competencies:</strong> ${v.competencies}</p>
+                <p><strong>Required Proficiency Level:</strong> ${v.profLevel}</p>
+                <p><strong>Essential Skills:</strong> ${v.essentialSkills}</p>
+                <p><strong>Nice-to-Have Skills:</strong> ${v.niceSkills}</p>
+            `;
+        }
+        
+        document.getElementById('viewModalBody').innerHTML = viewContent;
+        viewModal.show();
+    }
+
+    // Edit item function
+    function editItem(type, index) {
+        currentItem = { type, index };
+        let editForm = '';
+        
+        if (type === 'certification') {
+            const c = certificationsData[index];
+            editForm = `
+                <div class="mb-3">
+                    <label class="form-label">Certification ID</label>
+                    <input type="text" class="form-control" id="editCertId" value="${c.id}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Employee ID</label>
+                    <input type="text" class="form-control" id="editCertEmpId" value="${c.empId}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Competency ID</label>
+                    <input type="text" class="form-control" id="editCertCompId" value="${c.compId}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Certification Name</label>
+                    <input type="text" class="form-control" id="editCertName" value="${c.name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Issued Date</label>
+                    <input type="date" class="form-control" id="editCertIssued" value="${c.issued}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Expiry Date</label>
+                    <input type="date" class="form-control" id="editCertExpiry" value="${c.expiry}">
+                </div>
+            `;
+        } else if (type === 'competency') {
+            const c = competenciesData[index];
+            editForm = `
+                <div class="mb-3">
+                    <label class="form-label">Competency ID</label>
+                    <input type="text" class="form-control" id="editCompId" value="${c.id}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" id="editCompName" value="${c.name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" id="editCompDesc">${c.desc}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" id="editCompCategory">
+                        <option ${c.category === 'Technical' ? 'selected' : ''}>Technical</option>
+                        <option ${c.category === 'Marketing' ? 'selected' : ''}>Marketing</option>
+                        <option ${c.category === 'Operations' ? 'selected' : ''}>Operations</option>
+                        <option ${c.category === 'Service' ? 'selected' : ''}>Service</option>
+                        <option ${c.category === 'Legal' ? 'selected' : ''}>Legal</option>
+                    </select>
+                </div>
+            `;
+        } else if (type === 'empCompetency') {
+            const ec = empCompetenciesData[index];
+            editForm = `
+                <div class="mb-3">
+                    <label class="form-label">ID</label>
+                    <input type="text" class="form-control" id="editEmpCompId" value="${ec.id}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Employee ID</label>
+                    <input type="text" class="form-control" id="editEmpCompEmpId" value="${ec.empId}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Competency ID</label>
+                    <input type="text" class="form-control" id="editEmpCompCompId" value="${ec.compId}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Proficiency Level</label>
+                    <select class="form-select" id="editEmpCompProfLevel">
+                        <option ${ec.profLevel === 'Expert' ? 'selected' : ''}>Expert</option>
+                        <option ${ec.profLevel === 'Advanced' ? 'selected' : ''}>Advanced</option>
+                        <option ${ec.profLevel === 'Intermediate' ? 'selected' : ''}>Intermediate</option>
+                        <option ${ec.profLevel === 'Beginner' ? 'selected' : ''}>Beginner</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Assessment Date</label>
+                    <input type="date" class="form-control" id="editEmpCompAssessDate" value="${ec.assessDate}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Assessed By</label>
+                    <input type="text" class="form-control" id="editEmpCompAssessedBy" value="${ec.assessedBy}">
+                </div>
+            `;
+        } else if (type === 'training') {
+            const t = trainingData[index];
+            editForm = `
+                <div class="mb-3">
+                    <label class="form-label">Training ID</label>
+                    <input type="text" class="form-control" id="editTrainingId" value="${t.id}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Training Name</label>
+                    <input type="text" class="form-control" id="editTrainingName" value="${t.name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" id="editTrainingDesc">${t.desc}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="editTrainingStart" value="${t.start}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="editTrainingEnd" value="${t.end}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Employee ID</label>
+                    <input type="text" class="form-control" id="editTrainingEmpId" value="${t.empId}">
+                </div>
+            `;
+        } else if (type === 'vacancy') {
+            const v = vacanciesData[index];
+            editForm = `
+                <div class="mb-3">
+                    <label class="form-label">Jvc ID</label>
+                    <input type="text" class="form-control" id="editVacancyJvcId" value="${v.jvcId}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Vacancy ID</label>
+                    <input type="text" class="form-control" id="editVacancyId" value="${v.vacancyId}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Job Title</label>
+                    <input type="text" class="form-control" id="editVacancyTitle" value="${v.title}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Core Competencies</label>
+                    <input type="text" class="form-control" id="editVacancyCompetencies" value="${v.competencies}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Required Proficiency Level</label>
+                    <select class="form-select" id="editVacancyProfLevel">
+                        <option ${v.profLevel === 'Basic' ? 'selected' : ''}>Basic</option>
+                        <option ${v.profLevel === 'Intermediate' ? 'selected' : ''}>Intermediate</option>
+                        <option ${v.profLevel === 'Advanced' ? 'selected' : ''}>Advanced</option>
+                        <option ${v.profLevel === 'Expert' ? 'selected' : ''}>Expert</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Essential Skills</label>
+                    <textarea class="form-control" id="editVacancyEssentialSkills">${v.essentialSkills}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nice-to-Have Skills</label>
+                    <textarea class="form-control" id="editVacancyNiceSkills">${v.niceSkills}</textarea>
+                </div>
+            `;
+        }
+        
+        document.getElementById('editModalBody').innerHTML = editForm;
+        editModal.show();
+    }
+
+    // Save changes function
+    document.getElementById('saveChangesBtn').addEventListener('click', function() {
+        const { type, index } = currentItem;
+        
+        if (type === 'certification') {
+            certificationsData[index] = {
+                id: document.getElementById('editCertId').value,
+                empId: document.getElementById('editCertEmpId').value,
+                compId: document.getElementById('editCertCompId').value,
+                name: document.getElementById('editCertName').value,
+                issued: document.getElementById('editCertIssued').value,
+                expiry: document.getElementById('editCertExpiry').value
+            };
+        } else if (type === 'competency') {
+            competenciesData[index] = {
+                id: document.getElementById('editCompId').value,
+                name: document.getElementById('editCompName').value,
+                desc: document.getElementById('editCompDesc').value,
+                category: document.getElementById('editCompCategory').value,
+                createdAt: competenciesData[index].createdAt,
+                updatedAt: new Date().toISOString().replace('T', ' ').substring(0, 19)
+            };
+        } else if (type === 'empCompetency') {
+            empCompetenciesData[index] = {
+                id: document.getElementById('editEmpCompId').value,
+                empId: document.getElementById('editEmpCompEmpId').value,
+                compId: document.getElementById('editEmpCompCompId').value,
+                profLevel: document.getElementById('editEmpCompProfLevel').value,
+                assessDate: document.getElementById('editEmpCompAssessDate').value,
+                assessedBy: document.getElementById('editEmpCompAssessedBy').value,
+                createdAt: empCompetenciesData[index].createdAt,
+                updatedAt: new Date().toISOString().replace('T', ' ').substring(0, 19)
+            };
+        } else if (type === 'training') {
+            trainingData[index] = {
+                id: document.getElementById('editTrainingId').value,
+                name: document.getElementById('editTrainingName').value,
+                desc: document.getElementById('editTrainingDesc').value,
+                start: document.getElementById('editTrainingStart').value,
+                end: document.getElementById('editTrainingEnd').value,
+                empId: document.getElementById('editTrainingEmpId').value,
+                createdAt: trainingData[index].createdAt,
+                updatedAt: new Date().toISOString().replace('T', ' ').substring(0, 19)
+            };
+        } else if (type === 'vacancy') {
+            vacanciesData[index] = {
+                jvcId: document.getElementById('editVacancyJvcId').value,
+                vacancyId: document.getElementById('editVacancyId').value,
+                title: document.getElementById('editVacancyTitle').value,
+                competencies: document.getElementById('editVacancyCompetencies').value,
+                profLevel: document.getElementById('editVacancyProfLevel').value,
+                essentialSkills: document.getElementById('editVacancyEssentialSkills').value,
+                niceSkills: document.getElementById('editVacancyNiceSkills').value
+            };
+        }
+        
+        renderAllTables();
+        editModal.hide();
+        alert('Changes saved successfully!');
+    });
+
+    // Delete confirmation function
+    function confirmDelete(type, index) {
+        currentItem = { type, index };
+        deleteModal.show();
+    }
+
+    // Delete item function
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        const { type, index } = currentItem;
+        
+        if (type === 'certification') {
+            certificationsData.splice(index, 1);
+        } else if (type === 'competency') {
+            competenciesData.splice(index, 1);
+        } else if (type === 'empCompetency') {
+            empCompetenciesData.splice(index, 1);
+        } else if (type === 'training') {
+            trainingData.splice(index, 1);
+        } else if (type === 'feedback') {
+            feedbackData.splice(index, 1);
+        } else if (type === 'vacancy') {
+            vacanciesData.splice(index, 1);
+        }
+        
+        renderAllTables();
+        deleteModal.hide();
+        alert('Record deleted successfully!');
+    });
+
+    // Reset filter functions
+    document.getElementById('resetCertFilters').addEventListener('click', function() {
+        document.getElementById('certEmpIdFilter').value = '';
+        document.getElementById('certCompIdFilter').value = '';
+        document.getElementById('certNameFilter').value = '';
+        renderCertificationsTable();
+    });
+
+    document.getElementById('resetCompFilters').addEventListener('click', function() {
+        document.getElementById('compIdFilter').value = '';
+        document.getElementById('compNameFilter').value = '';
+        document.getElementById('compCategoryFilter').value = '';
+        renderCompetenciesTable();
+    });
+
+    document.getElementById('resetEmpCompFilters').addEventListener('click', function() {
+        document.getElementById('empCompEmpIdFilter').value = '';
+        document.getElementById('empCompCompIdFilter').value = '';
+        document.getElementById('empCompProfFilter').value = '';
+        renderEmpCompetenciesTable();
+    });
+
+    document.getElementById('resetTrainingFilters').addEventListener('click', function() {
+        document.getElementById('trainingIdFilter').value = '';
+        document.getElementById('trainingNameFilter').value = '';
+        document.getElementById('trainingEmpIdFilter').value = '';
+        renderTrainingTable();
+    });
+
+    document.getElementById('resetFeedbackFilters').addEventListener('click', function() {
+        document.getElementById('feedbackIdFilter').value = '';
+        document.getElementById('feedbackTrainingIdFilter').value = '';
+        document.getElementById('feedbackEmpIdFilter').value = '';
+        renderFeedbackTable();
+    });
+
+    document.getElementById('resetVacancyFilters').addEventListener('click', function() {
+        document.getElementById('vacancyIdFilter').value = '';
+        document.getElementById('vacancyTitleFilter').value = '';
+        document.getElementById('vacancyProfFilter').value = '';
+        renderVacanciesTable();
+    });
+
+    // Filter change handlers
+    document.getElementById('certEmpIdFilter').addEventListener('input', renderCertificationsTable);
+    document.getElementById('certCompIdFilter').addEventListener('input', renderCertificationsTable);
+    document.getElementById('certNameFilter').addEventListener('input', renderCertificationsTable);
+    document.getElementById('compIdFilter').addEventListener('input', renderCompetenciesTable);
+    document.getElementById('compNameFilter').addEventListener('input', renderCompetenciesTable);
+    document.getElementById('compCategoryFilter').addEventListener('change', renderCompetenciesTable);
+    document.getElementById('empCompEmpIdFilter').addEventListener('input', renderEmpCompetenciesTable);
+    document.getElementById('empCompCompIdFilter').addEventListener('input', renderEmpCompetenciesTable);
+    document.getElementById('empCompProfFilter').addEventListener('change', renderEmpCompetenciesTable);
+    document.getElementById('trainingIdFilter').addEventListener('input', renderTrainingTable);
+    document.getElementById('trainingNameFilter').addEventListener('input', renderTrainingTable);
+    document.getElementById('trainingEmpIdFilter').addEventListener('input', renderTrainingTable);
+    document.getElementById('feedbackIdFilter').addEventListener('input', renderFeedbackTable);
+    document.getElementById('feedbackTrainingIdFilter').addEventListener('input', renderFeedbackTable);
+    document.getElementById('feedbackEmpIdFilter').addEventListener('input', renderFeedbackTable);
+    document.getElementById('vacancyIdFilter').addEventListener('input', renderVacanciesTable);
+    document.getElementById('vacancyTitleFilter').addEventListener('input', renderVacanciesTable);
+    document.getElementById('vacancyProfFilter').addEventListener('change', renderVacanciesTable);
+
+    // Initialize charts
+    function renderCharts() {
         const competencyCtx = document.getElementById('competencyChart');
         if (competencyCtx) {
             new Chart(competencyCtx, {
@@ -1056,13 +2372,13 @@
                 data: {
                     labels: ['Technical', 'Marketing', 'Operations', 'Service', 'Legal'],
                     datasets: [{
-                        data: [4, 4, 2, 1, 1], // Actual counts from your data
+                        data: [4, 4, 2, 1, 1],
                         backgroundColor: [
-                            '#007bff', // Technical - blue
-                            '#28a745', // Marketing - green
-                            '#ffc107', // Operations - yellow
-                            '#dc3545', // Service - red
-                            '#17a2b8'  // Legal - teal
+                            '#007bff',
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545',
+                            '#17a2b8'
                         ],
                         borderWidth: 1
                     }]
@@ -1082,7 +2398,6 @@
             });
         }
 
-        // Certification Expiry Timeline - Based on actual expiry years
         const timelineCtx = document.getElementById('certificationTimeline');
         if (timelineCtx) {
             new Chart(timelineCtx, {
@@ -1091,7 +2406,7 @@
                     labels: ['2024', '2025', '2026'],
                     datasets: [{
                         label: 'Certifications Expiring',
-                        data: [4, 4, 2], // Actual counts from your data
+                        data: [4, 4, 2],
                         backgroundColor: '#dc3545',
                         borderColor: '#dc3545',
                         borderWidth: 1
@@ -1126,8 +2441,12 @@
                 }
             });
         }
+    }
 
-        // Rest of your existing JavaScript functions...
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        renderAllTables();
+        renderCharts();
     });
 </script>
 </body>

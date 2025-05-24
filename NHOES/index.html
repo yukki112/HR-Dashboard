@@ -1,16 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-	<link rel="stylesheet" href="style1.css">
-	<title>HR</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>HR</title>
+    <style>
+        /* Filter controls styling */
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-controls select, 
+        .filter-controls input {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: white;
+            font-size: 14px;
+            height: 38px;
+        }
+
+        .filter-controls select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            padding-right: 2rem;
+        }
+
+        .filter-controls .btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .filter-controls .btn-outline-secondary {
+            border-color: #6c757d;
+            color: #6c757d;
+        }
+
+        .filter-controls .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-controls select,
+            .filter-controls input,
+            .filter-controls .btn {
+                width: 100% !important;
+                margin-right: 0 !important;
+            }
+        }
+
+        .progress {
+            height: 20px;
+        }
+
+        .progress-bar {
+            font-size: 12px;
+            line-height: 20px;
+        }
+    </style>
 </head>
 <body>
 
+<!-- View Modal -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewModalLabel">View Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="editModalBody">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this record? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Request Modal -->
+<div class="modal fade" id="cancelRequestModal" tabindex="-1" aria-labelledby="cancelRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelRequestModalLabel">Cancel Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to cancel this request?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" id="confirmCancelRequestBtn">Yes, Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Download Modal -->
+<div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="downloadModalLabel">Download Options</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="downloadFormat" class="form-label">Select Format:</label>
+                    <select class="form-select" id="downloadFormat">
+                        <option value="pdf">PDF</option>
+                        <option value="excel">Excel</option>
+                        <option value="csv">CSV</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmDownloadBtn">Download</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Approve/Reject Modal -->
+<div class="modal fade" id="approveRejectModal" tabindex="-1" aria-labelledby="approveRejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="approveRejectModalLabel">Request Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="actionComment" class="form-label">Comments:</label>
+                    <textarea class="form-control" id="actionComment" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger me-2" id="rejectBtn">Reject</button>
+                <button type="button" class="btn btn-success" id="approveBtn">Approve</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Submit Request Modal -->
+<div class="modal fade" id="submitRequestModal" tabindex="-1" aria-labelledby="submitRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="submitRequestModalLabel">Submit New Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="requestForm">
+                    <div class="mb-3">
+                        <label for="requestType" class="form-label">Request Type</label>
+                        <select class="form-select" id="requestType" required>
+                            <option value="">Select request type</option>
+                            <option value="leave">Leave Request</option>
+                            <option value="reimbursement">Reimbursement</option>
+                            <option value="certificate">Certificate of Employment</option>
+                            <option value="schedule">Schedule Change</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="requestDetails" class="form-label">Details</label>
+                        <textarea class="form-control" id="requestDetails" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="requestDate" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="requestDate" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submitRequestBtn">Submit Request</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <section id="sidebar">
     <a href="#" class="brand">
@@ -35,7 +271,7 @@
         </li>
         <li>
             <a href="../Performance/index.html">
-				<i class='bx bxs-bar-chart-alt-2' ></i>
+                <i class='bx bxs-bar-chart-alt-2' ></i>
                 <span class="text">Performance Management</span>
             </a>
         </li>
@@ -109,18 +345,15 @@
             </a>
         </li>
         <li>
-			<a href="../Corehuman/index.html">
-				<i class='bx bxs-user-badge' ></i>
-				<span class="text">Core Human Management</span>
-			</a>
-		</li>
-		
+            <a href="../Corehuman/index.html">
+                <i class='bx bxs-user-badge' ></i>
+                <span class="text">Core Human Management</span>
+            </a>
+        </li>
     </ul>
 
-    
-
     <ul class="side-menu">
-		<span class="separator">SETTINGS</span>
+        <span class="separator">SETTINGS</span>
         <li>
             <a href="../Settings.html">
                 <i class='bx bxs-cog'></i>
@@ -136,11 +369,9 @@
     </ul>
 </section>
 
-
 <section id="content">
-
     <nav>
-        <i class='bx bx-menu'></i>
+      
         <a href="#" class="nav-link">Categories</a>
         <form action="#">
             <div class="form-input">
@@ -150,7 +381,7 @@
         </form>
         
         <input type="checkbox" id="switch-mode" hidden>
-        <label for="switch-mode" class="switch-mode"></label>
+       
         <a href="#" class="notification">
             <i class='bx bxs-bell'></i>
             <span class="num">9+</span>
@@ -162,179 +393,157 @@
             </a>
             <div class="dropdown-menu" id="dropdown-menu">
                 <a href="Profile.html">Profile</a>
-				<a href="Changepassword.html">Change Passowrd</a>
+                <a href="Changepassword.html">Change Passowrd</a>
             </div>
         </div>
     </nav>
 
-		<main>
-			<div class="head-title">
-				<div class="left">
-					<h1>New Hire Onboarding</h1>
-					<ul class="breadcrumb">
-						<li>
-							<a href="#">Dashboard</a>
-						</li>
-						<li><i class='bx bx-chevron-right' ></i></li>
-						<li>
-							<a class="active" href="#">New Hire Onboarding</a>
-						</li>
-					</ul>
-				</div>
-			</div>
+    <main>
+        <div class="head-title">
+            <div class="left">
+                <h1>New Hire Onboarding</h1>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="#">Dashboard</a>
+                    </li>
+                    <li><i class='bx bx-chevron-right' ></i></li>
+                    <li>
+                        <a class="active" href="#">New Hire Onboarding</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-            <div class="tab-container">
-                <div class="tab-buttons">
-                    <button class="tab-button active" onclick="openTab(event, 'dashboard')">
-                        <i class='bx bxs-dashboard'></i> Dashboard
-                    </button>
-                    <button class="tab-button" onclick="openTab(event, 'profiles')">New Hire Profiles</button>
-                    <button class="tab-button" onclick="openTab(event, 'onboarding_progress')">Onboarding Checklist</button>
-                    <button class="tab-button" onclick="openTab(event, 'self_service_requests')">Self-Service Requests</button>
-                </div>
-                
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="openTab(event, 'dashboard')">
+                    <i class='bx bxs-dashboard'></i> Dashboard
+                </button>
+                <button class="tab-button" onclick="openTab(event, 'profiles')">New Hire Profiles</button>
+                <button class="tab-button" onclick="openTab(event, 'onboarding_progress')">Onboarding Checklist</button>
+                <button class="tab-button" onclick="openTab(event, 'self_service_requests')">Self-Service Requests</button>
+            </div>
             
-                <div id="dashboard" class="tab-content active">
-                    <div class="dashboard-container">
-                        <h3 class="dashboard-title">New Hire Onboarding Dashboard</h3>
+            <div id="dashboard" class="tab-content active">
+                <div class="dashboard-container">
+                    <h3 class="dashboard-title">New Hire Onboarding Dashboard</h3>
 
-                        <!-- Metrics Grid Section -->
-                        <div class="metrics-grid">
-                            <div class="metric-card">
-                                <div class="metric-title">Total New Hires</div>
-                                <div class="metric-value">75</div>
-                                <div class="metric-change positive">↑ 10% from last quarter</div>
-                            </div>
-
-                            <div class="metric-card">
-                                <div class="metric-title">Onboarding Completed</div>
-                                <div class="metric-value">60</div>
-                                <div class="metric-change positive">↑ 5 from last month</div>
-                            </div>
-
-                            <div class="metric-card">
-                                <div class="metric-title">In Progress Onboardings</div>
-                                <div class="metric-value">12</div>
-                                <div class="metric-change negative">↓ 3 from last month</div>
-                            </div>
-
-                            <div class="metric-card">
-                                <div class="metric-title">Pending Documentation</div>
-                                <div class="metric-value">5</div>
-                                <div class="metric-change negative">↓ 2 from last week</div>
-                            </div>
+                    <!-- Metrics Grid Section -->
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-title">Total New Hires</div>
+                            <div class="metric-value">75</div>
+                            <div class="metric-change positive">↑ 10% from last quarter</div>
                         </div>
 
-                        <!-- New Hires by Department Bar Chart -->
-                        <div class="chart-container" style="height: 300px; margin-bottom: 30px;">
-                            <canvas id="hiresByDepartment"></canvas>
+                        <div class="metric-card">
+                            <div class="metric-title">Onboarding Completed</div>
+                            <div class="metric-value">60</div>
+                            <div class="metric-change positive">↑ 5 from last month</div>
                         </div>
 
-                        <!-- Onboarding Completion Timeline Line Chart -->
-                        <div class="chart-container" style="height: 300px;">
-                            <canvas id="onboardingTimeline"></canvas>
+                        <div class="metric-card">
+                            <div class="metric-title">In Progress Onboardings</div>
+                            <div class="metric-value">12</div>
+                            <div class="metric-change negative">↓ 3 from last month</div>
                         </div>
 
+                        <div class="metric-card">
+                            <div class="metric-title">Pending Documentation</div>
+                            <div class="metric-value">5</div>
+                            <div class="metric-change negative">↓ 2 from last week</div>
+                        </div>
                     </div>
-                </div>
 
+                    <!-- New Hires by Department Bar Chart -->
+                    <div class="chart-container" style="height: 300px; margin-bottom: 30px;">
+                        <canvas id="hiresByDepartment"></canvas>
+                    </div>
 
-                
-             
-                <div id="profiles" class="tab-content p-3">
-                <div class="table-responsive">
-                    <h3 class="mb-4">New Hire Profiles</h3>
-                    <table class="table table-bordered table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>New Hire ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th>Phone Number</th>
-                                <th>Hire Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1001</td>
-                                <td>Sophia</td>
-                                <td>Reyes</td>
-                                <td>sophia.reyes@gmail.com</td>
-                                <td>+1-555-0101</td>
-                                <td>2025-04-01</td>
-                                <td><span class="badge bg-warning text-dark">In Progress</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary me-1">View</button>
-                                    <button class="btn btn-sm btn-danger">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>1002</td>
-                                <td>James</td>
-                                <td>Lee</td>
-                                <td>james.lee@gmail.com</td>
-                                <td>+1-555-0102</td>
-                                <td>2025-04-03</td>
-                                <td><span class="badge bg-success">Completed</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary me-1">View</button>
-                                    <button class="btn btn-sm btn-danger">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>1003</td>
-                                <td>Aisha</td>
-                                <td>Khan</td>
-                                <td>aisha.khan@gmail.com</td>
-                                <td>+1-555-0103</td>
-                                <td>2025-04-07</td>
-                                <td><span class="badge bg-warning text-dark">In Progress</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary me-1">View</button>
-                                    <button class="btn btn-sm btn-danger">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>1004</td>
-                                <td>Daniel</td>
-                                <td>Nguyen</td>
-                                <td>daniel.nguyen@gmail.com</td>
-                                <td>+1-555-0104</td>
-                                <td>2025-04-10</td>
-                                <td><span class="badge bg-success">Completed</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary me-1">View</button>
-                                    <button class="btn btn-sm btn-danger">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>1005</td>
-                                <td>Emily</td>
-                                <td>Martinez</td>
-                                <td>emily.martinez@gmail.com</td>
-                                <td>+1-555-0105</td>
-                                <td>2025-04-12</td>
-                                <td><span class="badge bg-warning text-dark">In Progress</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary me-1">View</button>
-                                    <button class="btn btn-sm btn-danger">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <!-- Onboarding Completion Timeline Line Chart -->
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="onboardingTimeline"></canvas>
+                    </div>
                 </div>
             </div>
 
-
+            <div id="profiles" class="tab-content p-3">
+                <div class="table-container">
+                    <h3 class="table-title">New Hire Profiles</h3>
+                    <div class="table-controls mb-3">
+                        <button class="btn btn-primary me-2" id="addNewHireBtn">
+                            <i class="fas fa-plus"></i> Add New Hire
+                        </button>
+                        <div class="filter-controls">
+                            <input type="text" id="profileIdFilter" class="form-control me-2" placeholder="Filter by ID" style="width: 150px;">
+                            <input type="text" id="profileNameFilter" class="form-control me-2" placeholder="Filter by Name" style="width: 200px;">
+                            <select id="profileDeptFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Departments</option>
+                                <option>HR</option>
+                                <option>IT</option>
+                                <option>Finance</option>
+                                <option>Marketing</option>
+                                <option>Sales</option>
+                                <option>Operations</option>
+                            </select>
+                            <select id="profileStatusFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Statuses</option>
+                                <option>Completed</option>
+                                <option>In Progress</option>
+                                <option>Pending</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetProfileFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle" id="profilesTable">
+                            <thead>
+                                <tr>
+                                    <th>New Hire ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Hire Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="profilesTableBody">
+                                <!-- Content will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
             <div id="onboarding_progress" class="tab-content p-3">
-                <div class="container-fluid">
-                    <h3 class="mb-4">Onboarding Progress</h3>
+                <div class="table-container">
+                    <h3 class="table-title">Onboarding Progress</h3>
+                    <div class="table-controls mb-3">
+                        <button class="btn btn-primary me-2" id="addProgressBtn">
+                            <i class="fas fa-plus"></i> Add Progress
+                        </button>
+                        <div class="filter-controls">
+                            <input type="text" id="progressIdFilter" class="form-control me-2" placeholder="Filter by Progress ID" style="width: 200px;">
+                            <input type="text" id="progressEmployeeFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                            <select id="progressStatusFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Statuses</option>
+                                <option>Completed</option>
+                                <option>In Progress</option>
+                                <option>Not Started</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetProgressFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover align-middle">
+                        <table class="table table-bordered table-hover align-middle">
                             <thead>
                                 <tr>
                                     <th scope="col">Progress ID</th>
@@ -345,264 +554,703 @@
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1001</td>
-                                    <td>5001</td>
-                                    <td>HR101</td>
-                                    <td>Completed</td>
-                                    <td>2024-12-05</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary me-1">View</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1002</td>
-                                    <td>5002</td>
-                                    <td>HR101</td>
-                                    <td>Completed</td>
-                                    <td>2024-12-10</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary me-1">View</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1003</td>
-                                    <td>5003</td>
-                                    <td>SEC201</td>
-                                    <td>In Progress</td>
-                                    <td>-</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary me-1">View</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1004</td>
-                                    <td>5004</td>
-                                    <td>IT301</td>
-                                    <td>Completed</td>
-                                    <td>2025-01-07</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary me-1">View</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1005</td>
-                                    <td>5001</td>
-                                    <td>SEC201</td>
-                                    <td>Completed</td>
-                                    <td>2025-01-10</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary me-1">View</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1006</td>
-                                    <td>5005</td>
-                                    <td>COMP401</td>
-                                    <td>Not Started</td>
-                                    <td>-</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary me-1">View</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1007</td>
-                                    <td>5002</td>
-                                    <td>IT301</td>
-                                    <td>In Progress</td>
-                                    <td>-</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary me-1">View</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1008</td>
-                                    <td>5003</td>
-                                    <td>HR101</td>
-                                    <td>Completed</td>
-                                    <td>2025-01-14</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary me-1">View</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1009</td>
-                                    <td>5006</td>
-                                    <td>SEC201</td>
-                                    <td>Not Started</td>
-                                    <td>-</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary me-1">View</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1010</td>
-                                    <td>5004</td>
-                                    <td>COMP401</td>
-                                    <td>Completed</td>
-                                    <td>2025-01-20</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary me-1">View</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
+                            <tbody id="progressTableBody">
+                                <!-- Content will be dynamically inserted here -->
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-
-
             <div id="self_service_requests" class="tab-content p-3">
-                <div class="table-responsive">
-                    <h3 class="mb-4">Employee Self-Service Requests</h3>
-                    <table class="table table-striped table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th scope="col">Request ID</th>
-                                <th scope="col">Request Type</th>
-                                <th scope="col">Date Filed</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Remarks</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Sample rows -->
-                            <tr>
-                                <td>REQ-2024-001</td>
-                                <td>Leave Request</td>
-                                <td>2024-04-10</td>
-                                <td><span class="badge bg-warning text-dark">Pending</span></td>
-                                <td>Waiting for Supervisor Approval</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary me-1">View</button>
-                                    <button class="btn btn-sm btn-danger">Cancel</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>REQ-2024-002</td>
-                                <td>Reimbursement</td>
-                                <td>2024-03-22</td>
-                                <td><span class="badge bg-success">Approved</span></td>
-                                <td>For Office Supplies</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary">View</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>REQ-2024-003</td>
-                                <td>Certificate of Employment</td>
-                                <td>2024-03-05</td>
-                                <td><span class="badge bg-secondary">Completed</span></td>
-                                <td>Released via Email</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary">Download</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>REQ-2024-004</td>
-                                <td>Schedule Change</td>
-                                <td>2024-04-01</td>
-                                <td><span class="badge bg-danger">Rejected</span></td>
-                                <td>Insufficient justification</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary">View</button>
-                                </td>
-                            </tr>
-                            <!-- Add dynamic rows as needed -->
-                        </tbody>
-                    </table>
+                <div class="table-container">
+                    <h3 class="table-title">Employee Self-Service Requests</h3>
+                    <div class="table-controls mb-3">
+                        <button class="btn btn-primary me-2" id="addRequestBtn">
+                            <i class="fas fa-plus"></i> Add Request
+                        </button>
+                        <div class="filter-controls">
+                            <input type="text" id="requestIdFilter" class="form-control me-2" placeholder="Filter by Request ID" style="width: 200px;">
+                            <select id="requestTypeFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Types</option>
+                                <option>Leave Request</option>
+                                <option>Reimbursement</option>
+                                <option>Certificate of Employment</option>
+                                <option>Schedule Change</option>
+                            </select>
+                            <select id="requestStatusFilter" class="form-control me-2" style="width: 200px;">
+                                <option value="">All Statuses</option>
+                                <option>Pending</option>
+                                <option>Approved</option>
+                                <option>Rejected</option>
+                                <option>Completed</option>
+                            </select>
+                            <button class="btn btn-outline-secondary" id="resetRequestFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Request ID</th>
+                                    <th scope="col">Request Type</th>
+                                    <th scope="col">Date Filed</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Remarks</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="requestsTableBody">
+                                <!-- Content will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+        </div>
+    </main>
+</section>
 
-            
-		</main>
-	
-	</section>
-
-	
-
-	<script src="script.js"></script>
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script>
-		document.getElementById("profile-btn").addEventListener("click", function(event) {
-			event.preventDefault();
-			document.getElementById("dropdown-menu").classList.toggle("show");
-		});
-		
-		document.addEventListener("click", function(event) {
-			if (!document.getElementById("profile-btn").contains(event.target)) {
-				document.getElementById("dropdown-menu").classList.remove("show");
-			}
-		});
-
-        function openTab(evt, tabName) {
-            var i, tabcontent, tabbuttons;
-            
-            // Hide all tab content
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-            }
-            
-            // Remove active class from all tab buttons
-            tabbuttons = document.getElementsByClassName("tab-button");
-            for (i = 0; i < tabbuttons.length; i++) {
-                tabbuttons[i].classList.remove("active");
-            }
-            
-            // Show the current tab and add active class to the button
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-
-        // Add event listeners for edit and delete buttons
-        document.querySelectorAll('.btn-edit').forEach(button => {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                alert('Editing row with ID: ' + row.cells[0].textContent);
-                // In a real application, you would open a modal or form for editing
-            });
-        });
-
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', function() {
-                if (confirm('Are you sure you want to delete this record?')) {
-                    const row = this.closest('tr');
-                    row.style.display = 'none';
-                    // In a real application, you would send a request to the server to delete the record
-                    alert('Record with ID: ' + row.cells[0].textContent + ' has been deleted');
-                }
-            });
-        });
-        
-        document.querySelectorAll('.btn-view').forEach(button => {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                alert('Viewing details for ID: ' + row.cells[0].textContent);
-                // In a real application, you would show more detailed information
-            });
-        });
-	</script>
-
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // New Hires by Department - Bar Chart
-    const deptCtx = document.getElementById('hiresByDepartment');
-    if (deptCtx) {
-        new Chart(deptCtx, {
+    // Initialize Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    // Initialize modals
+    var viewModal = new bootstrap.Modal(document.getElementById('viewModal'))
+    var editModal = new bootstrap.Modal(document.getElementById('editModal'))
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'))
+    var cancelRequestModal = new bootstrap.Modal(document.getElementById('cancelRequestModal'))
+    var downloadModal = new bootstrap.Modal(document.getElementById('downloadModal'))
+    var approveRejectModal = new bootstrap.Modal(document.getElementById('approveRejectModal'))
+    var submitRequestModal = new bootstrap.Modal(document.getElementById('submitRequestModal'))
+
+    // Dummy data for the tables
+    let newHires = [
+        { id: "0911", firstName: "Lucas", lastName: "Garcia", email: "lucas.garcia@gmail.com", phone: "09150123456", department: "HR", position: "HR Assistant", hireDate: "2025-05-01", status: "Pending" },
+        { id: "0912", firstName: "Mia", lastName: "Santos", email: "mia.santos@gmail.com", phone: "09150234567", department: "IT", position: "QA Engineer", hireDate: "2025-05-03", status: "Completed" },
+        { id: "0913", firstName: "Ethan", lastName: "Lim", email: "ethan.lim@gmail.com", phone: "09150345678", department: "Finance", position: "Payroll Officer", hireDate: "2025-05-05", status: "In Progress" },
+        { id: "0914", firstName: "Olivia", lastName: "Cruz", email: "olivia.cruz@gmail.com", phone: "09150456789", department: "Marketing", position: "Content Writer", hireDate: "2025-05-07", status: "Completed" },
+        { id: "0915", firstName: "Noah", lastName: "Torres", email: "noah.torres@gmail.com", phone: "09150567890", department: "Sales", position: "Account Executive", hireDate: "2025-05-09", status: "Pending" },
+        { id: "0916", firstName: "Chloe", lastName: "Ramos", email: "chloe.ramos@gmail.com", phone: "09150678901", department: "Operations", position: "Logistics Coordinator", hireDate: "2025-05-11", status: "In Progress" },
+        { id: "0917", firstName: "Liam", lastName: "Flores", email: "liam.flores@gmail.com", phone: "09150789012", department: "IT", position: "Network Admin", hireDate: "2025-05-13", status: "Completed" },
+        { id: "0918", firstName: "Ella", lastName: "Reyes", email: "ella.reyes@gmail.com", phone: "09150890123", department: "Finance", position: "Budget Analyst", hireDate: "2025-05-15", status: "Pending" },
+        { id: "0919", firstName: "Benjamin", lastName: "Dela Cruz", email: "benjamin.delacruz@gmail.com", phone: "09150901234", department: "HR", position: "HR Officer", hireDate: "2025-05-17", status: "In Progress" },
+        { id: "0920", firstName: "Grace", lastName: "Tan", email: "grace.tan@gmail.com", phone: "09151012345", department: "Marketing", position: "PR Specialist", hireDate: "2025-05-19", status: "Completed" },
+        { id: "0921", firstName: "Jacob", lastName: "Villanueva", email: "jacob.villanueva@gmail.com", phone: "09151123456", department: "Sales", position: "Sales Analyst", hireDate: "2025-05-21", status: "Pending" },
+        { id: "1001", firstName: "Sophia", lastName: "Reyes", email: "sophia.reyes@gmail.com", phone: "09151234567", department: "HR", position: "HR Specialist", hireDate: "2025-04-01", status: "In Progress" },
+        { id: "1002", firstName: "James", lastName: "Lee", email: "james.lee@gmail.com", phone: "09151345678", department: "IT", position: "Software Engineer", hireDate: "2025-04-03", status: "Completed" },
+        { id: "1003", firstName: "Aisha", lastName: "Khan", email: "aisha.khan@gmail.com", phone: "09151456789", department: "Finance", position: "Financial Analyst", hireDate: "2025-04-07", status: "In Progress" },
+        { id: "1004", firstName: "Daniel", lastName: "Nguyen", email: "daniel.nguyen@gmail.com", phone: "09151567890", department: "Marketing", position: "Marketing Coordinator", hireDate: "2025-04-10", status: "Completed" },
+        { id: "1005", firstName: "Emily", lastName: "Martinez", email: "emily.martinez@gmail.com", phone: "09151678901", department: "Sales", position: "Sales Representative", hireDate: "2025-04-12", status: "In Progress" },
+        { id: "1006", firstName: "Michael", lastName: "Johnson", email: "michael.johnson@gmail.com", phone: "09151789012", department: "Operations", position: "Operations Manager", hireDate: "2025-04-15", status: "Completed" },
+        { id: "1007", firstName: "Sarah", lastName: "Williams", email: "sarah.williams@gmail.com", phone: "09151890123", department: "IT", position: "UX Designer", hireDate: "2025-04-18", status: "In Progress" },
+        { id: "1008", firstName: "David", lastName: "Brown", email: "david.brown@gmail.com", phone: "09151901234", department: "Finance", position: "Accountant", hireDate: "2025-04-20", status: "Completed" },
+        { id: "1009", firstName: "Jennifer", lastName: "Davis", email: "jennifer.davis@gmail.com", phone: "09152012345", department: "HR", position: "Recruiter", hireDate: "2025-04-22", status: "In Progress" },
+        { id: "1010", firstName: "Robert", lastName: "Wilson", email: "robert.wilson@gmail.com", phone: "09152123456", department: "Marketing", position: "Digital Marketer", hireDate: "2025-04-25", status: "Completed" }
+    ];
+
+    let onboardingProgress = [
+        { id: "1001", employeeId: "5001", moduleId: "HR101", status: "Completed", completionDate: "2024-12-05" },
+        { id: "1002", employeeId: "5002", moduleId: "HR101", status: "Completed", completionDate: "2024-12-10" },
+        { id: "1003", employeeId: "5003", moduleId: "SEC201", status: "In Progress", completionDate: "" },
+        { id: "1004", employeeId: "5004", moduleId: "IT301", status: "Completed", completionDate: "2025-01-07" },
+        { id: "1005", employeeId: "5001", moduleId: "SEC201", status: "Completed", completionDate: "2025-01-10" },
+        { id: "1006", employeeId: "5005", moduleId: "COMP401", status: "Not Started", completionDate: "" },
+        { id: "1007", employeeId: "5002", moduleId: "IT301", status: "In Progress", completionDate: "" },
+        { id: "1008", employeeId: "5003", moduleId: "HR101", status: "Completed", completionDate: "2025-01-14" },
+        { id: "1009", employeeId: "5006", moduleId: "SEC201", status: "Not Started", completionDate: "" },
+        { id: "1010", employeeId: "5004", moduleId: "COMP401", status: "Completed", completionDate: "2025-01-20" }
+    ];
+
+    let serviceRequests = [
+        { id: "REQ-2024-001", type: "Leave Request", dateFiled: "2024-04-10", status: "Pending", remarks: "Waiting for Supervisor Approval" },
+        { id: "REQ-2024-002", type: "Reimbursement", dateFiled: "2024-03-22", status: "Approved", remarks: "For Office Supplies" },
+        { id: "REQ-2024-003", type: "Certificate of Employment", dateFiled: "2024-03-05", status: "Completed", remarks: "Released via Email" },
+        { id: "REQ-2024-004", type: "Schedule Change", dateFiled: "2024-04-01", status: "Rejected", remarks: "Insufficient justification" },
+        { id: "REQ-2024-005", type: "Leave Request", dateFiled: "2024-04-12", status: "Approved", remarks: "Vacation Leave" },
+        { id: "REQ-2024-006", type: "Reimbursement", dateFiled: "2024-04-15", status: "Pending", remarks: "Travel Expenses" },
+        { id: "REQ-2024-007", type: "Certificate of Employment", dateFiled: "2024-04-18", status: "Completed", remarks: "For Visa Application" },
+        { id: "REQ-2024-008", type: "Schedule Change", dateFiled: "2024-04-20", status: "Pending", remarks: "Family Emergency" },
+        { id: "REQ-2024-009", type: "Leave Request", dateFiled: "2024-04-22", status: "Rejected", remarks: "Exceeded Leave Credits" },
+        { id: "REQ-2024-010", type: "Reimbursement", dateFiled: "2024-04-25", status: "Completed", remarks: "Client Meeting Lunch" },
+        { id: "REQ-2024-011", type: "Certificate of Employment", dateFiled: "2024-04-28", status: "Pending", remarks: "Bank Requirement" },
+        { id: "REQ-2024-012", type: "Schedule Change", dateFiled: "2024-05-01", status: "Approved", remarks: "Shift Swap" },
+        { id: "REQ-2024-013", type: "Leave Request", dateFiled: "2024-05-03", status: "Completed", remarks: "Sick Leave" },
+        { id: "REQ-2024-014", type: "Reimbursement", dateFiled: "2024-05-05", status: "Pending", remarks: "Training Materials" },
+        { id: "REQ-2024-015", type: "Certificate of Employment", dateFiled: "2024-05-07", status: "Approved", remarks: "For Loan Application" },
+        { id: "REQ-2024-016", type: "Schedule Change", dateFiled: "2024-05-09", status: "Completed", remarks: "Approved by Manager" },
+        { id: "REQ-2024-017", type: "Leave Request", dateFiled: "2024-05-11", status: "Pending", remarks: "Maternity Leave" },
+        { id: "REQ-2024-018", type: "Reimbursement", dateFiled: "2024-05-13", status: "Rejected", remarks: "Missing Receipt" },
+        { id: "REQ-2024-019", type: "Certificate of Employment", dateFiled: "2024-05-15", status: "Completed", remarks: "For Embassy" }
+    ];
+
+    // Current item to delete
+    let itemToDelete = { type: null, index: null };
+
+    // Render all tables
+    function renderTables() {
+        renderNewHiresTable();
+        renderOnboardingProgressTable();
+        renderServiceRequestsTable();
+    }
+
+    // Render new hires table with filtering
+    function renderNewHiresTable() {
+        const idFilter = document.getElementById('profileIdFilter').value.toLowerCase();
+        const nameFilter = document.getElementById('profileNameFilter').value.toLowerCase();
+        const deptFilter = document.getElementById('profileDeptFilter').value;
+        const statusFilter = document.getElementById('profileStatusFilter').value;
+        
+        const filtered = newHires.filter(h => 
+            h.id.toLowerCase().includes(idFilter) &&
+            (h.firstName.toLowerCase().includes(nameFilter) || h.lastName.toLowerCase().includes(nameFilter)) &&
+            (deptFilter === "" || h.department === deptFilter) &&
+            (statusFilter === "" || h.status === statusFilter)
+        );
+        
+        document.getElementById("profilesTableBody").innerHTML = filtered.map(h => `
+            <tr>
+                <td>${h.id}</td>
+                <td>${h.firstName}</td>
+                <td>${h.lastName}</td>
+                <td>${h.email}</td>
+                <td>${h.phone}</td>
+                <td>${h.department}</td>
+                <td>${h.position}</td>
+                <td>${h.hireDate}</td>
+                <td><span class="badge ${getStatusBadgeClass(h.status)}">${h.status}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewNewHire('${h.id}')">View</button>
+                    <button class="btn btn-sm btn-info me-1" onclick="editNewHire('${h.id}')">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('newHire', ${newHires.findIndex(nh => nh.id === h.id)})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render onboarding progress table with filtering
+    function renderOnboardingProgressTable() {
+        const idFilter = document.getElementById('progressIdFilter').value.toLowerCase();
+        const employeeFilter = document.getElementById('progressEmployeeFilter').value.toLowerCase();
+        const statusFilter = document.getElementById('progressStatusFilter').value;
+        
+        const filtered = onboardingProgress.filter(p => 
+            p.id.toLowerCase().includes(idFilter) &&
+            p.employeeId.toLowerCase().includes(employeeFilter) &&
+            (statusFilter === "" || p.status === statusFilter)
+        );
+        
+        document.getElementById("progressTableBody").innerHTML = filtered.map(p => `
+            <tr>
+                <td>${p.id}</td>
+                <td>${p.employeeId}</td>
+                <td>${p.moduleId}</td>
+                <td>${p.status}</td>
+                <td>${p.completionDate || '-'}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewProgress('${p.id}')">View</button>
+                    <button class="btn btn-sm btn-info me-1" onclick="editProgress('${p.id}')">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('progress', ${onboardingProgress.findIndex(op => op.id === p.id)})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render service requests table with filtering
+    function renderServiceRequestsTable() {
+        const idFilter = document.getElementById('requestIdFilter').value.toLowerCase();
+        const typeFilter = document.getElementById('requestTypeFilter').value;
+        const statusFilter = document.getElementById('requestStatusFilter').value;
+        
+        const filtered = serviceRequests.filter(r => 
+            r.id.toLowerCase().includes(idFilter) &&
+            (typeFilter === "" || r.type === typeFilter) &&
+            (statusFilter === "" || r.status === statusFilter)
+        );
+        
+        document.getElementById("requestsTableBody").innerHTML = filtered.map(r => `
+            <tr>
+                <td>${r.id}</td>
+                <td>${r.type}</td>
+                <td>${r.dateFiled}</td>
+                <td><span class="badge ${getStatusBadgeClass(r.status)}">${r.status}</span></td>
+                <td>${r.remarks}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewRequest('${r.id}')">View</button>
+                    ${r.status === 'Pending' ? 
+                        `<button class="btn btn-sm btn-danger cancel-btn" onclick="cancelRequest('${r.id}')">Cancel</button>` : 
+                        `<button class="btn btn-sm btn-secondary" disabled>Cancel</button>`}
+                </td>
+            </tr>`).join('');
+    }
+
+    // Helper function to get badge class based on status
+    function getStatusBadgeClass(status) {
+        switch(status) {
+            case 'Completed':
+            case 'Approved':
+                return 'bg-success';
+            case 'In Progress':
+                return 'bg-warning text-dark';
+            case 'Pending':
+                return 'bg-info text-dark';
+            case 'Rejected':
+                return 'bg-danger';
+            case 'Not Started':
+                return 'bg-secondary';
+            default:
+                return 'bg-primary';
+        }
+    }
+
+    // View functions
+    function viewNewHire(id) {
+        const hire = newHires.find(h => h.id === id);
+        document.getElementById('viewModalBody').innerHTML = `
+            <h6>New Hire Details</h6>
+            <p><strong>ID:</strong> ${hire.id}</p>
+            <p><strong>Name:</strong> ${hire.firstName} ${hire.lastName}</p>
+            <p><strong>Email:</strong> ${hire.email}</p>
+            <p><strong>Phone:</strong> ${hire.phone}</p>
+            <p><strong>Department:</strong> ${hire.department}</p>
+            <p><strong>Position:</strong> ${hire.position}</p>
+            <p><strong>Hire Date:</strong> ${hire.hireDate}</p>
+            <p><strong>Status:</strong> ${hire.status}</p>
+        `;
+        viewModal.show();
+    }
+
+    function viewProgress(id) {
+        const progress = onboardingProgress.find(p => p.id === id);
+        document.getElementById('viewModalBody').innerHTML = `
+            <h6>Onboarding Progress Details</h6>
+            <p><strong>Progress ID:</strong> ${progress.id}</p>
+            <p><strong>Employee ID:</strong> ${progress.employeeId}</p>
+            <p><strong>Module ID:</strong> ${progress.moduleId}</p>
+            <p><strong>Status:</strong> ${progress.status}</p>
+            <p><strong>Completion Date:</strong> ${progress.completionDate || '-'}</p>
+        `;
+        viewModal.show();
+    }
+
+    function viewRequest(id) {
+        const request = serviceRequests.find(r => r.id === id);
+        document.getElementById('viewModalBody').innerHTML = `
+            <h6>Request Details</h6>
+            <p><strong>Request ID:</strong> ${request.id}</p>
+            <p><strong>Type:</strong> ${request.type}</p>
+            <p><strong>Date Filed:</strong> ${request.dateFiled}</p>
+            <p><strong>Status:</strong> ${request.status}</p>
+            <p><strong>Remarks:</strong> ${request.remarks}</p>
+        `;
+        viewModal.show();
+    }
+
+    // Edit functions
+    function editNewHire(id) {
+        const hire = newHires.find(h => h.id === id);
+        document.getElementById('editModalLabel').textContent = 'Edit New Hire';
+        document.getElementById('editModalBody').innerHTML = `
+            <form id="editHireForm">
+                <input type="hidden" id="editHireId" value="${hire.id}">
+                <div class="mb-3">
+                    <label for="editFirstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="editFirstName" value="${hire.firstName}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="editLastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="editLastName" value="${hire.lastName}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="editEmail" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="editEmail" value="${hire.email}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="editPhone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="editPhone" value="${hire.phone}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="editDepartment" class="form-label">Department</label>
+                    <select class="form-select" id="editDepartment" required>
+                        <option value="HR" ${hire.department === 'HR' ? 'selected' : ''}>HR</option>
+                        <option value="IT" ${hire.department === 'IT' ? 'selected' : ''}>IT</option>
+                        <option value="Finance" ${hire.department === 'Finance' ? 'selected' : ''}>Finance</option>
+                        <option value="Marketing" ${hire.department === 'Marketing' ? 'selected' : ''}>Marketing</option>
+                        <option value="Sales" ${hire.department === 'Sales' ? 'selected' : ''}>Sales</option>
+                        <option value="Operations" ${hire.department === 'Operations' ? 'selected' : ''}>Operations</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="editPosition" class="form-label">Position</label>
+                    <input type="text" class="form-control" id="editPosition" value="${hire.position}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="editHireDate" class="form-label">Hire Date</label>
+                    <input type="date" class="form-control" id="editHireDate" value="${hire.hireDate}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="editStatus" class="form-label">Status</label>
+                    <select class="form-select" id="editStatus" required>
+                        <option value="Completed" ${hire.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                        <option value="In Progress" ${hire.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="Pending" ${hire.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                    </select>
+                </div>
+            </form>
+        `;
+        
+        document.getElementById('saveChangesBtn').onclick = function() {
+            const index = newHires.findIndex(h => h.id === id);
+            newHires[index] = {
+                id: hire.id,
+                firstName: document.getElementById('editFirstName').value,
+                lastName: document.getElementById('editLastName').value,
+                email: document.getElementById('editEmail').value,
+                phone: document.getElementById('editPhone').value,
+                department: document.getElementById('editDepartment').value,
+                position: document.getElementById('editPosition').value,
+                hireDate: document.getElementById('editHireDate').value,
+                status: document.getElementById('editStatus').value
+            };
+            renderTables();
+            editModal.hide();
+        };
+        
+        editModal.show();
+    }
+
+    function editProgress(id) {
+        const progress = onboardingProgress.find(p => p.id === id);
+        document.getElementById('editModalLabel').textContent = 'Edit Onboarding Progress';
+        document.getElementById('editModalBody').innerHTML = `
+            <form id="editProgressForm">
+                <input type="hidden" id="editProgressId" value="${progress.id}">
+                <div class="mb-3">
+                    <label for="editEmployeeId" class="form-label">Employee ID</label>
+                    <input type="text" class="form-control" id="editEmployeeId" value="${progress.employeeId}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="editModuleId" class="form-label">Module ID</label>
+                    <input type="text" class="form-control" id="editModuleId" value="${progress.moduleId}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="editProgressStatus" class="form-label">Status</label>
+                    <select class="form-select" id="editProgressStatus" required>
+                        <option value="Completed" ${progress.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                        <option value="In Progress" ${progress.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="Not Started" ${progress.status === 'Not Started' ? 'selected' : ''}>Not Started</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="editCompletionDate" class="form-label">Completion Date</label>
+                    <input type="date" class="form-control" id="editCompletionDate" value="${progress.completionDate || ''}">
+                </div>
+            </form>
+        `;
+        
+        document.getElementById('saveChangesBtn').onclick = function() {
+            const index = onboardingProgress.findIndex(p => p.id === id);
+            onboardingProgress[index] = {
+                id: progress.id,
+                employeeId: document.getElementById('editEmployeeId').value,
+                moduleId: document.getElementById('editModuleId').value,
+                status: document.getElementById('editProgressStatus').value,
+                completionDate: document.getElementById('editCompletionDate').value || ''
+            };
+            renderTables();
+            editModal.hide();
+        };
+        
+        editModal.show();
+    }
+
+    // Delete functions
+    function confirmDelete(type, index) {
+        itemToDelete = { type, index };
+        deleteModal.show();
+    }
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        if (itemToDelete.type === 'newHire') {
+            newHires.splice(itemToDelete.index, 1);
+        } else if (itemToDelete.type === 'progress') {
+            onboardingProgress.splice(itemToDelete.index, 1);
+        } else if (itemToDelete.type === 'request') {
+            serviceRequests.splice(itemToDelete.index, 1);
+        }
+        renderTables();
+        deleteModal.hide();
+    });
+
+    // Cancel request function
+    function cancelRequest(id) {
+        const index = serviceRequests.findIndex(r => r.id === id);
+        document.getElementById('confirmCancelRequestBtn').onclick = function() {
+            serviceRequests.splice(index, 1);
+            renderTables();
+            cancelRequestModal.hide();
+        };
+        cancelRequestModal.show();
+    }
+
+    // Add new hire function
+    document.getElementById('addNewHireBtn').addEventListener('click', function() {
+        document.getElementById('editModalLabel').textContent = 'Add New Hire';
+        document.getElementById('editModalBody').innerHTML = `
+            <form id="addHireForm">
+                <div class="mb-3">
+                    <label for="newHireId" class="form-label">New Hire ID</label>
+                    <input type="text" class="form-control" id="newHireId" required>
+                </div>
+                <div class="mb-3">
+                    <label for="newFirstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="newFirstName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="newLastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="newLastName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="newEmail" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="newEmail" required>
+                </div>
+                <div class="mb-3">
+                    <label for="newPhone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="newPhone" required>
+                </div>
+                <div class="mb-3">
+                    <label for="newDepartment" class="form-label">Department</label>
+                    <select class="form-select" id="newDepartment" required>
+                        <option value="">Select Department</option>
+                        <option value="HR">HR</option>
+                        <option value="IT">IT</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Operations">Operations</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="newPosition" class="form-label">Position</label>
+                    <input type="text" class="form-control" id="newPosition" required>
+                </div>
+                <div class="mb-3">
+                    <label for="newHireDate" class="form-label">Hire Date</label>
+                    <input type="date" class="form-control" id="newHireDate" required>
+                </div>
+                <div class="mb-3">
+                    <label for="newStatus" class="form-label">Status</label>
+                    <select class="form-select" id="newStatus" required>
+                        <option value="">Select Status</option>
+                        <option value="Completed">Completed</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                </div>
+            </form>
+        `;
+        
+        document.getElementById('saveChangesBtn').onclick = function() {
+            newHires.push({
+                id: document.getElementById('newHireId').value,
+                firstName: document.getElementById('newFirstName').value,
+                lastName: document.getElementById('newLastName').value,
+                email: document.getElementById('newEmail').value,
+                phone: document.getElementById('newPhone').value,
+                department: document.getElementById('newDepartment').value,
+                position: document.getElementById('newPosition').value,
+                hireDate: document.getElementById('newHireDate').value,
+                status: document.getElementById('newStatus').value
+            });
+            renderTables();
+            editModal.hide();
+        };
+        
+        editModal.show();
+    });
+
+    // Add progress function
+    document.getElementById('addProgressBtn').addEventListener('click', function() {
+        document.getElementById('editModalLabel').textContent = 'Add Onboarding Progress';
+        document.getElementById('editModalBody').innerHTML = `
+            <form id="addProgressForm">
+                <div class="mb-3">
+                    <label for="newProgressId" class="form-label">Progress ID</label>
+                    <input type="text" class="form-control" id="newProgressId" required>
+                </div>
+                <div class="mb-3">
+                    <label for="newEmployeeId" class="form-label">Employee ID</label>
+                    <input type="text" class="form-control" id="newEmployeeId" required>
+                </div>
+                <div class="mb-3">
+                    <label for="newModuleId" class="form-label">Module ID</label>
+                    <input type="text" class="form-control" id="newModuleId" required>
+                </div>
+                <div class="mb-3">
+                    <label for="newProgressStatus" class="form-label">Status</label>
+                    <select class="form-select" id="newProgressStatus" required>
+                        <option value="">Select Status</option>
+                        <option value="Completed">Completed</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Not Started">Not Started</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="newCompletionDate" class="form-label">Completion Date</label>
+                    <input type="date" class="form-control" id="newCompletionDate">
+                </div>
+            </form>
+        `;
+        
+        document.getElementById('saveChangesBtn').onclick = function() {
+            onboardingProgress.push({
+                id: document.getElementById('newProgressId').value,
+                employeeId: document.getElementById('newEmployeeId').value,
+                moduleId: document.getElementById('newModuleId').value,
+                status: document.getElementById('newProgressStatus').value,
+                completionDate: document.getElementById('newCompletionDate').value || ''
+            });
+            renderTables();
+            editModal.hide();
+        };
+        
+        editModal.show();
+    });
+
+    // Add request function
+    document.getElementById('addRequestBtn').addEventListener('click', function() {
+        document.getElementById('editModalLabel').textContent = 'Add Service Request';
+        document.getElementById('editModalBody').innerHTML = `
+            <form id="addRequestForm">
+                <div class="mb-3">
+                    <label for="newRequestId" class="form-label">Request ID</label>
+                    <input type="text" class="form-control" id="newRequestId" required>
+                </div>
+                <div class="mb-3">
+                    <label for="newRequestType" class="form-label">Request Type</label>
+                    <select class="form-select" id="newRequestType" required>
+                        <option value="">Select Type</option>
+                        <option value="Leave Request">Leave Request</option>
+                        <option value="Reimbursement">Reimbursement</option>
+                        <option value="Certificate of Employment">Certificate of Employment</option>
+                        <option value="Schedule Change">Schedule Change</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="newDateFiled" class="form-label">Date Filed</label>
+                    <input type="date" class="form-control" id="newDateFiled" required>
+                </div>
+                <div class="mb-3">
+                    <label for="newRequestStatus" class="form-label">Status</label>
+                    <select class="form-select" id="newRequestStatus" required>
+                        <option value="">Select Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="newRemarks" class="form-label">Remarks</label>
+                    <textarea class="form-control" id="newRemarks" rows="3"></textarea>
+                </div>
+            </form>
+        `;
+        
+        document.getElementById('saveChangesBtn').onclick = function() {
+            serviceRequests.push({
+                id: document.getElementById('newRequestId').value,
+                type: document.getElementById('newRequestType').value,
+                dateFiled: document.getElementById('newDateFiled').value,
+                status: document.getElementById('newRequestStatus').value,
+                remarks: document.getElementById('newRemarks').value
+            });
+            renderTables();
+            editModal.hide();
+        };
+        
+        editModal.show();
+    });
+
+    // Profile dropdown functionality
+    document.getElementById("profile-btn").addEventListener("click", function(event) {
+        event.preventDefault()
+        document.getElementById("dropdown-menu").classList.toggle("show")
+    })
+    
+    document.addEventListener("click", function(event) {
+        if (!document.getElementById("profile-btn").contains(event.target)) {
+            document.getElementById("dropdown-menu").classList.remove("show")
+        }
+    })
+
+    function openTab(evt, tabName) {
+        var i, tabcontent, tabbuttons
+        
+        // Hide all tab content
+        tabcontent = document.getElementsByClassName("tab-content")
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove("active")
+        }
+        
+        // Remove active class from all tab buttons
+        tabbuttons = document.getElementsByClassName("tab-button")
+        for (i = 0; i < tabbuttons.length; i++) {
+            tabbuttons[i].classList.remove("active")
+        }
+        
+        // Show the current tab and add active class to the button
+        document.getElementById(tabName).classList.add("active")
+        evt.currentTarget.classList.add("active")
+    }
+
+    // Filter reset handlers
+    document.getElementById('resetProfileFilters').addEventListener('click', function() {
+        document.getElementById('profileIdFilter').value = '';
+        document.getElementById('profileNameFilter').value = '';
+        document.getElementById('profileDeptFilter').value = '';
+        document.getElementById('profileStatusFilter').value = '';
+        renderNewHiresTable();
+    });
+
+    document.getElementById('resetProgressFilters').addEventListener('click', function() {
+        document.getElementById('progressIdFilter').value = '';
+        document.getElementById('progressEmployeeFilter').value = '';
+        document.getElementById('progressStatusFilter').value = '';
+        renderOnboardingProgressTable();
+    });
+
+    document.getElementById('resetRequestFilters').addEventListener('click', function() {
+        document.getElementById('requestIdFilter').value = '';
+        document.getElementById('requestTypeFilter').value = '';
+        document.getElementById('requestStatusFilter').value = '';
+        renderServiceRequestsTable();
+    });
+
+    // Filter change handlers
+    document.getElementById('profileIdFilter').addEventListener('input', renderNewHiresTable);
+    document.getElementById('profileNameFilter').addEventListener('input', renderNewHiresTable);
+    document.getElementById('profileDeptFilter').addEventListener('change', renderNewHiresTable);
+    document.getElementById('profileStatusFilter').addEventListener('change', renderNewHiresTable);
+    document.getElementById('progressIdFilter').addEventListener('input', renderOnboardingProgressTable);
+    document.getElementById('progressEmployeeFilter').addEventListener('input', renderOnboardingProgressTable);
+    document.getElementById('progressStatusFilter').addEventListener('change', renderOnboardingProgressTable);
+    document.getElementById('requestIdFilter').addEventListener('input', renderServiceRequestsTable);
+    document.getElementById('requestTypeFilter').addEventListener('change', renderServiceRequestsTable);
+    document.getElementById('requestStatusFilter').addEventListener('change', renderServiceRequestsTable);
+
+    // Charts initialization
+    document.addEventListener('DOMContentLoaded', function () {
+        // New Hires by Department - Bar Chart
+        const deptCtx = document.getElementById('hiresByDepartment')
+        if (deptCtx) {
+            new Chart(deptCtx, {
             type: 'bar',
             data: {
                 labels: ['HR', 'Finance', 'IT', 'Marketing', 'Sales', 'Operations'],
@@ -705,9 +1353,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+    
+    // Initialize all tables
+    renderTables();
 });
 </script>
-
-
 </body>
 </html>

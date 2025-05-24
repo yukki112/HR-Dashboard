@@ -1,17 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-	<link rel="stylesheet" href="style1.css">
-   
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>HR Analytics</title>
+    <style>
+      /* Filter controls styling */
+.filter-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
 
-	<title>HR Analytics</title>
+.filter-controls select, 
+.filter-controls input {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+    height: 38px;
+}
+
+.filter-controls select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2rem;
+}
+
+.filter-controls .btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.filter-controls .btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.filter-controls .btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-controls select,
+    .filter-controls input,
+    .filter-controls .btn {
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
+}
+    </style>
 </head>
 <body>
 
+
+<div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewModalLabel">View Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="editModalBody">
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this record? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <section id="sidebar">
     <a href="#" class="brand">
@@ -36,7 +156,7 @@
         </li>
         <li>
             <a href="../Performance/index.html">
-				<i class='bx bxs-bar-chart-alt-2' ></i>
+                <i class='bx bxs-bar-chart-alt-2' ></i>
                 <span class="text">Performance Management</span>
             </a>
         </li>
@@ -110,18 +230,15 @@
             </a>
         </li>
         <li>
-			<a href="../Corehuman/index.html">
-				<i class='bx bxs-user-badge' ></i>
-				<span class="text">Core Human Management</span>
-			</a>
-		</li>
-		
+            <a href="../Corehuman/index.html">
+                <i class='bx bxs-user-badge' ></i>
+                <span class="text">Core Human Management</span>
+            </a>
+        </li>
     </ul>
 
-    
-
     <ul class="side-menu">
-		<span class="separator">SETTINGS</span>
+        <span class="separator">SETTINGS</span>
         <li>
             <a href="../Settings.html">
                 <i class='bx bxs-cog'></i>
@@ -137,11 +254,9 @@
     </ul>
 </section>
 
-
 <section id="content">
- 
     <nav>
-        <i class='bx bx-menu'></i>
+        
         <a href="#" class="nav-link">Categories</a>
         <form action="#">
             <div class="form-input">
@@ -151,7 +266,7 @@
         </form>
         
         <input type="checkbox" id="switch-mode" hidden>
-        <label for="switch-mode" class="switch-mode"></label>
+       
         <a href="#" class="notification">
             <i class='bx bxs-bell'></i>
             <span class="num">9+</span>
@@ -163,648 +278,1115 @@
             </a>
             <div class="dropdown-menu" id="dropdown-menu">
                 <a href="Profile.html">Profile</a>
-				<a href="Changepassword.html">Change Passowrd</a>
+                <a href="Changepassword.html">Change Passowrd</a>
             </div>
         </div>
     </nav>
- 
-		<main>
-			<div class="head-title">
-				<div class="left">
-					<h1>HR Analytics</h1>
-					<ul class="breadcrumb">
-						<li>
-							<a href="#">Dashboard</a>
-						</li>
-						<li><i class='bx bx-chevron-right' ></i></li>
-						<li>
-							<a class="active" href="#">HR Analytics</a>
-						</li>
-					</ul>
-				</div>
-			</div>
 
-            <div class="tab-container">
-                <div class="tab-buttons">
-                    <button class="tab-button active" onclick="openTab(event, 'dashboard')">
-                        <i class='bx bxs-dashboard'></i> Dashboard
-                    </button>
-                    <button class="tab-button" onclick="openTab(event, 'compensation')">Compensation & Benefits</button>
-                    <button class="tab-button" onclick="openTab(event, 'diversity')">Diversity & Inclusion</button>
-                    <button class="tab-button" onclick="openTab(event, 'engagement')">Employee Engagement</button>
-                    <button class="tab-button" onclick="openTab(event, 'performance')">Performance</button>
-                    <button class="tab-button" onclick="openTab(event, 'recruitment')">Recruitment</button>
-                    <button class="tab-button" onclick="openTab(event, 'workforce')">Workforce Planning</button>
+    <main>
+        <div class="head-title">
+            <div class="left">
+                <h1>HR Analytics</h1>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="#">Dashboard</a>
+                    </li>
+                    <li><i class='bx bx-chevron-right' ></i></li>
+                    <li>
+                        <a class="active" href="#">HR Analytics</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="openTab(event, 'dashboard')">
+                    <i class='bx bxs-dashboard'></i> Dashboard
+                </button>
+                <button class="tab-button" onclick="openTab(event, 'compensation')">Compensation & Benefits</button>
+                <button class="tab-button" onclick="openTab(event, 'diversity')">Diversity & Inclusion</button>
+                <button class="tab-button" onclick="openTab(event, 'engagement')">Employee Engagement</button>
+                <button class="tab-button" onclick="openTab(event, 'performance')">Performance</button>
+                <button class="tab-button" onclick="openTab(event, 'recruitment')">Recruitment</button>
+                <button class="tab-button" onclick="openTab(event, 'workforce')">Workforce Planning</button>
+            </div>
+            
+            <div id="dashboard" class="tab-content active">
+                <div class="dashboard-container">
+                    <h3 class="dashboard-title">E-Commerce HR Dashboard</h3>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-title">Average Engagement Score</div>
+                            <div class="metric-value">7.8/10</div>
+                            <div class="metric-change positive">↑ 0.5 from last quarter</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-title">Turnover Rate</div>
+                            <div class="metric-value">12.5%</div>
+                            <div class="metric-change negative">↑ 2.1% from last year</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-title">Avg. Performance Score</div>
+                            <div class="metric-value">82.4%</div>
+                            <div class="metric-change positive">↑ 3.2% from last quarter</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-title">Diversity Index</div>
+                            <div class="metric-value">68.7</div>
+                            <div class="metric-change positive">↑ 5.3 from last year</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="engagementTrendChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container" style="margin-top: 20px;">
+                        <canvas id="performanceDistribution"></canvas>
+                    </div>
                 </div>
-            
-<div id="dashboard" class="tab-content active">
-    <div class="dashboard-container">
-        <h3 class="dashboard-title">E-Commerce HR Dashboard</h3>
-        
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <div class="metric-title">Average Engagement Score</div>
-                <div class="metric-value">7.8/10</div>
-                <div class="metric-change positive">↑ 0.5 from last quarter</div>
             </div>
-            
-            <div class="metric-card">
-                <div class="metric-title">Turnover Rate</div>
-                <div class="metric-value">12.5%</div>
-                <div class="metric-change negative">↑ 2.1% from last year</div>
-            </div>
-            
-            <div class="metric-card">
-                <div class="metric-title">Avg. Performance Score</div>
-                <div class="metric-value">82.4%</div>
-                <div class="metric-change positive">↑ 3.2% from last quarter</div>
-            </div>
-            
-            <div class="metric-card">
-                <div class="metric-title">Diversity Index</div>
-                <div class="metric-value">68.7</div>
-                <div class="metric-change positive">↑ 5.3 from last year</div>
-            </div>
-        </div>
-        
-        <div class="chart-container">
-            <canvas id="engagementTrendChart"></canvas>
-        </div>
-        
-        <div class="chart-container" style="margin-top: 20px;">
-            <canvas id="performanceDistribution"></canvas>
-        </div>
-    </div>
-</div>
-                
               
-                <div id="compensation" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Compensation & Benefits</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Compensation ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Benefit Type</th>
-                                    <th>Benefit Details</th>
-                                    <th>Effective Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1001</td>
-                                    <td>5001</td>
-                                    <td>Health Insurance</td>
-                                    <td>Family coverage - premium plan</td>
-                                    <td>2023-01-15</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1002</td>
-                                    <td>5002</td>
-                                    <td>Retirement</td>
-                                    <td>401k with 5% company match</td>
-                                    <td>2023-02-10</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1003</td>
-                                    <td>5003</td>
-                                    <td>Stock Options</td>
-                                    <td>1000 shares vested over 4 years</td>
-                                    <td>2023-03-05</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1004</td>
-                                    <td>5004</td>
-                                    <td>Education</td>
-                                    <td>$5,000 annual tuition reimbursement</td>
-                                    <td>2023-04-20</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1005</td>
-                                    <td>5005</td>
-                                    <td>Wellness</td>
-                                    <td>Gym membership reimbursement</td>
-                                    <td>2023-05-15</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <div id="compensation" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Compensation & Benefits</h3>
+                    <div class="filter-controls">
+                        <input type="text" id="compensationEmployeeFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                        <select id="compensationBenefitFilter" class="form-control me-2" style="width: 200px;">
+                            <option value="">All Benefit Types</option>
+                            <option>Health Insurance</option>
+                            <option>Retirement</option>
+                            <option>Stock Options</option>
+                            <option>Education</option>
+                            <option>Wellness</option>
+                        </select>
+                        <button class="btn btn-outline-secondary" id="resetCompensationFilters">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
                     </div>
-                </div>
-                
-                <div id="diversity" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Diversity & Inclusion</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Diversity ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Gender</th>
-                                    <th>Ethnicity</th>
-                                    <th>Career Progression</th>
-                                    <th>Representation %</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>2001</td>
-                                    <td>5001</td>
-                                    <td>Female</td>
-                                    <td>Asian</td>
-                                    <td>Promoted to Manager in 2022</td>
-                                    <td>15.2</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2002</td>
-                                    <td>5002</td>
-                                    <td>Male</td>
-                                    <td>White</td>
-                                    <td>Lateral move to Product in 2023</td>
-                                    <td>45.8</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2003</td>
-                                    <td>5003</td>
-                                    <td>Non-binary</td>
-                                    <td>Hispanic</td>
-                                    <td>Promoted to Senior Developer</td>
-                                    <td>8.7</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2004</td>
-                                    <td>5004</td>
-                                    <td>Female</td>
-                                    <td>Black</td>
-                                    <td>Joined leadership program</td>
-                                    <td>12.1</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2005</td>
-                                    <td>5005</td>
-                                    <td>Male</td>
-                                    <td>Asian</td>
-                                    <td>No progression in 2 years</td>
-                                    <td>18.2</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <div id="engagement" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Employee Engagement</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Engagement ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Engagement Score</th>
-                                    <th>Trend Score</th>
-                                    <th>Feedback</th>
-                                    <th>Recognition Received</th>
-                                    <th>Last Survey Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>3001</td>
-                                    <td>5001</td>
-                                    <td>8.5</td>
-                                    <td>+1.2</td>
-                                    <td>Very satisfied with work-life balance</td>
-                                    <td>Employee of the Month - June 2023</td>
-                                    <td>2023-06-15</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3002</td>
-                                    <td>5002</td>
-                                    <td>7.2</td>
-                                    <td>-0.3</td>
-                                    <td>Would like more career development</td>
-                                    <td>Spot award for project completion</td>
-                                    <td>2023-06-20</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3003</td>
-                                    <td>5003</td>
-                                    <td>6.8</td>
-                                    <td>-1.5</td>
-                                    <td>Concerns about team communication</td>
-                                    <td>None in past 6 months</td>
-                                    <td>2023-06-10</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3004</td>
-                                    <td>5004</td>
-                                    <td>9.1</td>
-                                    <td>+2.0</td>
-                                    <td>Extremely happy with new manager</td>
-                                    <td>2 peer recognitions this quarter</td>
-                                    <td>2023-06-25</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3005</td>
-                                    <td>5005</td>
-                                    <td>5.4</td>
-                                    <td>-2.1</td>
-                                    <td>Feeling overworked and underappreciated</td>
-                                    <td>None in past year</td>
-                                    <td>2023-06-05</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-          
-                <div id="performance" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Performance Management</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Performance ID</th>
-                                    <th>Employee ID</th>
-                                    <th>Sales Target Achievement</th>
-                                    <th>Customer Satisfaction</th>
-                                    <th>Productivity Score</th>
-                                    <th>Review Date</th>
-                                    <th>Comments</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>4001</td>
-                                    <td>5001</td>
-                                    <td>112%</td>
-                                    <td>94%</td>
-                                    <td>88%</td>
-                                    <td>2023-06-30</td>
-                                    <td>Exceeded all targets this quarter</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4002</td>
-                                    <td>5002</td>
-                                    <td>98%</td>
-                                    <td>89%</td>
-                                    <td>92%</td>
-                                    <td>2023-06-30</td>
-                                    <td>Met most targets, needs improvement in customer satisfaction</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4003</td>
-                                    <td>5003</td>
-                                    <td>105%</td>
-                                    <td>91%</td>
-                                    <td>85%</td>
-                                    <td>2023-06-30</td>
-                                    <td>Strong sales performance, productivity could improve</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4004</td>
-                                    <td>5004</td>
-                                    <td>87%</td>
-                                    <td>82%</td>
-                                    <td>78%</td>
-                                    <td>2023-06-30</td>
-                                    <td>Below targets, improvement plan needed</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4005</td>
-                                    <td>5005</td>
-                                    <td>92%</td>
-                                    <td>95%</td>
-                                    <td>90%</td>
-                                    <td>2023-06-30</td>
-                                    <td>Strong customer satisfaction despite slightly missing sales targets</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-              
-                <div id="recruitment" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Recruitment Analytics</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Recruitment ID</th>
-                                    <th>Applicant ID</th>
-                                    <th>Position Applied</th>
-                                    <th>Source</th>
-                                    <th>Interview Score</th>
-                                    <th>Hired Employee ID</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>5001</td>
-                                    <td>A1001</td>
-                                    <td>Marketing Manager</td>
-                                    <td>LinkedIn</td>
-                                    <td>92</td>
-                                    <td>5006</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>5002</td>
-                                    <td>A1002</td>
-                                    <td>Software Developer</td>
-                                    <td>Company Website</td>
-                                    <td>85</td>
-                                    <td>NULL</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>5003</td>
-                                    <td>A1003</td>
-                                    <td>HR Specialist</td>
-                                    <td>Referral</td>
-                                    <td>68</td>
-                                    <td>NULL</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>5004</td>
-                                    <td>A1004</td>
-                                    <td>Sales Representative</td>
-                                    <td>Job Fair</td>
-                                    <td>NULL</td>
-                                    <td>NULL</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>5005</td>
-                                    <td>A1005</td>
-                                    <td>Data Analyst</td>
-                                    <td>Indeed</td>
-                                    <td>88</td>
-                                    <td>5007</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <div id="workforce" class="tab-content">
-                    <div class="table-container">
-                        <h3 class="table-title">Workforce Planning</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Planning ID</th>
-                                    <th>Total Employees</th>
-                                    <th>Turnover Rate</th>
-                                    <th>Skills Gap</th>
-                                    <th>Market Demand</th>
-                                    <th>Planning Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>6001</td>
-                                    <td>150</td>
-                                    <td>12.5%</td>
-                                    <td>Data Science, Cloud Computing</td>
-                                    <td>High demand for tech roles</td>
-                                    <td>2023-01-15</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>6002</td>
-                                    <td>162</td>
-                                    <td>10.8%</td>
-                                    <td>AI/Machine Learning</td>
-                                    <td>Growing demand for AI specialists</td>
-                                    <td>2023-04-20</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>6003</td>
-                                    <td>155</td>
-                                    <td>15.2%</td>
-                                    <td>Cybersecurity</td>
-                                    <td>Critical need for security experts</td>
-                                    <td>2023-07-10</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>6004</td>
-                                    <td>170</td>
-                                    <td>9.5%</td>
-                                    <td>UX/UI Design</td>
-                                    <td>Increased focus on customer experience</td>
-                                    <td>2023-10-05</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>6005</td>
-                                    <td>180</td>
-                                    <td>8.3%</td>
-                                    <td>Project Management</td>
-                                    <td>Need for certified PMs across departments</td>
-                                    <td>2024-01-15</td>
-                                    <td class="action-buttons">
-                                        <button class="btn-edit">Edit</button>
-                                        <button class="btn-delete">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Compensation ID</th>
+                                <th>Employee ID</th>
+                                <th>Benefit Type</th>
+                                <th>Benefit Details</th>
+                                <th>Effective Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="compensationTable">
+                            <tr><td>1001</td><td>5001</td><td>Health Insurance</td><td>Family coverage - premium plan</td><td>2023-01-15</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>1002</td><td>5002</td><td>Retirement</td><td>401k with 5% company match</td><td>2023-02-10</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>1003</td><td>5003</td><td>Stock Options</td><td>1000 shares vesting over 4 years</td><td>2023-03-05</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>1004</td><td>5004</td><td>Education</td><td>Tuition reimbursement up to $5,000</td><td>2023-04-12</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>1005</td><td>5005</td><td>Wellness</td><td>Gym membership and wellness stipend</td><td>2023-05-20</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>1006</td><td>5006</td><td>Health Insurance</td><td>Individual coverage - standard plan</td><td>2023-06-01</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>1007</td><td>5007</td><td>Retirement</td><td>403b with 3% company match</td><td>2023-07-10</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>1008</td><td>5008</td><td>Stock Options</td><td>500 shares vesting over 2 years</td><td>2023-08-15</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>1009</td><td>5009</td><td>Education</td><td>Online course reimbursement</td><td>2023-09-18</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>1010</td><td>5010</td><td>Wellness</td><td>Annual health screening</td><td>2023-10-22</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-		</main>
-	
-	</section>
 
-	
+            <div id="diversity" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Diversity & Inclusion</h3>
+                    <div class="filter-controls">
+                        <input type="text" id="diversityEmployeeFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                        <select id="diversityGenderFilter" class="form-control me-2" style="width: 200px;">
+                            <option value="">All Genders</option>
+                            <option>Female</option>
+                            <option>Male</option>
+                            <option>Non-binary</option>
+                            <option>Other</option>
+                        </select>
+                        <input type="text" id="diversityEthnicityFilter" class="form-control me-2" placeholder="Filter by Ethnicity" style="width: 200px;">
+                        <button class="btn btn-outline-secondary" id="resetDiversityFilters">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Diversity ID</th>
+                                <th>Employee ID</th>
+                                <th>Gender</th>
+                                <th>Ethnicity</th>
+                                <th>Career Progression</th>
+                                <th>Representation %</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="diversityTable">
+                            <tr><td>2001</td><td>5001</td><td>Female</td><td>Asian</td><td>Promoted to Manager in 2022</td><td>15.2</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>2002</td><td>5002</td><td>Male</td><td>White</td><td>Lateral move to Product in 2023</td><td>45.8</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>2003</td><td>5003</td><td>Female</td><td>Black</td><td>Joined leadership program 2023</td><td>10.5</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>2004</td><td>5004</td><td>Male</td><td>Hispanic</td><td>Mentor for new hires</td><td>8.7</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>2005</td><td>5005</td><td>Non-binary</td><td>Asian</td><td>Promoted to Senior Analyst</td><td>5.3</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>2006</td><td>5006</td><td>Female</td><td>White</td><td>Transferred from EU office</td><td>12.1</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>2007</td><td>5007</td><td>Male</td><td>Black</td><td>Completed diversity training</td><td>7.9</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>2008</td><td>5008</td><td>Female</td><td>Hispanic</td><td>Promoted to Team Lead</td><td>9.4</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>2009</td><td>5009</td><td>Other</td><td>Asian</td><td>Joined ERG in 2023</td><td>3.2</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>2010</td><td>5010</td><td>Male</td><td>White</td><td>Mentor for internship program</td><td>39.7</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-	<script src="script.js"></script>
+            <div id="engagement" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Employee Engagement</h3>
+                    <div class="filter-controls">
+                        <input type="text" id="engagementEmployeeFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                        <input type="number" id="engagementScoreFilter" class="form-control me-2" placeholder="Min Engagement Score" style="width: 200px;">
+                        <input type="date" id="engagementDateFilter" class="form-control me-2" style="width: 200px;">
+                        <button class="btn btn-outline-secondary" id="resetEngagementFilters">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Engagement ID</th>
+                                <th>Employee ID</th>
+                                <th>Engagement Score</th>
+                                <th>Trend Score</th>
+                                <th>Feedback</th>
+                                <th>Recognition Received</th>
+                                <th>Last Survey Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="engagementTable">
+                            <tr><td>3001</td><td>5001</td><td>8.5</td><td>+1.2</td><td>Very satisfied with work-life balance</td><td>Employee of the Month - June 2023</td><td>2023-06-15</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>3002</td><td>5002</td><td>7.2</td><td>-0.3</td><td>Would like more career development</td><td>Spot award for project completion</td><td>2023-06-20</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>3003</td><td>5003</td><td>9.1</td><td>+0.8</td><td>Excellent team collaboration</td><td>Team award Q2 2023</td><td>2023-07-10</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>3004</td><td>5004</td><td>6.9</td><td>-0.5</td><td>Needs more flexible hours</td><td>None</td><td>2023-07-15</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>3005</td><td>5005</td><td>8.0</td><td>+0.2</td><td>Enjoys company culture</td><td>Peer recognition Q3 2023</td><td>2023-08-01</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>3006</td><td>5006</td><td>7.5</td><td>0.0</td><td>Wants more training</td><td>Training completion badge</td><td>2023-08-10</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>3007</td><td>5007</td><td>8.8</td><td>+1.0</td><td>Feels valued by management</td><td>Employee of the Month - August 2023</td><td>2023-08-20</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>3008</td><td>5008</td><td>7.0</td><td>-0.2</td><td>Needs better communication</td><td>None</td><td>2023-09-01</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>3009</td><td>5009</td><td>8.3</td><td>+0.4</td><td>Likes remote work options</td><td>Spot award for innovation</td><td>2023-09-15</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>3010</td><td>5010</td><td>7.7</td><td>+0.1</td><td>Wants more feedback</td><td>Peer recognition Q4 2023</td><td>2023-10-05</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="performance" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Performance Management</h3>
+                    <div class="filter-controls">
+                        <input type="text" id="performanceEmployeeFilter" class="form-control me-2" placeholder="Filter by Employee ID" style="width: 200px;">
+                        <input type="number" id="performanceRatingFilter" class="form-control me-2" placeholder="Min Rating" style="width: 200px;">
+                        <input type="date" id="performanceDateFilter" class="form-control me-2" style="width: 200px;">
+                        <button class="btn btn-outline-secondary" id="resetPerformanceFilters">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Performance ID</th>
+                                <th>Employee ID</th>
+                                <th>Sales Target Achievement</th>
+                                <th>Customer Satisfaction</th>
+                                <th>Productivity Score</th>
+                                <th>Review Date</th>
+                                <th>Comments</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="performanceTable">
+                            <tr><td>4001</td><td>5001</td><td>112%</td><td>94%</td><td>88%</td><td>2023-06-30</td><td>Exceeded all targets this quarter</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>4002</td><td>5002</td><td>98%</td><td>89%</td><td>92%</td><td>2023-06-30</td><td>Met most targets, needs improvement in customer satisfaction</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>4003</td><td>5003</td><td>105%</td><td>91%</td><td>85%</td><td>2023-07-15</td><td>Consistent performer</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>4004</td><td>5004</td><td>87%</td><td>85%</td><td>80%</td><td>2023-07-20</td><td>Needs improvement in sales</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>4005</td><td>5005</td><td>120%</td><td>97%</td><td>95%</td><td>2023-08-01</td><td>Outstanding quarter</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>4006</td><td>5006</td><td>93%</td><td>88%</td><td>90%</td><td>2023-08-10</td><td>Improved productivity</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>4007</td><td>5007</td><td>110%</td><td>95%</td><td>89%</td><td>2023-08-20</td><td>Exceeded sales targets</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>4008</td><td>5008</td><td>99%</td><td>90%</td><td>87%</td><td>2023-09-01</td><td>Met expectations</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>4009</td><td>5009</td><td>102%</td><td>92%</td><td>91%</td><td>2023-09-15</td><td>Strong customer feedback</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>4010</td><td>5010</td><td>95%</td><td>87%</td><td>86%</td><td>2023-10-05</td><td>Consistent performance</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="recruitment" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Recruitment Analytics</h3>
+                    <div class="filter-controls">
+                        <input type="text" id="recruitmentApplicantFilter" class="form-control me-2" placeholder="Filter by Applicant ID" style="width: 200px;">
+                        <input type="text" id="recruitmentPositionFilter" class="form-control me-2" placeholder="Filter by Position" style="width: 200px;">
+                        <select id="recruitmentSourceFilter" class="form-control me-2" style="width: 200px;">
+                            <option value="">All Sources</option>
+                            <option>LinkedIn</option>
+                            <option>Company Website</option>
+                            <option>Referral</option>
+                            <option>Job Fair</option>
+                            <option>Indeed</option>
+                        </select>
+                        <button class="btn btn-outline-secondary" id="resetRecruitmentFilters">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Recruitment ID</th>
+                                <th>Applicant ID</th>
+                                <th>Position Applied</th>
+                                <th>Source</th>
+                                <th>Interview Score</th>
+                                <th>Hired Employee ID</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recruitmentTable">
+                            <tr><td>5001</td><td>A1001</td><td>Marketing Manager</td><td>LinkedIn</td><td>92</td><td>5006</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>5002</td><td>A1002</td><td>Software Developer</td><td>Company Website</td><td>85</td><td>NULL</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>5003</td><td>A1003</td><td>Data Analyst</td><td>Referral</td><td>88</td><td>5011</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>5004</td><td>A1004</td><td>HR Specialist</td><td>Job Fair</td><td>79</td><td>5012</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>5005</td><td>A1005</td><td>UX Designer</td><td>Indeed</td><td>91</td><td>5013</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>5006</td><td>A1006</td><td>QA Engineer</td><td>LinkedIn</td><td>83</td><td>5014</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>5007</td><td>A1007</td><td>Finance Analyst</td><td>Company Website</td><td>87</td><td>5015</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>5008</td><td>A1008</td><td>Marketing Intern</td><td>Referral</td><td>75</td><td>NULL</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>5009</td><td>A1009</td><td>Product Manager</td><td>Job Fair</td><td>90</td><td>5016</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>5010</td><td>A1010</td><td>DevOps Engineer</td><td>Indeed</td><td>86</td><td>5017</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="workforce" class="tab-content">
+                <div class="table-container">
+                    <h3 class="table-title">Workforce Planning</h3>
+                    <div class="filter-controls">
+                        <input type="number" id="workforceEmployeeFilter" class="form-control me-2" placeholder="Min Employees" style="width: 200px;">
+                        <input type="number" id="workforceTurnoverFilter" class="form-control me-2" placeholder="Max Turnover Rate" style="width: 200px;">
+                        <input type="date" id="workforceDateFilter" class="form-control me-2" style="width: 200px;">
+                        <button class="btn btn-outline-secondary" id="resetWorkforceFilters">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Planning ID</th>
+                                <th>Total Employees</th>
+                                <th>Turnover Rate</th>
+                                <th>Skills Gap</th>
+                                <th>Market Demand</th>
+                                <th>Planning Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workforceTable">
+                            <tr><td>6001</td><td>150</td><td>12.5%</td><td>Data Science, Cloud Computing</td><td>High demand for tech roles</td><td>2023-01-15</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>6002</td><td>162</td><td>10.8%</td><td>AI/Machine Learning</td><td>Growing demand for AI specialists</td><td>2023-04-20</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>6003</td><td>155</td><td>11.2%</td><td>Cybersecurity</td><td>High demand for security experts</td><td>2023-02-10</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>6004</td><td>158</td><td>13.0%</td><td>Cloud Computing</td><td>Cloud migration projects increasing</td><td>2023-03-15</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>6005</td><td>160</td><td>9.5%</td><td>Project Management</td><td>Need for certified PMs</td><td>2023-05-10</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>6006</td><td>165</td><td>8.7%</td><td>Data Analytics</td><td>Analytics roles in demand</td><td>2023-06-05</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>6007</td><td>170</td><td>10.2%</td><td>DevOps</td><td>DevOps skills shortage</td><td>2023-07-01</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>6008</td><td>175</td><td>9.0%</td><td>Mobile Development</td><td>Mobile app projects rising</td><td>2023-08-10</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>6009</td><td>180</td><td>8.2%</td><td>AI/Machine Learning</td><td>AI adoption accelerating</td><td>2023-09-15</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                            <tr><td>6010</td><td>185</td><td>7.8%</td><td>Cloud Computing</td><td>Cloud-native skills needed</td><td>2023-10-20</td><td><button class="btn btn-sm btn-primary me-1 view-btn">View</button><button class="btn btn-sm btn-warning me-1 edit-btn">Edit</button><button class="btn btn-sm btn-danger delete-btn">Delete</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </div>
+        </div>
+    </main>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script>
-		document.getElementById("profile-btn").addEventListener("click", function(event) {
-			event.preventDefault();
-			document.getElementById("dropdown-menu").classList.toggle("show");
-		});
-		
-		document.addEventListener("click", function(event) {
-			if (!document.getElementById("profile-btn").contains(event.target)) {
-				document.getElementById("dropdown-menu").classList.remove("show");
-			}
-		});
-
-        function openTab(evt, tabName) {
-            var i, tabcontent, tabbuttons;
-            
-            // Hide all tab content
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-            }
-            
-            // Remove active class from all tab buttons
-            tabbuttons = document.getElementsByClassName("tab-button");
-            for (i = 0; i < tabbuttons.length; i++) {
-                tabbuttons[i].classList.remove("active");
-            }
-            
-            // Show the current tab and add active class to the button
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-
-        // Add event listeners for edit and delete buttons
-        document.querySelectorAll('.btn-edit').forEach(button => {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                alert('Editing row with ID: ' + row.cells[0].textContent);
-                // In a real application, you would open a modal or form for editing
-            });
-        });
-
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', function() {
-                if (confirm('Are you sure you want to delete this record?')) {
-                    const row = this.closest('tr');
-                    row.style.display = 'none';
-                    // In a real application, you would send a request to the server to delete the record
-                    alert('Record with ID: ' + row.cells[0].textContent + ' has been deleted');
-                }
-            });
-        });
-        
-        document.querySelectorAll('.btn-view').forEach(button => {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                alert('Viewing details for ID: ' + row.cells[0].textContent);
-                // In a real application, you would show more detailed information
-            });
-        });
-	</script>
-
 <script>
-    // Wait for DOM to be fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    // Initialize modals
+    var viewModal = new bootstrap.Modal(document.getElementById('viewModal'))
+    var editModal = new bootstrap.Modal(document.getElementById('editModal'))
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'))
+
+    // Current item to edit/delete
+    let currentItem = { type: null, index: null };
+
+    // Sample data for each table (show all rows from the HTML tables)
+    const compensationData = [
+        { id: "1001", employeeId: "5001", benefitType: "Health Insurance", benefitDetails: "Family coverage - premium plan", effectiveDate: "2023-01-15" },
+        { id: "1002", employeeId: "5002", benefitType: "Retirement", benefitDetails: "401k with 5% company match", effectiveDate: "2023-02-10" },
+        { id: "1003", employeeId: "5003", benefitType: "Stock Options", benefitDetails: "1000 shares vesting over 4 years", effectiveDate: "2023-03-05" },
+        { id: "1004", employeeId: "5004", benefitType: "Education", benefitDetails: "Tuition reimbursement up to $5,000", effectiveDate: "2023-04-12" },
+        { id: "1005", employeeId: "5005", benefitType: "Wellness", benefitDetails: "Gym membership and wellness stipend", effectiveDate: "2023-05-20" },
+        { id: "1006", employeeId: "5006", benefitType: "Health Insurance", benefitDetails: "Individual coverage - standard plan", effectiveDate: "2023-06-01" },
+        { id: "1007", employeeId: "5007", benefitType: "Retirement", benefitDetails: "403b with 3% company match", effectiveDate: "2023-07-10" },
+        { id: "1008", employeeId: "5008", benefitType: "Stock Options", benefitDetails: "500 shares vesting over 2 years", effectiveDate: "2023-08-15" },
+        { id: "1009", employeeId: "5009", benefitType: "Education", benefitDetails: "Online course reimbursement", effectiveDate: "2023-09-18" },
+        { id: "1010", employeeId: "5010", benefitType: "Wellness", benefitDetails: "Annual health screening", effectiveDate: "2023-10-22" }
+    ];
+
+    const diversityData = [
+        { id: "2001", employeeId: "5001", gender: "Female", ethnicity: "Asian", careerProgression: "Promoted to Manager in 2022", representation: "15.2" },
+        { id: "2002", employeeId: "5002", gender: "Male", ethnicity: "White", careerProgression: "Lateral move to Product in 2023", representation: "45.8" },
+        { id: "2003", employeeId: "5003", gender: "Female", ethnicity: "Black", careerProgression: "Joined leadership program 2023", representation: "10.5" },
+        { id: "2004", employeeId: "5004", gender: "Male", ethnicity: "Hispanic", careerProgression: "Mentor for new hires", representation: "8.7" },
+        { id: "2005", employeeId: "5005", gender: "Non-binary", ethnicity: "Asian", careerProgression: "Promoted to Senior Analyst", representation: "5.3" },
+        { id: "2006", employeeId: "5006", gender: "Female", ethnicity: "White", careerProgression: "Transferred from EU office", representation: "12.1" },
+        { id: "2007", employeeId: "5007", gender: "Male", ethnicity: "Black", careerProgression: "Completed diversity training", representation: "7.9" },
+        { id: "2008", employeeId: "5008", gender: "Female", ethnicity: "Hispanic", careerProgression: "Promoted to Team Lead", representation: "9.4" },
+        { id: "2009", employeeId: "5009", gender: "Other", ethnicity: "Asian", careerProgression: "Joined ERG in 2023", representation: "3.2" },
+        { id: "2010", employeeId: "5010", gender: "Male", ethnicity: "White", careerProgression: "Mentor for internship program", representation: "39.7" }
+    ];
+
+    const engagementData = [
+        { id: "3001", employeeId: "5001", engagementScore: "8.5", trendScore: "+1.2", feedback: "Very satisfied with work-life balance", recognition: "Employee of the Month - June 2023", surveyDate: "2023-06-15" },
+        { id: "3002", employeeId: "5002", engagementScore: "7.2", trendScore: "-0.3", feedback: "Would like more career development", recognition: "Spot award for project completion", surveyDate: "2023-06-20" },
+        { id: "3003", employeeId: "5003", engagementScore: "9.1", trendScore: "+0.8", feedback: "Excellent team collaboration", recognition: "Team award Q2 2023", surveyDate: "2023-07-10" },
+        { id: "3004", employeeId: "5004", engagementScore: "6.9", trendScore: "-0.5", feedback: "Needs more flexible hours", recognition: "None", surveyDate: "2023-07-15" },
+        { id: "3005", employeeId: "5005", engagementScore: "8.0", trendScore: "+0.2", feedback: "Enjoys company culture", recognition: "Peer recognition Q3 2023", surveyDate: "2023-08-01" },
+        { id: "3006", employeeId: "5006", engagementScore: "7.5", trendScore: "0.0", feedback: "Wants more training", recognition: "Training completion badge", surveyDate: "2023-08-10" },
+        { id: "3007", employeeId: "5007", engagementScore: "8.8", trendScore: "+1.0", feedback: "Feels valued by management", recognition: "Employee of the Month - August 2023", surveyDate: "2023-08-20" },
+        { id: "3008", employeeId: "5008", engagementScore: "7.0", trendScore: "-0.2", feedback: "Needs better communication", recognition: "None", surveyDate: "2023-09-01" },
+        { id: "3009", employeeId: "5009", engagementScore: "8.3", trendScore: "+0.4", feedback: "Likes remote work options", recognition: "Spot award for innovation", surveyDate: "2023-09-15" },
+        { id: "3010", employeeId: "5010", engagementScore: "7.7", trendScore: "+0.1", feedback: "Wants more feedback", recognition: "Peer recognition Q4 2023", surveyDate: "2023-10-05" }
+    ];
+
+    const performanceData = [
+        { id: "4001", employeeId: "5001", salesTarget: "112%", customerSatisfaction: "94%", productivityScore: "88%", reviewDate: "2023-06-30", comments: "Exceeded all targets this quarter" },
+        { id: "4002", employeeId: "5002", salesTarget: "98%", customerSatisfaction: "89%", productivityScore: "92%", reviewDate: "2023-06-30", comments: "Met most targets, needs improvement in customer satisfaction" },
+        { id: "4003", employeeId: "5003", salesTarget: "105%", customerSatisfaction: "91%", productivityScore: "85%", reviewDate: "2023-07-15", comments: "Consistent performer" },
+        { id: "4004", employeeId: "5004", salesTarget: "87%", customerSatisfaction: "85%", productivityScore: "80%", reviewDate: "2023-07-20", comments: "Needs improvement in sales" },
+        { id: "4005", employeeId: "5005", salesTarget: "120%", customerSatisfaction: "97%", productivityScore: "95%", reviewDate: "2023-08-01", comments: "Outstanding quarter" },
+        { id: "4006", employeeId: "5006", salesTarget: "93%", customerSatisfaction: "88%", productivityScore: "90%", reviewDate: "2023-08-10", comments: "Improved productivity" },
+        { id: "4007", employeeId: "5007", salesTarget: "110%", customerSatisfaction: "95%", productivityScore: "89%", reviewDate: "2023-08-20", comments: "Exceeded sales targets" },
+        { id: "4008", employeeId: "5008", salesTarget: "99%", customerSatisfaction: "90%", productivityScore: "87%", reviewDate: "2023-09-01", comments: "Met expectations" },
+        { id: "4009", employeeId: "5009", salesTarget: "102%", customerSatisfaction: "92%", productivityScore: "91%", reviewDate: "2023-09-15", comments: "Strong customer feedback" },
+        { id: "4010", employeeId: "5010", salesTarget: "95%", customerSatisfaction: "87%", productivityScore: "86%", reviewDate: "2023-10-05", comments: "Consistent performance" }
+    ];
+
+    const recruitmentData = [
+        { id: "5001", applicantId: "A1001", position: "Marketing Manager", source: "LinkedIn", interviewScore: "92", hiredEmployeeId: "5006" },
+        { id: "5002", applicantId: "A1002", position: "Software Developer", source: "Company Website", interviewScore: "85", hiredEmployeeId: "NULL" },
+        { id: "5003", applicantId: "A1003", position: "Data Analyst", source: "Referral", interviewScore: "88", hiredEmployeeId: "5011" },
+        { id: "5004", applicantId: "A1004", position: "HR Specialist", source: "Job Fair", interviewScore: "79", hiredEmployeeId: "5012" },
+        { id: "5005", applicantId: "A1005", position: "UX Designer", source: "Indeed", interviewScore: "91", hiredEmployeeId: "5013" },
+        { id: "5006", applicantId: "A1006", position: "QA Engineer", source: "LinkedIn", interviewScore: "83", hiredEmployeeId: "5014" },
+        { id: "5007", applicantId: "A1007", position: "Finance Analyst", source: "Company Website", interviewScore: "87", hiredEmployeeId: "5015" },
+        { id: "5008", applicantId: "A1008", position: "Marketing Intern", source: "Referral", interviewScore: "75", hiredEmployeeId: "NULL" },
+        { id: "5009", applicantId: "A1009", position: "Product Manager", source: "Job Fair", interviewScore: "90", hiredEmployeeId: "5016" },
+        { id: "5010", applicantId: "A1010", position: "DevOps Engineer", source: "Indeed", interviewScore: "86", hiredEmployeeId: "5017" }
+    ];
+
+    const workforceData = [
+        { id: "6001", totalEmployees: "150", turnoverRate: "12.5%", skillsGap: "Data Science, Cloud Computing", marketDemand: "High demand for tech roles", planningDate: "2023-01-15" },
+        { id: "6002", totalEmployees: "162", turnoverRate: "10.8%", skillsGap: "AI/Machine Learning", marketDemand: "Growing demand for AI specialists", planningDate: "2023-04-20" },
+        { id: "6003", totalEmployees: "155", turnoverRate: "11.2%", skillsGap: "Cybersecurity", marketDemand: "High demand for security experts", planningDate: "2023-02-10" },
+        { id: "6004", totalEmployees: "158", turnoverRate: "13.0%", skillsGap: "Cloud Computing", marketDemand: "Cloud migration projects increasing", planningDate: "2023-03-15" },
+        { id: "6005", totalEmployees: "160", turnoverRate: "9.5%", skillsGap: "Project Management", marketDemand: "Need for certified PMs", planningDate: "2023-05-10" },
+        { id: "6006", totalEmployees: "165", turnoverRate: "8.7%", skillsGap: "Data Analytics", marketDemand: "Analytics roles in demand", planningDate: "2023-06-05" },
+        { id: "6007", totalEmployees: "170", turnoverRate: "10.2%", skillsGap: "DevOps", marketDemand: "DevOps skills shortage", planningDate: "2023-07-01" },
+        { id: "6008", totalEmployees: "175", turnoverRate: "9.0%", skillsGap: "Mobile Development", marketDemand: "Mobile app projects rising", planningDate: "2023-08-10" },
+        { id: "6009", totalEmployees: "180", turnoverRate: "8.2%", skillsGap: "AI/Machine Learning", marketDemand: "AI adoption accelerating", planningDate: "2023-09-15" },
+        { id: "6010", totalEmployees: "185", turnoverRate: "7.8%", skillsGap: "Cloud Computing", marketDemand: "Cloud-native skills needed", planningDate: "2023-10-20" }
+    ];
+
+    // Render all tables
+    function renderAllTables() {
+        renderCompensationTable();
+        renderDiversityTable();
+        renderEngagementTable();
+        renderPerformanceTable();
+        renderRecruitmentTable();
+        renderWorkforceTable();
+    }
+
+    // Render compensation table with filtering
+    function renderCompensationTable() {
+        const employeeFilter = document.getElementById('compensationEmployeeFilter').value.toLowerCase();
+        const benefitFilter = document.getElementById('compensationBenefitFilter').value;
+        
+        const filtered = compensationData.filter(item => 
+            item.employeeId.toLowerCase().includes(employeeFilter) &&
+            (benefitFilter === "" || item.benefitType === benefitFilter)
+        );
+        
+        document.getElementById("compensationTable").innerHTML = filtered.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.employeeId}</td>
+                <td>${item.benefitType}</td>
+                <td>${item.benefitDetails}</td>
+                <td>${item.effectiveDate}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewItem('compensation', ${compensationData.indexOf(item)})">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn" onclick="editItem('compensation', ${compensationData.indexOf(item)})">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('compensation', ${compensationData.indexOf(item)})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render diversity table with filtering
+    function renderDiversityTable() {
+        const employeeFilter = document.getElementById('diversityEmployeeFilter').value.toLowerCase();
+        const genderFilter = document.getElementById('diversityGenderFilter').value;
+        const ethnicityFilter = document.getElementById('diversityEthnicityFilter').value.toLowerCase();
+        
+        const filtered = diversityData.filter(item => 
+            item.employeeId.toLowerCase().includes(employeeFilter) &&
+            (genderFilter === "" || item.gender === genderFilter) &&
+            item.ethnicity.toLowerCase().includes(ethnicityFilter)
+        );
+        
+        document.getElementById("diversityTable").innerHTML = filtered.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.employeeId}</td>
+                <td>${item.gender}</td>
+                <td>${item.ethnicity}</td>
+                <td>${item.careerProgression}</td>
+                <td>${item.representation}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewItem('diversity', ${diversityData.indexOf(item)})">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn" onclick="editItem('diversity', ${diversityData.indexOf(item)})">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('diversity', ${diversityData.indexOf(item)})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render engagement table with filtering
+    function renderEngagementTable() {
+        const employeeFilter = document.getElementById('engagementEmployeeFilter').value.toLowerCase();
+        const scoreFilter = document.getElementById('engagementScoreFilter').value;
+        const dateFilter = document.getElementById('engagementDateFilter').value;
+        
+        const filtered = engagementData.filter(item => 
+            item.employeeId.toLowerCase().includes(employeeFilter) &&
+            (scoreFilter === "" || parseFloat(item.engagementScore) >= parseFloat(scoreFilter)) &&
+            (dateFilter === "" || item.surveyDate === dateFilter)
+        );
+        
+        document.getElementById("engagementTable").innerHTML = filtered.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.employeeId}</td>
+                <td>${item.engagementScore}</td>
+                <td>${item.trendScore}</td>
+                <td>${item.feedback}</td>
+                <td>${item.recognition}</td>
+                <td>${item.surveyDate}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewItem('engagement', ${engagementData.indexOf(item)})">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn" onclick="editItem('engagement', ${engagementData.indexOf(item)})">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('engagement', ${engagementData.indexOf(item)})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render performance table with filtering
+    function renderPerformanceTable() {
+        const employeeFilter = document.getElementById('performanceEmployeeFilter').value.toLowerCase();
+        const ratingFilter = document.getElementById('performanceRatingFilter').value;
+        const dateFilter = document.getElementById('performanceDateFilter').value;
+        
+        const filtered = performanceData.filter(item => 
+            item.employeeId.toLowerCase().includes(employeeFilter) &&
+            (ratingFilter === "" || parseFloat(item.salesTarget) >= parseFloat(ratingFilter)) &&
+            (dateFilter === "" || item.reviewDate === dateFilter)
+        );
+        
+        document.getElementById("performanceTable").innerHTML = filtered.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.employeeId}</td>
+                <td>${item.salesTarget}</td>
+                <td>${item.customerSatisfaction}</td>
+                <td>${item.productivityScore}</td>
+                <td>${item.reviewDate}</td>
+                <td>${item.comments}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewItem('performance', ${performanceData.indexOf(item)})">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn" onclick="editItem('performance', ${performanceData.indexOf(item)})">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('performance', ${performanceData.indexOf(item)})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render recruitment table with filtering
+    function renderRecruitmentTable() {
+        const applicantFilter = document.getElementById('recruitmentApplicantFilter').value.toLowerCase();
+        const positionFilter = document.getElementById('recruitmentPositionFilter').value.toLowerCase();
+        const sourceFilter = document.getElementById('recruitmentSourceFilter').value;
+        
+        const filtered = recruitmentData.filter(item => 
+            item.applicantId.toLowerCase().includes(applicantFilter) &&
+            item.position.toLowerCase().includes(positionFilter) &&
+            (sourceFilter === "" || item.source === sourceFilter)
+        );
+        
+        document.getElementById("recruitmentTable").innerHTML = filtered.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.applicantId}</td>
+                <td>${item.position}</td>
+                <td>${item.source}</td>
+                <td>${item.interviewScore}</td>
+                <td>${item.hiredEmployeeId}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewItem('recruitment', ${recruitmentData.indexOf(item)})">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn" onclick="editItem('recruitment', ${recruitmentData.indexOf(item)})">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('recruitment', ${recruitmentData.indexOf(item)})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // Render workforce table with filtering
+    function renderWorkforceTable() {
+        const employeeFilter = document.getElementById('workforceEmployeeFilter').value;
+        const turnoverFilter = document.getElementById('workforceTurnoverFilter').value;
+        const dateFilter = document.getElementById('workforceDateFilter').value;
+        
+        const filtered = workforceData.filter(item => 
+            (employeeFilter === "" || parseInt(item.totalEmployees) >= parseInt(employeeFilter)) &&
+            (turnoverFilter === "" || parseFloat(item.turnoverRate) <= parseFloat(turnoverFilter)) &&
+            (dateFilter === "" || item.planningDate === dateFilter)
+        );
+        
+        document.getElementById("workforceTable").innerHTML = filtered.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.totalEmployees}</td>
+                <td>${item.turnoverRate}</td>
+                <td>${item.skillsGap}</td>
+                <td>${item.marketDemand}</td>
+                <td>${item.planningDate}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1 view-btn" onclick="viewItem('workforce', ${workforceData.indexOf(item)})">View</button>
+                    <button class="btn btn-sm btn-warning me-1 edit-btn" onclick="editItem('workforce', ${workforceData.indexOf(item)})">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('workforce', ${workforceData.indexOf(item)})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // View item function
+    function viewItem(type, index) {
+        let item, viewContent;
+        
+        switch(type) {
+            case 'compensation':
+                item = compensationData[index];
+                viewContent = `
+                    <h6>Compensation Details</h6>
+                    <p><strong>Compensation ID:</strong> ${item.id}</p>
+                    <p><strong>Employee ID:</strong> ${item.employeeId}</p>
+                    <p><strong>Benefit Type:</strong> ${item.benefitType}</p>
+                    <p><strong>Benefit Details:</strong> ${item.benefitDetails}</p>
+                    <p><strong>Effective Date:</strong> ${item.effectiveDate}</p>
+                `;
+                break;
+            case 'diversity':
+                item = diversityData[index];
+                viewContent = `
+                    <h6>Diversity Details</h6>
+                    <p><strong>Diversity ID:</strong> ${item.id}</p>
+                    <p><strong>Employee ID:</strong> ${item.employeeId}</p>
+                    <p><strong>Gender:</strong> ${item.gender}</p>
+                    <p><strong>Ethnicity:</strong> ${item.ethnicity}</p>
+                    <p><strong>Career Progression:</strong> ${item.careerProgression}</p>
+                    <p><strong>Representation %:</strong> ${item.representation}</p>
+                `;
+                break;
+            case 'engagement':
+                item = engagementData[index];
+                viewContent = `
+                    <h6>Engagement Details</h6>
+                    <p><strong>Engagement ID:</strong> ${item.id}</p>
+                    <p><strong>Employee ID:</strong> ${item.employeeId}</p>
+                    <p><strong>Engagement Score:</strong> ${item.engagementScore}</p>
+                    <p><strong>Trend Score:</strong> ${item.trendScore}</p>
+                    <p><strong>Feedback:</strong> ${item.feedback}</p>
+                    <p><strong>Recognition Received:</strong> ${item.recognition}</p>
+                    <p><strong>Last Survey Date:</strong> ${item.surveyDate}</p>
+                `;
+                break;
+            case 'performance':
+                item = performanceData[index];
+                viewContent = `
+                    <h6>Performance Details</h6>
+                    <p><strong>Performance ID:</strong> ${item.id}</p>
+                    <p><strong>Employee ID:</strong> ${item.employeeId}</p>
+                    <p><strong>Sales Target Achievement:</strong> ${item.salesTarget}</p>
+                    <p><strong>Customer Satisfaction:</strong> ${item.customerSatisfaction}</p>
+                    <p><strong>Productivity Score:</strong> ${item.productivityScore}</p>
+                    <p><strong>Review Date:</strong> ${item.reviewDate}</p>
+                    <p><strong>Comments:</strong> ${item.comments}</p>
+                `;
+                break;
+            case 'recruitment':
+                item = recruitmentData[index];
+                viewContent = `
+                    <h6>Recruitment Details</h6>
+                    <p><strong>Recruitment ID:</strong> ${item.id}</p>
+                    <p><strong>Applicant ID:</strong> ${item.applicantId}</p>
+                    <p><strong>Position Applied:</strong> ${item.position}</p>
+                    <p><strong>Source:</strong> ${item.source}</p>
+                    <p><strong>Interview Score:</strong> ${item.interviewScore}</p>
+                    <p><strong>Hired Employee ID:</strong> ${item.hiredEmployeeId}</p>
+                `;
+                break;
+            case 'workforce':
+                item = workforceData[index];
+                viewContent = `
+                    <h6>Workforce Planning Details</h6>
+                    <p><strong>Planning ID:</strong> ${item.id}</p>
+                    <p><strong>Total Employees:</strong> ${item.totalEmployees}</p>
+                    <p><strong>Turnover Rate:</strong> ${item.turnoverRate}</p>
+                    <p><strong>Skills Gap:</strong> ${item.skillsGap}</p>
+                    <p><strong>Market Demand:</strong> ${item.marketDemand}</p>
+                    <p><strong>Planning Date:</strong> ${item.planningDate}</p>
+                `;
+                break;
+        }
+        
+        document.getElementById('viewModalBody').innerHTML = viewContent;
+        viewModal.show();
+    }
+
+    // Edit item function
+    function editItem(type, index) {
+        currentItem = { type, index };
+        let item, editForm;
+        
+        switch(type) {
+            case 'compensation':
+                item = compensationData[index];
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Compensation ID</label>
+                        <input type="text" class="form-control" value="${item.id}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" id="editEmployeeId" value="${item.employeeId}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Benefit Type</label>
+                        <select class="form-select" id="editBenefitType">
+                            <option ${item.benefitType === 'Health Insurance' ? 'selected' : ''}>Health Insurance</option>
+                            <option ${item.benefitType === 'Retirement' ? 'selected' : ''}>Retirement</option>
+                            <option ${item.benefitType === 'Stock Options' ? 'selected' : ''}>Stock Options</option>
+                            <option ${item.benefitType === 'Education' ? 'selected' : ''}>Education</option>
+                            <option ${item.benefitType === 'Wellness' ? 'selected' : ''}>Wellness</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Benefit Details</label>
+                        <textarea class="form-control" id="editBenefitDetails">${item.benefitDetails}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Effective Date</label>
+                        <input type="date" class="form-control" id="editEffectiveDate" value="${item.effectiveDate}">
+                    </div>
+                `;
+                break;
+            case 'diversity':
+                item = diversityData[index];
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Diversity ID</label>
+                        <input type="text" class="form-control" value="${item.id}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" id="editEmployeeId" value="${item.employeeId}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Gender</label>
+                        <select class="form-select" id="editGender">
+                            <option ${item.gender === 'Female' ? 'selected' : ''}>Female</option>
+                            <option ${item.gender === 'Male' ? 'selected' : ''}>Male</option>
+                            <option ${item.gender === 'Non-binary' ? 'selected' : ''}>Non-binary</option>
+                            <option ${item.gender === 'Other' ? 'selected' : ''}>Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ethnicity</label>
+                        <input type="text" class="form-control" id="editEthnicity" value="${item.ethnicity}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Career Progression</label>
+                        <textarea class="form-control" id="editCareerProgression">${item.careerProgression}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Representation %</label>
+                        <input type="number" step="0.1" class="form-control" id="editRepresentation" value="${item.representation}">
+                    </div>
+                `;
+                break;
+            case 'engagement':
+                item = engagementData[index];
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Engagement ID</label>
+                        <input type="text" class="form-control" value="${item.id}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" id="editEmployeeId" value="${item.employeeId}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Engagement Score</label>
+                        <input type="number" step="0.1" class="form-control" id="editEngagementScore" value="${item.engagementScore}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Trend Score</label>
+                        <input type="text" class="form-control" id="editTrendScore" value="${item.trendScore}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Feedback</label>
+                        <textarea class="form-control" id="editFeedback">${item.feedback}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Recognition Received</label>
+                        <textarea class="form-control" id="editRecognition">${item.recognition}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Survey Date</label>
+                        <input type="date" class="form-control" id="editSurveyDate" value="${item.surveyDate}">
+                    </div>
+                `;
+                break;
+            case 'performance':
+                item = performanceData[index];
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Performance ID</label>
+                        <input type="text" class="form-control" value="${item.id}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" id="editEmployeeId" value="${item.employeeId}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sales Target Achievement</label>
+                        <input type="text" class="form-control" id="editSalesTarget" value="${item.salesTarget}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Customer Satisfaction</label>
+                        <input type="text" class="form-control" id="editCustomerSatisfaction" value="${item.customerSatisfaction}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Productivity Score</label>
+                        <input type="text" class="form-control" id="editProductivityScore" value="${item.productivityScore}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Review Date</label>
+                        <input type="date" class="form-control" id="editReviewDate" value="${item.reviewDate}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Comments</label>
+                        <textarea class="form-control" id="editComments">${item.comments}</textarea>
+                    </div>
+                `;
+                break;
+            case 'recruitment':
+                item = recruitmentData[index];
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Recruitment ID</label>
+                        <input type="text" class="form-control" value="${item.id}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Applicant ID</label>
+                        <input type="text" class="form-control" id="editApplicantId" value="${item.applicantId}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Position Applied</label>
+                        <input type="text" class="form-control" id="editPosition" value="${item.position}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Source</label>
+                        <select class="form-select" id="editSource">
+                            <option ${item.source === 'LinkedIn' ? 'selected' : ''}>LinkedIn</option>
+                            <option ${item.source === 'Company Website' ? 'selected' : ''}>Company Website</option>
+                            <option ${item.source === 'Referral' ? 'selected' : ''}>Referral</option>
+                            <option ${item.source === 'Job Fair' ? 'selected' : ''}>Job Fair</option>
+                            <option ${item.source === 'Indeed' ? 'selected' : ''}>Indeed</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Interview Score</label>
+                        <input type="number" class="form-control" id="editInterviewScore" value="${item.interviewScore || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Hired Employee ID</label>
+                        <input type="text" class="form-control" id="editHiredEmployeeId" value="${item.hiredEmployeeId || ''}">
+                    </div>
+                `;
+                break;
+            case 'workforce':
+                item = workforceData[index];
+                editForm = `
+                    <div class="mb-3">
+                        <label class="form-label">Planning ID</label>
+                        <input type="text" class="form-control" value="${item.id}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Total Employees</label>
+                        <input type="number" class="form-control" id="editTotalEmployees" value="${item.totalEmployees}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Turnover Rate</label>
+                        <input type="number" step="0.1" class="form-control" id="editTurnoverRate" value="${parseFloat(item.turnoverRate)}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Skills Gap</label>
+                        <textarea class="form-control" id="editSkillsGap">${item.skillsGap}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Market Demand</label>
+                        <textarea class="form-control" id="editMarketDemand">${item.marketDemand}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Planning Date</label>
+                        <input type="date" class="form-control" id="editPlanningDate" value="${item.planningDate}">
+                    </div>
+                `;
+                break;
+        }
+        
+        document.getElementById('editModalBody').innerHTML = editForm;
+        editModal.show();
+    }
+
+    // Save changes function
+    document.getElementById('saveChangesBtn').addEventListener('click', function() {
+        const { type, index } = currentItem;
+        let updatedItem;
+        
+        switch(type) {
+            case 'compensation':
+                updatedItem = {
+                    id: compensationData[index].id,
+                    employeeId: document.getElementById('editEmployeeId').value,
+                    benefitType: document.getElementById('editBenefitType').value,
+                    benefitDetails: document.getElementById('editBenefitDetails').value,
+                    effectiveDate: document.getElementById('editEffectiveDate').value
+                };
+                compensationData[index] = updatedItem;
+                break;
+            case 'diversity':
+                updatedItem = {
+                    id: diversityData[index].id,
+                    employeeId: document.getElementById('editEmployeeId').value,
+                    gender: document.getElementById('editGender').value,
+                    ethnicity: document.getElementById('editEthnicity').value,
+                    careerProgression: document.getElementById('editCareerProgression').value,
+                    representation: document.getElementById('editRepresentation').value
+                };
+                diversityData[index] = updatedItem;
+                break;
+            case 'engagement':
+                updatedItem = {
+                    id: engagementData[index].id,
+                    employeeId: document.getElementById('editEmployeeId').value,
+                    engagementScore: document.getElementById('editEngagementScore').value,
+                    trendScore: document.getElementById('editTrendScore').value,
+                    feedback: document.getElementById('editFeedback').value,
+                    recognition: document.getElementById('editRecognition').value,
+                    surveyDate: document.getElementById('editSurveyDate').value
+                };
+                engagementData[index] = updatedItem;
+                break;
+            case 'performance':
+                updatedItem = {
+                    id: performanceData[index].id,
+                    employeeId: document.getElementById('editEmployeeId').value,
+                    salesTarget: document.getElementById('editSalesTarget').value,
+                    customerSatisfaction: document.getElementById('editCustomerSatisfaction').value,
+                    productivityScore: document.getElementById('editProductivityScore').value,
+                    reviewDate: document.getElementById('editReviewDate').value,
+                    comments: document.getElementById('editComments').value
+                };
+                performanceData[index] = updatedItem;
+                break;
+            case 'recruitment':
+                updatedItem = {
+                    id: recruitmentData[index].id,
+                    applicantId: document.getElementById('editApplicantId').value,
+                    position: document.getElementById('editPosition').value,
+                    source: document.getElementById('editSource').value,
+                    interviewScore: document.getElementById('editInterviewScore').value,
+                    hiredEmployeeId: document.getElementById('editHiredEmployeeId').value
+                };
+                recruitmentData[index] = updatedItem;
+                break;
+            case 'workforce':
+                updatedItem = {
+                    id: workforceData[index].id,
+                    totalEmployees: document.getElementById('editTotalEmployees').value,
+                    turnoverRate: document.getElementById('editTurnoverRate').value + '%',
+                    skillsGap: document.getElementById('editSkillsGap').value,
+                    marketDemand: document.getElementById('editMarketDemand').value,
+                    planningDate: document.getElementById('editPlanningDate').value
+                };
+                workforceData[index] = updatedItem;
+                break;
+        }
+        
+        renderAllTables();
+        editModal.hide();
+        alert('Changes saved successfully!');
+    });
+
+    // Delete confirmation function
+    function confirmDelete(type, index) {
+        currentItem = { type, index };
+        deleteModal.show();
+    }
+
+    // Delete item function
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        const { type, index } = currentItem;
+        
+        switch(type) {
+            case 'compensation':
+                compensationData.splice(index, 1);
+                break;
+            case 'diversity':
+                diversityData.splice(index, 1);
+                break;
+            case 'engagement':
+                engagementData.splice(index, 1);
+                break;
+            case 'performance':
+                performanceData.splice(index, 1);
+                break;
+            case 'recruitment':
+                recruitmentData.splice(index, 1);
+                break;
+            case 'workforce':
+                workforceData.splice(index, 1);
+                break;
+        }
+        
+        renderAllTables();
+        deleteModal.hide();
+        alert('Record deleted successfully!');
+    });
+
+    // Reset filter functions
+    document.getElementById('resetCompensationFilters').addEventListener('click', function() {
+        document.getElementById('compensationEmployeeFilter').value = '';
+        document.getElementById('compensationBenefitFilter').value = '';
+        renderCompensationTable();
+    });
+
+    document.getElementById('resetDiversityFilters').addEventListener('click', function() {
+        document.getElementById('diversityEmployeeFilter').value = '';
+        document.getElementById('diversityGenderFilter').value = '';
+        document.getElementById('diversityEthnicityFilter').value = '';
+        renderDiversityTable();
+    });
+
+    document.getElementById('resetEngagementFilters').addEventListener('click', function() {
+        document.getElementById('engagementEmployeeFilter').value = '';
+        document.getElementById('engagementScoreFilter').value = '';
+        document.getElementById('engagementDateFilter').value = '';
+        renderEngagementTable();
+    });
+
+    document.getElementById('resetPerformanceFilters').addEventListener('click', function() {
+        document.getElementById('performanceEmployeeFilter').value = '';
+        document.getElementById('performanceRatingFilter').value = '';
+        document.getElementById('performanceDateFilter').value = '';
+        renderPerformanceTable();
+    });
+
+    document.getElementById('resetRecruitmentFilters').addEventListener('click', function() {
+        document.getElementById('recruitmentApplicantFilter').value = '';
+        document.getElementById('recruitmentPositionFilter').value = '';
+        document.getElementById('recruitmentSourceFilter').value = '';
+        renderRecruitmentTable();
+    });
+
+    document.getElementById('resetWorkforceFilters').addEventListener('click', function() {
+        document.getElementById('workforceEmployeeFilter').value = '';
+        document.getElementById('workforceTurnoverFilter').value = '';
+        document.getElementById('workforceDateFilter').value = '';
+        renderWorkforceTable();
+    });
+
+    // Filter change event listeners
+    document.getElementById('compensationEmployeeFilter').addEventListener('input', renderCompensationTable);
+    document.getElementById('compensationBenefitFilter').addEventListener('change', renderCompensationTable);
+    document.getElementById('diversityEmployeeFilter').addEventListener('input', renderDiversityTable);
+    document.getElementById('diversityGenderFilter').addEventListener('change', renderDiversityTable);
+    document.getElementById('diversityEthnicityFilter').addEventListener('input', renderDiversityTable);
+    document.getElementById('engagementEmployeeFilter').addEventListener('input', renderEngagementTable);
+    document.getElementById('engagementScoreFilter').addEventListener('input', renderEngagementTable);
+    document.getElementById('engagementDateFilter').addEventListener('change', renderEngagementTable);
+    document.getElementById('performanceEmployeeFilter').addEventListener('input', renderPerformanceTable);
+    document.getElementById('performanceRatingFilter').addEventListener('input', renderPerformanceTable);
+    document.getElementById('performanceDateFilter').addEventListener('change', renderPerformanceTable);
+    document.getElementById('recruitmentApplicantFilter').addEventListener('input', renderRecruitmentTable);
+    document.getElementById('recruitmentPositionFilter').addEventListener('input', renderRecruitmentTable);
+    document.getElementById('recruitmentSourceFilter').addEventListener('change', renderRecruitmentTable);
+    document.getElementById('workforceEmployeeFilter').addEventListener('input', renderWorkforceTable);
+    document.getElementById('workforceTurnoverFilter').addEventListener('input', renderWorkforceTable);
+    document.getElementById('workforceDateFilter').addEventListener('change', renderWorkforceTable);
+
+    // Profile dropdown functionality
+    document.getElementById("profile-btn").addEventListener("click", function(event) {
+        event.preventDefault()
+        document.getElementById("dropdown-menu").classList.toggle("show")
+    })
+    
+    document.addEventListener("click", function(event) {
+        if (!document.getElementById("profile-btn").contains(event.target)) {
+            document.getElementById("dropdown-menu").classList.remove("show")
+        }
+    })
+
+    function openTab(evt, tabName) {
+        var i, tabcontent, tabbuttons
+        
+        // Hide all tab content
+        tabcontent = document.getElementsByClassName("tab-content")
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove("active")
+        }
+        
+        // Remove active class from all tab buttons
+        tabbuttons = document.getElementsByClassName("tab-button")
+        for (i = 0; i < tabbuttons.length; i++) {
+            tabbuttons[i].classList.remove("active")
+        }
+        
+        // Show the current tab and add active class to the button
+        document.getElementById(tabName).classList.add("active")
+        evt.currentTarget.classList.add("active")
+    }
+
+    // Charts initialization
+    document.addEventListener('DOMContentLoaded', function () {
         // Engagement Trend Chart
-        const engagementCtx = document.getElementById('engagementTrendChart');
+        const engagementCtx = document.getElementById('engagementTrendChart')
         if (engagementCtx) {
             new Chart(engagementCtx, {
                 type: 'line',
@@ -848,11 +1430,11 @@
                         }
                     }
                 }
-            });
+            })
         }
 
         // Performance Distribution Chart
-        const performanceCtx = document.getElementById('performanceDistribution');
+        const performanceCtx = document.getElementById('performanceDistribution')
         if (performanceCtx) {
             new Chart(performanceCtx, {
                 type: 'bar',
@@ -903,9 +1485,12 @@
                         }
                     }
                 }
-            });
+            })
         }
-    });
+
+        // Render all tables on initial load
+        renderAllTables();
+    })
 </script>
 </body>
 </html>
